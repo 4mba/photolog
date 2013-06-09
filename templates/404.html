@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8">
+    <title>404 Error</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le styles -->
+    <link href="{{ url_for('static',filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="{{ url_for('static', filename='html5shiv/html5shiv.js') }}"></script>
+    <![endif]-->
+
+
+    <!-- HTML Source Code from : http://bootsnipp.com/snipps/full-width-login-form -->
+	<style>
+	  .center {text-align: center; margin-left: auto; margin-right: auto; margin-bottom: auto; margin-top: auto;}
+	</style>
+	</head>
+
+<body>
+  <div class="hero-unit center">
+    <h1>Page Not Found <small><font face="Tahoma" color="red">Error 404</font></small></h1>
+    <br />
+    <p>The page you requested could not be found, either contact your webmaster or try again. Use your browsers <b>Back</b> button to navigate to the page you have prevously come from</p>
+    <p><b>Or you could just press this neat little button:</b></p>
+    <a href="#" class="btn btn-large btn-info"><i class="icon-home icon-white"></i> Take Me Home</a>
+  </div>
+  <br />
+  
+    
+  <!-- By ConnerT HTML & CSS Enthusiast -->  
+
+    <!-- Le javascript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='jquery/jquery-1.10.1.min.js') }}"></script>
+
+  </body>
+</html>
