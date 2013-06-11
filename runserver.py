@@ -11,9 +11,12 @@
 """
 
 import os
-from application import app
-
+    
 if __name__ == '__main__':
+    print "starting photolog..."
     port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    from photolog import create_app
+    print "creating photolog..."
+    app = create_app()
+    app.run(host='0.0.0.0', port=port)
 

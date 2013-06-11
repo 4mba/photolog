@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('photolog.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -25,9 +25,11 @@
       <div class="row">
         <div class="span4 offset4 well">
           <legend>Please Sign In</legend>
+          {% if error %}
           <div class="alert alert-error">
-            <a class="close" data-dismiss="alert" href="#">×</a>Incorrect Username or Password!
+            <a class="close" data-dismiss="alert" href="#">×</a>{{ error }}
           </div>
+          {% endif %}
             <form method="POST" action="" accept-charset="UTF-8">
               <input type="text" id="username" class="span4" name="username" placeholder="Username">
               <input type="password" id="password" class="span4" name="password" placeholder="Password">
@@ -43,8 +45,8 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="jquery/jquery-1.10.1.min.js"></script>
+    <script src="{{ url_for('photolog.static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('photolog.static', filename='bootstrap/js/bootstrap.min.jsjquery/jquery-1.10.1.min.js') }}"></script>
 
   </body>
 </html>

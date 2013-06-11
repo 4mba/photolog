@@ -1,0 +1,93 @@
+# -*- coding: utf-8 -*-
+
+from flask import render_template, request, current_app, session, redirect \
+                 , url_for, flash
+from functools import wraps
+
+from photolog.photolog_blueprint import photolog
+from photolog.database import DBManager
+from photolog.model.user import User
+   
+''' 로긴이 필요한 페이지에 decorating '''
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        try:
+            session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
+            if session_key is not None : 
+                print "cookie :  %s" % session_key
+
+            if session.sid == session_key and session.__contains__('is_login') :
+                is_login = True
+            else:
+                is_login = None
+
+            print "is_login is %s" % is_login
+
+            if is_login is None:
+                return redirect(url_for('.login', next=request.url))
+
+            return f(*args, **kwargs)
+        
+        except Exception as e:
+            print "error occurs : %s" % str(e)
+
+    return decorated_function
+
+
+@photolog.route('/')
+@login_required
+def index():
+    print "index invoked!"
+    return render_template('main.html')
+   
+   
+@photolog.route('/login', methods=['GET', 'POST'])
+def login():
+    session.permanent = True
+
+    error = None
+    next_url = None
+    print "(%s)login invoked!" % (request.method)
+    if request.method == 'POST':
+
+        username = request.form['username']
+        password = request.form['password']
+
+        try:
+            user = DBManager.db_session.query(User).filter_by(username=username).first()
+
+            print user 
+        except Exception as e:
+            print str(e)
+            
+        if user is not None:
+            if username != user.username or password != user.password:
+                error = 'Invalid username or  password'
+            else:
+                if request.form.__contains__('next'):
+                    next_url = request.form['next']
+                    print "(%s)next_url is %s" % (request.method, next_url)
+                # 세션에 추가할 정보를 session 객체의 값으로 추가함
+                # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
+                # 사용자 정보를 구성하여 session 객체에 추가
+                session['is_login'] = True
+                if next_url is None:
+                    return redirect(url_for('.index'))
+                else:
+                    return redirect(next_url)
+        else:
+            error = 'User does not exist!'
+
+    elif request.method == 'GET':
+        next_url = request.args.get('next', None)
+        print "(%s)next_url is %s" % (request.method, next_url)
+        
+    return render_template('login.html', next=next_url, error=error)
+
+@photolog.route('/logout')
+def logout():
+    session.pop('is_login', None)
+    flash('You were logged out')
+    return redirect(url_for('.index'))
+
