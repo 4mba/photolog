@@ -13,7 +13,7 @@
 import os
     
 if __name__ == '__main__':
-    print "starting photolog..."
+    print "starting test server..."
     port = int(os.environ.get('PORT', 5000))
     from photolog import create_app
     print "creating photolog..."

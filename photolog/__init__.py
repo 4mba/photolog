@@ -11,15 +11,17 @@
 """
 
 from flask import Flask, render_template
+from photolog.photolog_blueprint import photolog
 from photolog.redis_session import RedisSessionInterface
 from photolog.database import DBManager
 
+# 추가할 controller 모듈을 import 해야만 어플리케이션에서 인식할 수 있음 
+from photolog.controller import *
+
 def create_app(config_filename='resource/config.cfg'):
-    print "create_app invoked!"
     app = Flask(__name__)
     
     app.config.from_pyfile(config_filename)
-    from photolog.photolog_blueprint import photolog
     app.register_blueprint(photolog)
     app.session_interface = RedisSessionInterface()
     
@@ -27,6 +29,7 @@ def create_app(config_filename='resource/config.cfg'):
     app.error_handler_spec[None][500] = server_error
     
     DBManager.init(app.config['DB_URL'])
+    DBManager.init_db()
     
     return app
 
@@ -41,7 +44,4 @@ def not_found(error):
 def server_error(error):
 #     print "500 Server Error"
     return render_template('500.html')
-
-# 추가할 controller 모듈을 import 해야만 어플리케이션에서 인식할 수 있음 
-from photolog.controller import login
 

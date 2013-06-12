@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from flask import render_template, request, current_app, session, redirect \
-                 , url_for, flash
+                 , url_for
 from functools import wraps
 
 from photolog.photolog_blueprint import photolog
@@ -14,23 +14,18 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         try:
             session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
-            if session_key is not None : 
-                print "cookie :  %s" % session_key
 
-            if session.sid == session_key and session.__contains__('is_login') :
+            is_login = False
+            if session.sid == session_key and session.__contains__('user_info') :
                 is_login = True
-            else:
-                is_login = None
 
-            print "is_login is %s" % is_login
-
-            if is_login is None:
+            if not is_login:
                 return redirect(url_for('.login', next=request.url))
 
             return f(*args, **kwargs)
         
         except Exception as e:
-            print "error occurs : %s" % str(e)
+            print "Login error occurs : %s" % str(e)
 
     return decorated_function
 
@@ -59,7 +54,7 @@ def login():
 
             print user 
         except Exception as e:
-            print str(e)
+            print "DB error occurs : " + str(e)
             
         if user is not None:
             if username != user.username or password != user.password:
@@ -71,7 +66,8 @@ def login():
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
                 # 사용자 정보를 구성하여 session 객체에 추가
-                session['is_login'] = True
+                session['user_info'] = user
+
                 if next_url is None:
                     return redirect(url_for('.index'))
                 else:
@@ -87,7 +83,7 @@ def login():
 
 @photolog.route('/logout')
 def logout():
-    session.pop('is_login', None)
-    flash('You were logged out')
-    return redirect(url_for('.index'))
+    session.pop('user_info', None)
+
+    return redirect(url_for('.login'))
 
