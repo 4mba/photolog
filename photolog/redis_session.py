@@ -1,4 +1,14 @@
-# -*- coding:utf-8 -*-
+# -*- coding: utf-8 -*-
+"""
+    photolog.redis_session
+    ~~~~~~~~~~~~~~~~~~~~~~
+
+    redis를 이용한 서버 세션 모듈.
+
+    :copyright: (c) 2013 by 4mba.
+    :license: MIT LICENSE 2.0, see license for more details.
+"""
+
 
 import pickle
 from datetime import timedelta, datetime

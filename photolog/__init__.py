@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-
 """
-   photolog:__init__.py
-    ~~~~~~~~~~~~~~
+    photolog
+    ~~~~~~~~
 
-    photolog 어플리케이션 초기 셋
+    photolog 패키지 초기화 모듈. 
+    photolog에 대한 flask 어플리케이션을 생성함.
+    config, blueprint, session, DB연결 등을 초기화함.
 
-    :copyright: (c) 2013 by liks79 [http://www.github.com/liks79]
+    :copyright: (c) 2013 by 4mba.
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
