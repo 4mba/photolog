@@ -59,7 +59,9 @@
         <label class="control-label" for="password_confirm">Password (Confirm)</label>
         <div class="controls">
         <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="input-xlarge">
+        {% if error %} 
         <p class="help-block">Please confirm password</p>
+        {% endif %}        
         </div>
         </div>
          

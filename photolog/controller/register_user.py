@@ -19,6 +19,7 @@ from photolog.database import DBManager
 from photolog.model.user import User
 
 @photolog.route('/register', methods=['GET', 'POST'])
+@photolog.route('/register', methods=['GET', 'POST'])
 def register_user():
 
     print "(%s)register_user invoked!" % (request.method)
@@ -41,8 +42,9 @@ def register_user():
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return render_template('login.html')
         else:
-            print "password confirmation failed!"
-            redirect(url_for('.register_user'))
+            error = "password confirmation failed!"
+            print "Register user error : %s" % error
+            return render_template('register.html', error=error)
     
     else :   
         return render_template('register.html')
