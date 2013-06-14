@@ -14,7 +14,7 @@
 import os
 from flask import request, redirect, url_for, current_app, send_from_directory \
 				, render_template
-# from werkzeug.utils import secure_filename
+from werkzeug.utils import secure_filename
 
 from .. import photolog
 from .login import login_required
@@ -33,7 +33,7 @@ def upload_file():
 		file = request.files['file']
 			
 		if file and allowed_file(file.filename):
-	# 		filename = secure_filename(file.filename)
+			filename = secure_filename(file.filename)
 			filename = file.filename
 			file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
 			return redirect(url_for('.upload_file', filename=filename))
