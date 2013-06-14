@@ -22,7 +22,7 @@
     <!-- HTML Source Code from : http://bootsnipp.com/snipps/simple-registration-form -->
     <br>
     <div class="container">
-      <form class="form-horizontal" action="{{ url_for('photolog.register_user') }}" method="POST">
+      <form class="form-horizontal" action="{{ url_for('photolog.register_user', user=session.user_info.username) }}" method="post">
         <fieldset>
         <div id="legend">
         <legend class="">Register</legend>
@@ -31,7 +31,7 @@
         <!-- Username -->
         <label class="control-label" for="username">Username</label>
         <div class="controls">
-        <input type="text" id="username" name="username" placeholder="" class="input-xlarge">
+        <input type="text" id="username" name="username" {% if user %} value="{{ user.username }}" {% endif %} placeholder="" class="input-xlarge" {% if user %} readonly {% endif %}>
         <p class="help-block">Username can contain any letters or numbers, without spaces</p>
         </div>
         </div>
@@ -40,7 +40,7 @@
         <!-- E-mail -->
         <label class="control-label" for="email">E-mail</label>
         <div class="controls">
-        <input type="text" id="email" name="email" placeholder="" class="input-xlarge">
+        <input type="text" id="email" name="email" {% if user %} value="{{ user.email }}" {% endif %} placeholder="" class="input-xlarge" {% if user %} readonly {% endif %} >
         <p class="help-block">Please provide your E-mail</p>
         </div>
         </div>
