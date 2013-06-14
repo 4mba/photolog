@@ -70,8 +70,8 @@ def login():
             if username != user.username or password != user.password:
                 error = 'Invalid username or  password'
             else:
-                if request.form.__contains__('next'):
-                    next_url = request.form['next']
+                if request.args.__contains__('next'):
+                    next_url = request.args['next']
                     print "(%s)next_url is %s" % (request.method, next_url)
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고

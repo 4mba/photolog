@@ -13,4 +13,4 @@
 
 print "controller.__init__.py invoked!"
 
-__all__ = ["login"]
+__all__ = ["login", "upload_files", "register_user"]

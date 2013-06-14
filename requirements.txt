@@ -1,0 +1,4 @@
+Flask==0.9
+Flask-SQLAlchemy==0.16
+Jinja2==2.6
+Redis==2.7.5

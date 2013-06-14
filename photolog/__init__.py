@@ -43,6 +43,6 @@ def not_found(error):
     return render_template('404.html')
 
 def server_error(error):
-#     print "500 Server Error"
+    print "500 Server Error : %s" % error
     return render_template('500.html')
 
