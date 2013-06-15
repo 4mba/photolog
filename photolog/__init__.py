@@ -12,8 +12,10 @@
 """
 
 from flask import Flask, render_template
+
 from photolog.photolog_blueprint import photolog
-from photolog.redis_session import RedisSessionInterface
+from photolog.cache_session import SimpleCacheSessionInterface, \
+                                    RedisCacheSessionInterface
 from photolog.database import DBManager
 
 # 추가할 controller 모듈을 import 해야만 어플리케이션에서 인식할 수 있음 
@@ -24,7 +26,11 @@ def create_app(config_filename='resource/config.cfg'):
     
     app.config.from_pyfile(config_filename)
     app.register_blueprint(photolog)
-    app.session_interface = RedisSessionInterface()
+    # SessionInterface 설정.
+    # Redis를 이용한 세션 구현은 cache_session.RedisCacheSessionInterface import한다.
+    # 아래 문장을 적용하면 된다.
+    # app.session_interface = RedisCacheSessionInterface()
+    app.session_interface = SimpleCacheSessionInterface()
     
     app.error_handler_spec[None][404] = not_found
     app.error_handler_spec[None][500] = server_error
