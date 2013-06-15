@@ -18,6 +18,7 @@ from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
 from photolog.model.user import User
 
+
 @photolog.route('/register/', methods=['GET', 'POST'])
 @photolog.route('/register/<user>', methods=['GET', 'POST'])
 def register_user(user=None):
@@ -45,7 +46,7 @@ def register_user(user=None):
                     return render_template('register.html', error=error)
                 else:
                     # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-                    return render_template('login.html')
+                    return redirect(url_for('.login'))
             else:
                 error = "password confirmation failed!"
                 print "Register user error : %s" % error
@@ -67,7 +68,7 @@ def register_user(user=None):
                     return render_template('register.html', error=error)
                 else:
                     # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-                    return render_template('login.html')
+                    return redirect(url_for('.login'))
             else:
                 error = "password confirmation failed!"
                 print "Register user error : %s" % error

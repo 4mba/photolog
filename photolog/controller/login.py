@@ -25,6 +25,7 @@ def login_required(f):
         try:
             session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
+#             print "session : %s" % session
             is_login = False
             if session.sid == session_key and session.__contains__('user_info') :
                 is_login = True
@@ -93,7 +94,8 @@ def login():
 
 @photolog.route('/logout')
 def logout():
-    session.pop('user_info', None)
+#     session.pop('user_info', None)
+    session.clear()
 
     return redirect(url_for('.login'))
 
