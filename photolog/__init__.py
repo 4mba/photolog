@@ -1,18 +1,21 @@
 # -*- coding: utf-8 -*-
-
 """
-   photolog:__init__.py
-    ~~~~~~~~~~~~~~
+    photolog
+    ~~~~~~~~
 
-    photolog 어플리케이션 초기 셋
+    photolog 패키지 초기화 모듈. 
+    photolog에 대한 flask 어플리케이션을 생성함.
+    config, blueprint, session, DB연결 등을 초기화함.
 
-    :copyright: (c) 2013 by liks79 [http://www.github.com/liks79]
+    :copyright: (c) 2013 by 4mba.
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
 from flask import Flask, render_template
+
 from photolog.photolog_blueprint import photolog
-from photolog.redis_session import RedisSessionInterface
+from photolog.cache_session import SimpleCacheSessionInterface, \
+                                    RedisCacheSessionInterface
 from photolog.database import DBManager
 
 # 추가할 controller 모듈을 import 해야만 어플리케이션에서 인식할 수 있음 
@@ -23,7 +26,11 @@ def create_app(config_filename='resource/config.cfg'):
     
     app.config.from_pyfile(config_filename)
     app.register_blueprint(photolog)
-    app.session_interface = RedisSessionInterface()
+    # SessionInterface 설정.
+    # Redis를 이용한 세션 구현은 cache_session.RedisCacheSessionInterface import한다.
+    # 아래 문장을 적용하면 된다.
+    # app.session_interface = RedisCacheSessionInterface()
+    app.session_interface = SimpleCacheSessionInterface()
     
     app.error_handler_spec[None][404] = not_found
     app.error_handler_spec[None][500] = server_error
@@ -42,6 +49,6 @@ def not_found(error):
     return render_template('404.html')
 
 def server_error(error):
-#     print "500 Server Error"
+    print "500 Server Error : %s" % error
     return render_template('500.html')
 

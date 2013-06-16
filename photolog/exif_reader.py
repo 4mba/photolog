@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-   exif_reader
-    ~~~~~~~~~~~~~~
+   photolog.exif_reader
+   ~~~~~~~~~~~~~~~~~~~~
 
     JPEG 사진에서 EXIF(교환 이미지 파일 형식, EXchangable Image File format)를 이용하여,
     PhotoLog에서 사용할 위치기반 정보를 얻어 온다.
 
-    :copyright: (c) 2013 by liks79 [http://www.github.com/liks79]
+    :copyright: (c) 2013 by 4mba
     :license: MIT LICENSE 2.0, see license for more details.
 """
 

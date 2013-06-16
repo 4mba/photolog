@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('photolog.static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
@@ -22,7 +22,7 @@
     <!-- HTML Source Code from : http://bootsnipp.com/snipps/simple-registration-form -->
     <br>
     <div class="container">
-      <form class="form-horizontal" action='' method="POST">
+      <form class="form-horizontal" action="{{ url_for('photolog.register_user', user=session.user_info.username) }}" method="post">
         <fieldset>
         <div id="legend">
         <legend class="">Register</legend>
@@ -31,7 +31,7 @@
         <!-- Username -->
         <label class="control-label" for="username">Username</label>
         <div class="controls">
-        <input type="text" id="username" name="username" placeholder="" class="input-xlarge">
+        <input type="text" id="username" name="username" {% if user %} value="{{ user.username }}" {% endif %} placeholder="" class="input-xlarge" {% if user %} readonly {% endif %}>
         <p class="help-block">Username can contain any letters or numbers, without spaces</p>
         </div>
         </div>
@@ -40,7 +40,7 @@
         <!-- E-mail -->
         <label class="control-label" for="email">E-mail</label>
         <div class="controls">
-        <input type="text" id="email" name="email" placeholder="" class="input-xlarge">
+        <input type="text" id="email" name="email" {% if user %} value="{{ user.email }}" {% endif %} placeholder="" class="input-xlarge" {% if user %} readonly {% endif %} >
         <p class="help-block">Please provide your E-mail</p>
         </div>
         </div>
@@ -59,14 +59,16 @@
         <label class="control-label" for="password_confirm">Password (Confirm)</label>
         <div class="controls">
         <input type="password" id="password_confirm" name="password_confirm" placeholder="" class="input-xlarge">
+        {% if error %} 
         <p class="help-block">Please confirm password</p>
+        {% endif %}        
         </div>
         </div>
          
         <div class="control-group">
         <!-- Button -->
         <div class="controls">
-        <button class="btn btn-success">Register</button>
+        <button type="submit" name="submit" class="btn btn-success">Register</button>
         </div>
         </div>
         </fieldset>
@@ -75,8 +77,8 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="bootstrap/js/bootstrap.min.js"></script>
-    <script src="jquery/jquery-1.10.1.min.js"></script>
+    <script src="{{ url_for('photolog.static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('photolog.static', filename='bootstrap/js/bootstrap.min.jsjquery/jquery-1.10.1.min.js') }}"></script>
 
   </body>
 </html>

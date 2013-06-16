@@ -1,23 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-    photolog.redis_session
+    photolog.simplecache_session
     ~~~~~~~~~~~~~~~~~~~~~~
 
-    redis를 이용한 서버 세션 모듈.
+    SimpleCache를 이용한 서버 세션 모듈.
 
     :copyright: (c) 2013 by 4mba.
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
-
-import pickle
 from datetime import timedelta, datetime
 from uuid import uuid4
-from redis import Redis
+from werkzeug.contrib.cache import NullCache, SimpleCache, RedisCache
 from werkzeug.datastructures import CallbackDict
 from flask.sessions import SessionInterface, SessionMixin
 
-class RedisSession(CallbackDict, SessionMixin):
+
+class CacheSession(CallbackDict, SessionMixin):
 
     def __init__(self, initial=None, sid=None, new=False):
         def on_update(self):
@@ -28,20 +27,19 @@ class RedisSession(CallbackDict, SessionMixin):
         self.modified = False
 
 
-class RedisSessionInterface(SessionInterface):
-    serializer = pickle
-    session_class = RedisSession
+class CacheSessionInterface(SessionInterface):
+    session_class = CacheSession
 
-    def __init__(self, redis=None, prefix='session:'):
-        if redis is None:
-            redis = Redis()
-        self.redis = redis
+    def __init__(self, cache=None, prefix='cache_session:'):
+        if cache is None:
+            cache = NullCache()
+        self.cache = cache
         self.prefix = prefix
 
     def generate_sid(self):
         return str(uuid4())
 
-    def get_redis_expiration_time(self, app, session):
+    def get_cache_expiration_time(self, app, session):
         if session.permanent:
             return app.permanent_session_lifetime
         return timedelta(days=1)
@@ -53,11 +51,10 @@ class RedisSessionInterface(SessionInterface):
             sid = self.generate_sid()
             return self.session_class(sid=sid, new=True)
            
-        val = self.redis.get(self.prefix + sid)
+        val = self.cache.get(self.prefix + sid)
         if val is not None:
-            data = self.serializer.loads(val)
-#             print "session value : %s" % data
-            return self.session_class(data, sid=sid)
+            print "session value : %s" % val
+            return self.session_class(val, sid=sid)
         return self.session_class(sid=sid, new=True)
 
     def save_session(self, app, session, response):
@@ -65,23 +62,34 @@ class RedisSessionInterface(SessionInterface):
         
         if not session:
 
-            self.redis.delete(self.prefix + session.sid)
+            self.cache.delete(self.prefix + session.sid)
             if session.modified:
                 response.delete_cookie(app.session_cookie_name,
                                        domain=domain)
             return
 
-        redis_exp = self.get_redis_expiration_time(app, session)
+        cache_exp = self.get_cache_expiration_time(app, session)
         cookie_exp = self.get_expiration_time(app, session) + \
         (datetime.now() - self.get_expiration_time(app, session))
         
-        val = self.serializer.dumps(dict(session))
-        self.redis.setex(self.prefix + session.sid, val,
-                         int(redis_exp.total_seconds()))
+        val = dict(session)
+        self.cache.set(self.prefix + session.sid, val, 
+                       int(cache_exp.total_seconds()))
         
-#         print "session.sid : %s, redis_exp : %s, cookie_exp : %s" % \
-#              (session.sid, redis_exp, cookie_exp)
+        print "session.sid : %s, cache_exp : %s, cookie_exp : %s" % \
+              (session.sid, cache_exp, cookie_exp)
         
         response.set_cookie(app.session_cookie_name, session.sid,
                             expires=cookie_exp, httponly=True,
-                            domain=domain)
+                            domain=domain)   
+    
+class SimpleCacheSessionInterface(CacheSessionInterface):
+
+    def __init__(self, cache=SimpleCache(), prefix='simple_cache_session:'):
+        CacheSessionInterface.__init__(self, cache, prefix)
+
+        
+class RedisCacheSessionInterface(CacheSessionInterface):
+
+    def __init__(self, cache=RedisCache(), prefix='redis_cache_session:'):
+        CacheSessionInterface.__init__(self, cache, prefix)

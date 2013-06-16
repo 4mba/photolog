@@ -30,13 +30,16 @@
             <a class="close" data-dismiss="alert" href="#">×</a>{{ error }}
           </div>
           {% endif %}
-            <form method="POST" action="" accept-charset="UTF-8">
+            <form method="POST" action="{{ url_for('photolog.login') }}" accept-charset="UTF-8">
               <input type="text" id="username" class="span4" name="username" placeholder="Username">
               <input type="password" id="password" class="span4" name="password" placeholder="Password">
               <label class="checkbox">
               <input type="checkbox" name="remember" value="1"> Remember Me
               </label>
               <button type="submit" name="submit" class="btn btn-info btn-block">Sign in</button>
+            </form>
+            <form method="GET" action="{{ url_for('photolog.register_user') }}" accept-charset="UTF-8">
+              <button type="submit" name="submit" class="btn btn-info btn-block">Register User</button>
             </form>
         </div>
       </div>

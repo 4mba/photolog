@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+    photolog.controller.login
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    로그인 확인 데코레이터와 로그인 처리 모듈.
+
+    :copyright: (c) 2013 by 4mba.
+    :license: MIT LICENSE 2.0, see license for more details.
+"""
+
 
 from flask import render_template, request, current_app, session, redirect \
                  , url_for
@@ -15,6 +25,7 @@ def login_required(f):
         try:
             session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
+#             print "session : %s" % session
             is_login = False
             if session.sid == session_key and session.__contains__('user_info') :
                 is_login = True
@@ -60,8 +71,8 @@ def login():
             if username != user.username or password != user.password:
                 error = 'Invalid username or  password'
             else:
-                if request.form.__contains__('next'):
-                    next_url = request.form['next']
+                if request.args.__contains__('next'):
+                    next_url = request.args['next']
                     print "(%s)next_url is %s" % (request.method, next_url)
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
@@ -83,7 +94,8 @@ def login():
 
 @photolog.route('/logout')
 def logout():
-    session.pop('user_info', None)
+#     session.pop('user_info', None)
+    session.clear()
 
     return redirect(url_for('.login'))
 

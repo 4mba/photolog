@@ -1,15 +1,13 @@
 # -*- coding: utf-8 -*-
 """
-    photolog.redis_session
+    photolog.default_session
     ~~~~~~~~~~~~~~~~~~~~~~
 
-    redis를 이용한 서버 세션 모듈.
+    기본 딕셔너리를 이용한 서버 세션 모듈.
 
     :copyright: (c) 2013 by 4mba.
     :license: MIT LICENSE 2.0, see license for more details.
 """
-
-
 import pickle
 from datetime import timedelta, datetime
 from uuid import uuid4
@@ -17,7 +15,7 @@ from redis import Redis
 from werkzeug.datastructures import CallbackDict
 from flask.sessions import SessionInterface, SessionMixin
 
-class RedisSession(CallbackDict, SessionMixin):
+class DefaultSession(CallbackDict, SessionMixin):
 
     def __init__(self, initial=None, sid=None, new=False):
         def on_update(self):
@@ -28,9 +26,9 @@ class RedisSession(CallbackDict, SessionMixin):
         self.modified = False
 
 
-class RedisSessionInterface(SessionInterface):
+class DefaultSessionInterface(SessionInterface):
     serializer = pickle
-    session_class = RedisSession
+    session_class = DefaultSession
 
     def __init__(self, redis=None, prefix='session:'):
         if redis is None:

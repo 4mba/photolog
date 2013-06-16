@@ -1,0 +1,7 @@
+{% if filename %}<p class=uploaded><strong>Uploaded filename:</strong> {{ filename }}{% endif %}
+<form action="{{ url_for('photolog.upload_file') }}" method=post enctype=multipart/form-data>
+<dl>
+<dd><input type=file name=file>
+<dd><input type=submit value=Upload>
+</dl>
+</form>

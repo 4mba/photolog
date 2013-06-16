@@ -1,20 +1,31 @@
 # -*- coding: utf-8 -*-
+"""
+    photolog.model.user
+    ~~~~~~~~~~~~~~~~~~~
+
+    photolog 어플리케이션을 사용할 사용자 정보에 대한 model 모듈.
+
+    :copyright: (c) 2013 by 4mba.
+    :license: MIT LICENSE 2.0, see license for more details.
+"""
+
 
 from sqlalchemy import Column, Integer, String
 
 from photolog.model import Base
-	
+
 class User(Base):
-	__tablename__ = 'users'
-	
-	id = Column(Integer, primary_key=True)
-	username = Column(String(50), unique=True)
-	password = Column(String(120), unique=False)
-	
-	def __init__(self, name=None, password=None):
-		self.username = name
-		self.password = password
-		
-	def __repr__(self):
-		return '<User %r %r>' % (self.username, self.password)
-	
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    username = Column(String(50), unique=True)
+    email = Column(String(50), unique=True)
+    password = Column(String(120), unique=False)
+
+    def __init__(self, name, email, password):
+        self.username = name
+        self.email = email
+        self.password = password
+
+    def __repr__(self):
+        return '<User %r %r>' % (self.username, self.email)
