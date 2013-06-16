@@ -56,7 +56,7 @@
           <div class="nav-collapse collapse">
             <form name="user_form">
             <p class="navbar-text pull-right">
-              Logged in as <a href="{{ url_for('photolog.register_user', user=session.user_info.username) }}" class="navbar-link">{{ session.user_info.username }}</a>
+              Logged in as <a href="{{ url_for('photolog.modify_user', user=session.user_info.username) }}" class="navbar-link">{{ session.user_info.username }}</a>
               <a href="{{ url_for('photolog.logout') }}" class="navbar-link">[Logout]</a>
             </p>
             </form>
