@@ -22,7 +22,11 @@
     <!-- HTML Source Code from : http://bootsnipp.com/snipps/simple-registration-form -->
     <br>
     <div class="container">
-      <form class="form-horizontal" action="{{ url_for('photolog.register_user', user=session.user_info.username) }}" method="post">
+      {% if not session.user_info %}
+      <form class="form-horizontal" action="{{ url_for('photolog.register_user') }}" method="post">
+      {% else %}
+      <form class="form-horizontal" action="{{ url_for('photolog.modify_user', user=session.user_info.username) }}" method="post">
+      {% endif %}
         <fieldset>
         <div id="legend">
         <legend class="">Register</legend>
