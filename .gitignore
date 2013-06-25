@@ -43,6 +43,7 @@ nosetests.xml
 *.pydevproject
 *.settings
 *.externalToolBuilders
+*.project
 
 
 
