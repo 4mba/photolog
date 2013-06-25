@@ -42,10 +42,11 @@ def login_required(f):
 
 
 @photolog.route('/')
-@login_required
+# 로그인 하지 않아도 페이지가 보이도록 수정
+# @login_required
 def index():
     print "index invoked!"
-    return render_template('main.html')
+    return render_template('layout.html')
    
    
 @photolog.route('/login', methods=['GET', 'POST'])
