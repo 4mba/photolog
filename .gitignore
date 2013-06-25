@@ -45,5 +45,9 @@ nosetests.xml
 *.externalToolBuilders
 *.project
 
+# ignore upload folder 
+**/upload/
+
+
 
 
