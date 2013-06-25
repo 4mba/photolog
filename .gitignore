@@ -36,3 +36,13 @@ nosetests.xml
 
 # sqlite DB
 *.db
+
+# Additional redundant files 
+*debug*.txt
+*.log
+*.pydevproject
+*.settings
+*.externalToolBuilders
+
+
+
