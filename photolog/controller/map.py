@@ -34,5 +34,5 @@ def show_entry(entry_id):
 
 
 
-    return render_template('main_maptest.html',json.dumps(result));
+    return render_template('main_maptest.html', result=json.dumps(result));
 
