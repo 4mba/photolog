@@ -62,7 +62,11 @@ def modify_user(user=None):
         
         password = request.form['password']
         password_confirm = request.form['password_confirm']
-            
+        
+        if password == '' or password_confirm == '':
+            modify_error = "not allowed blank for password "
+            print modify_error
+            return render_template('register.html', error=modify_error)    
         if password == password_confirm:
             print "modifying user info..."
             try:
@@ -73,16 +77,16 @@ def modify_user(user=None):
     
                 print user 
             except Exception as e:
-                error = "DB error occurs : " + str(e)
-                print error
-                return render_template('register.html', error=error)
+                modify_error = "DB error occurs : " + str(e)
+                print modify_error
+                return render_template('register.html', error=modify_error)
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
         else:
-            error = "password confirmation failed!"
-            print "Register user error : %s" % error
-            return render_template('register.html', error=error)
+            modify_error = "password confirmation failed!"
+            print "Register user error : %s" % modify_error
+            return render_template('register.html', error=modify_error)
     
     else:
         # 사용자 정보 수정 화면
@@ -92,8 +96,10 @@ def modify_user(user=None):
 
             print user 
         except Exception as e:
-            print "DB error occurs : " + str(e)
-            return render_template('register.html', error=error)
+            
+            modify_error = "DB error occurs : " + str(e)
+            print modify_error
+            return render_template('register.html', error=modify_error)
         else:
             return render_template('register.html', user=user)  
 
