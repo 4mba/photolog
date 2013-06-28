@@ -98,5 +98,5 @@ def logout():
 #     session.pop('user_info', None)
     session.clear()
 
-    return redirect(url_for('.login'))
+    return redirect(url_for('.index'))
 
