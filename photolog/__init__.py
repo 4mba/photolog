@@ -29,7 +29,7 @@ def create_app(config_filename='resource/config.cfg'):
     # SessionInterface 설정.
     # Redis를 이용한 세션 구현은 cache_session.RedisCacheSessionInterface import한다.
     # 아래 문장을 적용하면 된다.
-    # app.session_interface = RedisCacheSessionInterface()
+    #app.session_interface = RedisCacheSessionInterface()
     app.session_interface = SimpleCacheSessionInterface()
     
     app.error_handler_spec[None][404] = not_found
