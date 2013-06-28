@@ -17,6 +17,8 @@ from functools import wraps
 from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
 from photolog.model.user import User
+
+import json
    
 @photolog.route('/show/entry/<entry_id>')
 def show_entry(entry_id):
@@ -32,5 +34,5 @@ def show_entry(entry_id):
 
 
 
-    return render_template('main_maptest.html',json.dump(result));
+    return render_template('main_maptest.html',json.dumps(result));
 
