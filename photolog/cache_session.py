@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 """
-    photolog.simplecache_session
+    photolog.cache_session
     ~~~~~~~~~~~~~~~~~~~~~~
 
-    SimpleCache를 이용한 서버 세션 모듈.
+    Cache를 이용한 서버 세션 모듈.
+    로컬 어플리케이션 서버의 메모리를 이용하는 SimpleCache 버전과
+    RedisCache를 이용해서 가용성을 보장하는 버전 두가지를 제공함.
 
     :copyright: (c) 2013 by 4mba.
     :license: MIT LICENSE 2.0, see license for more details.
@@ -53,7 +55,7 @@ class CacheSessionInterface(SessionInterface):
            
         val = self.cache.get(self.prefix + sid)
         if val is not None:
-            print "session value : %s" % val
+#             print "session value : %s" % val
             return self.session_class(val, sid=sid)
         return self.session_class(sid=sid, new=True)
 
@@ -76,8 +78,8 @@ class CacheSessionInterface(SessionInterface):
         self.cache.set(self.prefix + session.sid, val, 
                        int(cache_exp.total_seconds()))
         
-        print "session.sid : %s, cache_exp : %s, cookie_exp : %s" % \
-              (session.sid, cache_exp, cookie_exp)
+#         print "session.sid : %s, cache_exp : %s, cookie_exp : %s" % \
+#               (session.sid, cache_exp, cookie_exp)
         
         response.set_cookie(app.session_cookie_name, session.sid,
                             expires=cookie_exp, httponly=True,
