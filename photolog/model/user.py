@@ -14,6 +14,7 @@ from sqlalchemy import Column, Integer, String
 
 from photolog.model import Base
 
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -29,3 +30,5 @@ class User(Base):
 
     def __repr__(self):
         return '<User %r %r>' % (self.username, self.email)
+    
+    

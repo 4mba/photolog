@@ -16,7 +16,9 @@ from functools import wraps
 
 from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
-from photolog.model.user import User
+
+
+
 
 import json
    
