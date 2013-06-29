@@ -95,6 +95,7 @@ def index():
 @photolog.route('/login', methods=['GET', 'POST'])
 def login():
     session.permanent = True
+    dao = DBManager.db_session
 
     login_error = None
     next_url = None
@@ -105,7 +106,7 @@ def login():
         password = request.form['password']
 
         try:
-            user = DBManager.db_session.query(User).filter_by(username=username).first()
+            user = dao.query(User).filter_by(username=username).first()
 
             print user 
         except Exception as e:
