@@ -16,7 +16,7 @@ from flask import request, redirect, url_for, current_app, send_from_directory \
 				, render_template
 from werkzeug.utils import secure_filename
 
-import photolog
+from .. import photolog
 from .login import login_required
 
 
