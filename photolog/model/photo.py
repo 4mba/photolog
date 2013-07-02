@@ -29,10 +29,14 @@ class Photo(Base):
     upload_date = Column(DateTime, unique=False)
     taken_date = Column(DateTime, unique=False)
 
-    def __init__(self, userid, comment, upload_date):
+    def __init__(self, userid, tag, comment, geotag_lat, geotag_lng, upload_date, taken_date):
         self.userid = userid
+        self.tag = tag
         self.comment = comment
+        self.geotag_lat = geotag_lat
+        self.geotag_lng = geotag_lng
         self.upload_date = upload_date
+        self.taken_date = taken_date
 
     def __repr__(self):
         return '<Photo %r %r>' % (self.userid, self.upload_date)
