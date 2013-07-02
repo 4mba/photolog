@@ -49,10 +49,43 @@
     <!-- Le javascript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="{{ url_for('photolog.static', filename='js/bootstrap.min.js') }}"></script>
+    <!--
     <script src="{{ url_for('photolog.static', filename='js/jquery-1.10.1.min.js') }}"></script>
-    <script src="{{ url_for('photolog.static', filename='js/bootbox.min.js') }}"></script>
+    -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script src="{{ url_for('photolog.static', filename='js/bootstrap.min.js') }}"></script>
     <script src="{{ url_for('photolog.static', filename='js/gmaps.js') }}"></script>
+    <script src="{{ url_for('photolog.static', filename='js/bootbox.min.js') }}"></script>
+ 
+  <script type=text/javascript>
+		$(document).ready(function () {
+			
+			$("#upload_link").click(function(e) {
+				
+				var uploadForm = "";
+				uploadForm  ="<form name='upload' method='POST' enctype='multipart/form-data'>";
+				uploadForm +="	<dl><dd>사진 : <input type='file' name='file' class='input-small'> </dd>";
+				uploadForm +="	<dd>태그 : <input type='text' name='tag' class='input-xlarge'> </dd>";
+				uploadForm +="	</dl><dd>메모 : <textarea name='comment' rows='3' class='input-xlarge'> </textarea></dd>";
+				uploadForm +="  <input type='hidden' name='userid' value='liks'>";
+				uploadForm +="</form>";
+				
+				bootbox.confirm(uploadForm, function(result) {
+					
+					if(result == true){
+						// upload
+						document.upload.action="{{ url_for('photolog.upload_file') }}";
+						document.upload.submit();
+					}else{
+						return false;
+					}
+				}); 				
+
+			});
+
+		});
+	</script>
+
 
   </body>
 </html>
