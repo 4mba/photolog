@@ -18,11 +18,16 @@ import EXIF;
 class EXIFReader :
 
     file_path = "" 
-
+    tags = ""
     def __init__(self, file_path) : 
         """ EXIFReader 클래스 생성자 """
 
         self.file_path = file_path 
+        # Open image file for reading (binary mode)
+        f = open(file_path, 'rb')
+        
+        # Return Exif tags
+        self.tags = EXIF.process_file(f)        
 
         
     def get_thumbnails(self, file_path) :
@@ -31,27 +36,27 @@ class EXIFReader :
         print "ThumbNails"
 
     
-    def get_gps_data(self, file_path):
+    def get_geotag_lat(self):
         """EXIF 정보에서 GPS 정보를 읽어서 리턴한다.  """
 
-        print "GPS Data"
+        return self.tags["GPS GPSLatitude"]
     
+
+    def get_geotag_lng(self):
+        """EXIF 정보에서 GPS 정보를 읽어서 리턴한다.  """
+
+        return self.tags["GPS GPSLatitude"]
+
 
     def print_all(self, file_path):
         """모든 EXIF 정보를 STDOUT에 출력한다.  """
         
 
-        # Open image file for reading (binary mode)
-        f = open(file_path, 'rb')
-        
-        # Return Exif tags
-        tags = EXIF.process_file(f)
-
         print "All Information of EXIF in " + file_path
 
-        for tag in tags.keys():
+        for tag in self.tags.keys():
             if tag not in ('JPEGThumbnail', 'TIFFThumbnail', 'Filename', 'EXIF MakerNote'):
-                print "Key: %s, value %s" % (tag, tags[tag])
+                print "Key: %s, value %s" % (tag, self.tags[tag])
 
 
     
