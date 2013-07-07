@@ -71,7 +71,7 @@
 							</div>
 						</form>
 						<ul class="nav pull-right">
-							<li><a href="#"><i class="icon-user"></i> Logout</a></li>
+							<li><a id="logout" href="#"><i class="icon-user"></i> Logout</a></li>
 						</ul>
 					</div> <!-- end of nav-collapse -->
 				</div><!-- end of  container -->
@@ -121,5 +121,19 @@
      </div> 
 
 	<!-- footer end -->
+	<script type="text/javascript">
+		$('#logout').click(function(e){
+
+			bootbox.confirm("로그아웃 하시겠습니까?", function(result) {
+				if(result){
+					alert("true");
+				}else {
+					alert("fales");
+				}
+			}); 
+
+		});
+	</script>
+
   </body>
 </html>
