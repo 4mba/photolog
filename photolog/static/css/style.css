@@ -1,115 +1,13 @@
 @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 
 body {
-	font-family; 'Nanum Gothic', Arial, sans-serif;
-	background-color: #f2f2f2;
-	color: #333333;
-}
-
-header.header-wrapper {
-	background: #8B7355;
-	color:#ddd;
-	margin-bottome: 15px;
-}
-
-/****************************************
-	header.header-wrapper {
-		background: #393E44;
-		color:#ddd;
-		margin-bottome: 15px;
-	}
-	
-*****************************************/
-
-	header .navbar{
-		margin-bottom: 5px;
-	}
-
-.login-form {
-	padding: 15px 15px 0px 15px;
+  font-family; 'Nanum Gothic', Arial, sans-serif;
+  background-color: #f2f2f2;
+  color: #333333;
+  padding-top: 60px;
 }
 
 
-.site-title {
-	color: #FFFFFF
-}
+.login {
 
-#remember-me {
-	float: left;
-	margin-right: 10px;
-}
-
-.string {
-	color: #333;
-}
-
-
-.modal {
-	width:550px;
-	margin-left:relative;	
-}
-
-
-#sign-up .modal-body {
-	
-	min-height: 300px;
-	width: 450px;
-}
-
-#sign-up {
-	color:#333;
-	width: 440px;
-}
-
-.gallery .thumbnail {
-  background:#fff;
-  margin-top: 10px;
-} 
-
-
-
-
-/**** 메이슨리 Transitions ****/
-.masonry,
-.masonry .masonry-brick {
-  -webkit-transition-duration: 0.7s;
-     -moz-transition-duration: 0.7s;
-      -ms-transition-duration: 0.7s;
-       -o-transition-duration: 0.7s;
-          transition-duration: 0.7s;
-}
-
-.masonry {
-  -webkit-transition-property: height, width;
-     -moz-transition-property: height, width;
-      -ms-transition-property: height, width;
-       -o-transition-property: height, width;
-          transition-property: height, width;
-}
-
-.masonry .masonry-brick {
-  -webkit-transition-property: left, right, top;
-     -moz-transition-property: left, right, top;
-      -ms-transition-property: left, right, top;
-       -o-transition-property: left, right, top;
-          transition-property: left, right, top;
-}
-/**** 메이슨리 Transitions 종료****/
-
-
-/* Infinite Scroll loader */
-#infscr-loading { 
-  text-align: center;
-  z-index: 100;
-  position: fixed;
-  left: 45%;
-  bottom: 330px;
-  width: 220px;
-  padding: 10px;
-  background: #000; 
-  opacity: 0.8;
-  color: #FFF;
-  -webkit-border-radius: 10px;
-     -moz-border-radius: 10px;
-          border-radius: 10px;
 }
