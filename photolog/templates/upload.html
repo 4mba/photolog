@@ -1,15 +1,15 @@
 {% extends "layout.html" %}
-{% block title %}Index{% endblock %}
+{% block title %}Upload{% endblock %}
 {% block head %}
   {{ super() }}
 {% endblock %}
 
-<!-- 사용자 등록 폼 -->
+<!-- File Upload Form -->
 {% block content %}
 
   <div class="container well">
 		
-	    <form class="form-horizontal">
+	    <form class="form-horizontal" method='POST' action='/photo/upload_photo' enctype='multipart/form-data' >
 	    	<div class="row-fluid">
 		    	<div class="span4">
 				    <div class="fileupload fileupload-new" data-provides="fileupload">
@@ -29,7 +29,7 @@
 							    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
 							</span>
 						    -->
-					    	<input class="btn-file input-small" type="file" />
+					    	<input class="btn-file input-small" name="upload_photo" type="file" />
 					    </div>
 					  </div>
 				    <div class="container">
@@ -40,7 +40,7 @@
 						    <textarea class="input-large" rows="3" placeholder="memo"></textarea>
 					    </p>
 					    <p>
-	              			<button type="submit" name="submit" class="btn">photo upload</button>
+	              			<button type="submit" name="submit" class="btn">upload</button>
               			</p>
               		</div>
 				</div> <!-- end of row-fluid span4 -->
@@ -63,7 +63,6 @@
 		   </div>
 	    </form>    
 	</div>
-
 
 
 {% endblock %}
