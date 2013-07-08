@@ -46,7 +46,7 @@ def login_required(f):
 @login_required
 def index():
     print "index invoked!"
-    return render_template('main.html')
+    return render_template('entry_all.html')
    
    
 # @photolog.route('/login', methods=['GET', 'POST'])
@@ -92,7 +92,7 @@ def index():
 #         print "(%s)next_url is %s" % (request.method, next_url)
 #         
 #     return render_template('login.html', next=next_url, login_error=login_error)
-@photolog.route('/login', methods=['GET', 'POST'])
+@photolog.route('/user/login', methods=['GET', 'POST'])
 def login():
     session.permanent = True
     dao = DBManager.db_session

@@ -1,91 +1,139 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!doctype html>
+<html>
   <head>
-    <meta charset="utf-8">
-    <title>Photolog, {% block title %}{% endblock %}</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
 
-    <!-- Le styles -->
-    <link href="{{ url_for('photolog.static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('photolog.static', filename='css/font-awesome.min.css') }}" rel="stylesheet">
-    <style type="text/css">
-      body {
-        padding-top: 75px;
-        padding-bottom: 40px;
-      }
-      .sidebar-nav {
-        padding: 9px 0;
-      }
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>  	
 
-      @media (max-width: 980px) {
-        /* Enable use of floated navbar text */
-        .navbar-text.pull-right {
-          float: none;
-          padding-left: 5px;
-          padding-right: 5px;
-        }
-      }
-    </style>
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="html5shiv/html5shiv.js"></script>
-    <![endif]-->
+		<title>Photolog::{% block title %}{% endblock %}</title>
+		<meta name="description" content="" />
 
-    <!-- Fav and touch icons -->
-    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png">
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png">
-      <link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png">
-                    <link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png">
-                                   <link rel="shortcut icon" href="../assets/ico/favicon.png">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/bootstrap.min.css') }}" type="text/css" media="screen" title="photolog" charset="UTF-8" />
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/font-awesome.min.css') }}" type="text/css" media="screen" title="photolog" charset="UTF-8" />
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}" type="text/css" media="screen" title="photolog" charset="UTF-8" />
+
+		<!--[if IE 7]>
+			<link rel="stylesheet" href="{{ url_for('static',filename='css/font-awesome-ie7.min.css')}}">
+		<![endif]-->
+		
+		<!--[if lt IE 9]>
+			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+		<![endif]-->
+		
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+		<script type="text/javascript" src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static',filename='js/bootbox.min.js') }}"></script>
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+		<script type="text/javascript" src="{{ url_for('static',filename='js/gmaps.js') }}"></script>
+		
   </head>
-
   <body>
 
-  {% block body %}{% endblock %}
+	<div id="header-menu">
+		<div class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container pull-left">
+			          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			          </button>
+					<a class="brand" href="#">&nbsp;<i class="icon-picture"></i>Photolog</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li class="active"><a href="/">최근기록</a></li>
+							<li><a href="#">개인정보 수정</a></li>
+							<li><a href="#">탈퇴하기</a></li>
+							<li class="dropdown">
+								<a href="#" class="dropdown-toggle" data-toggle="dropdown">메뉴
+									<b class="caret"></b>
+								</a>
+								<ul class="dropdown-menu">
+									<li><a href="#">Link</a></li>
+									<li><a href="#">Link</a></li>
+									<li><a href="#">Link</a></li>
+								</ul>
+							</li>	
+						</ul>
+						<form class="navbar-search pull-left form-search" action="">
+							<div class="input-append">
+								<input type="text" class="input-small search-query" placeholder="Search">
+								<button type="submit" class="btn btn-primary"><i class="icon-search"></i></button>
+							</div>
+						</form>
+						<ul class="nav pull-right">
+							<li><a id="logout" href="#"><i class="icon-user"></i> Logout</a></li>
+						</ul>
+					</div> <!-- end of nav-collapse -->
+				</div><!-- end of  container -->
+			</div> <!-- end of navbar-inner   -->
+		</div> <!-- end of navbar -->
+	</div> <!-- header -->
 
-    <!-- Le javascript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <!--
-    <script src="{{ url_for('photolog.static', filename='js/jquery-1.10.1.min.js') }}"></script>
-    -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
-    <script src="{{ url_for('photolog.static', filename='js/bootstrap.min.js') }}"></script>
-    <script src="{{ url_for('photolog.static', filename='js/gmaps.js') }}"></script>
-    <script src="{{ url_for('photolog.static', filename='js/bootbox.min.js') }}"></script>
- 
-  <script type=text/javascript>
-		$(document).ready(function () {
-			
-			$("#upload_link").click(function(e) {
-				
-				var uploadForm = "";
-				uploadForm  ="<form name='upload' method='POST' enctype='multipart/form-data'>";
-				uploadForm +="	<dl><dd>사진 : <input type='file' name='file' class='input-small'> </dd>";
-				uploadForm +="	<dd>태그 : <input type='text' name='tag' class='input-xlarge'> </dd>";
-				uploadForm +="	</dl><dd>메모 : <textarea name='comment' rows='3' class='input-xlarge'> </textarea></dd>";
-				uploadForm +="  <input type='hidden' name='userid' value='liks'>";
-				uploadForm +="</form>";
-				
-				bootbox.confirm(uploadForm, function(result) {
-					
-					if(result == true){
-						// upload
-						document.upload.action="{{ url_for('photolog.upload_file') }}";
-						document.upload.submit();
-					}else{
-						return false;
-					}
-				}); 				
 
-			});
+	<!-- content-->
+	<div id="photolog-content">
+    	
+    		{% block content %}{% endblock %}
+    	
+	</div>
+	<!-- end of content-->
+
+
+
+	<!-- footer begin -->
+	<div id="footer">
+	    <div class="navbar navbar-inverse navbar-fixed-bottom">
+	      <div class="navbar-inner">
+	        <div class="container pull-left">
+	          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+			            <span class="icon-bar"></span>
+	          </button>
+			<div id="footer-menu" class="nav-collapse collapse">
+		        	<ul class="nav">
+		        		<li class="active"><a href="#" data-toggle="tooltip" title="first tooltip"><i class="icon-map-marker icon-large"></i> 지도에서 사진보기 </a></li>
+		        		<li class="active">
+					<a  href="/photo/upload" ><i class="icon-camera-retro icon-large"> 사진 올리기 </i></a>
+					</li>
+		         		<li class="active"><a  href="#"><i class="icon-refresh icon-large"> 새로 고침 </i></a>
+		         		</li>
+		        		<li class="active">
+			          <a  href="#"><i class="icon-star-empty icon-large"> 추천하기 </i></a>
+				      </li>
+			     	</ul>
+					<ul class="nav pull-right">
+						<li><a href="#">Since 2013</a></li>
+					</ul>
+			</div>
+	        </div>
+	      </div>
+     </div> 
+
+	<!-- footer end -->
+	<script type="text/javascript">
+		$('#logout').click(function(e){
+
+			bootbox.confirm("로그아웃 하시겠습니까?", function(result) {
+				if(result){
+					alert("true");
+				}else {
+					alert("fales");
+				}
+			}); 
 
 		});
 	</script>
-
 
   </body>
 </html>

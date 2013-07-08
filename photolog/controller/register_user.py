@@ -18,7 +18,7 @@ from photolog.model.user import User
 from photolog.controller.login import login_required
 
 
-@photolog.route('/register/', methods=['GET', 'POST'])
+@photolog.route('/user/regist/', methods=['GET', 'POST'])
 def register_user(user=None):
 
     print "(%s)register_user invoked!" % (request.method)
@@ -40,20 +40,20 @@ def register_user(user=None):
             except Exception as e:
                 error = "DB error occurs : " + str(e)
                 print error
-                return render_template('register.html', error=error)
+                return render_template('regist.html', error=error)
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
         else:
             error = "password confirmation failed!"
             print "Register user error : %s" % error
-            return render_template('register.html', error=error)
+            return render_template('regist.html', error=error)
     else:
     # 초기 사용자 등록 화면
-        return render_template('register.html')
+        return render_template('regist.html')
 
 
-@photolog.route('/register/<user>', methods=['GET', 'POST'])
+@photolog.route('/user/<user>', methods=['GET', 'POST'])
 @login_required
 def modify_user(user=None):
 
@@ -66,7 +66,7 @@ def modify_user(user=None):
         if password == '' or password_confirm == '':
             modify_error = "not allowed blank for password "
             print modify_error
-            return render_template('register.html', error=modify_error)    
+            return render_template('regist.html', error=modify_error)    
         if password == password_confirm:
             print "modifying user info..."
             try:
@@ -79,14 +79,14 @@ def modify_user(user=None):
             except Exception as e:
                 modify_error = "DB error occurs : " + str(e)
                 print modify_error
-                return render_template('register.html', error=modify_error)
+                return render_template('regist.html', error=modify_error)
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
         else:
             modify_error = "password confirmation failed!"
             print "Register user error : %s" % modify_error
-            return render_template('register.html', error=modify_error)
+            return render_template('regist.html', error=modify_error)
     
     else:
         # 사용자 정보 수정 화면
@@ -99,7 +99,7 @@ def modify_user(user=None):
             
             modify_error = "DB error occurs : " + str(e)
             print modify_error
-            return render_template('register.html', error=modify_error)
+            return render_template('regist.html', error=modify_error)
         else:
-            return render_template('register.html', user=user)  
+            return render_template('regist.html', user=user)  
 

@@ -1,7 +1,68 @@
-{% if filename %}<p class=uploaded><strong>Uploaded filename:</strong> {{ filename }}{% endif %}
-<form action="{{ url_for('photolog.upload_file') }}" method=post enctype=multipart/form-data>
-<dl>
-<dd><input type=file name=file>
-<dd><input type=submit value=Upload>
-</dl>
-</form>
+{% extends "layout.html" %}
+{% block title %}Upload{% endblock %}
+{% block head %}
+  {{ super() }}
+{% endblock %}
+
+<!-- File Upload Form -->
+{% block content %}
+
+  <div class="container well">
+		
+	    <form class="form-horizontal" method='POST' action='/photo/upload_photo' enctype='multipart/form-data' >
+	    	<div class="row-fluid">
+		    	<div class="span4">
+				    <div class="fileupload fileupload-new" data-provides="fileupload">
+					    <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+					    	<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+					    </div>
+				
+					    <div class="fileupload-preview fileupload-exists thumbnail" 
+					                style="max-width: 200px; max-height: 150px; line-height: 20px;">
+					    </div>
+				
+					    <div>
+					    	<!--
+						    <span class="btn btn-file">
+						    	<span class="fileupload-new">Select image</span>
+						    	<span class="fileupload-exists">Change</span>
+							    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+							</span>
+						    -->
+					    	<input class="btn-file input-small" name="upload_photo" type="file" />
+					    </div>
+					  </div>
+				    <div class="container">
+				    	<p>
+							<input type="text" class="input-large" name="tag" placeholder="Tag">
+					    </p>
+				    	<p>
+						    <textarea class="input-large" rows="3" placeholder="memo"></textarea>
+					    </p>
+					    <p>
+	              			<button type="submit" name="submit" class="btn">upload</button>
+              			</p>
+              		</div>
+				</div> <!-- end of row-fluid span4 -->
+				<div class="span8">
+				    <div class="container well span8">
+				    	<p>
+				    		Show Google Map
+						    <div class="fileupload-new thumbnail" style="width: 300px; height: 240px;">
+						    	<img src="http://www.placehold.it/300x240/EFEFEF/AAAAAA&text=no+image" />
+						    </div>
+              			</p>
+              			<div id="map">
+              				
+              			</div>
+              		</div>
+				</div> <!-- end of row-fluid span9 -->
+		   </div> <!-- end of row-fluid -->
+		   <div class="container">
+
+		   </div>
+	    </form>    
+	</div>
+
+
+{% endblock %}
