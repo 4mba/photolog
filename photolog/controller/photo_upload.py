@@ -21,7 +21,7 @@ from photolog.model.photo import Photo
 from photolog.controller.login import login_required
 from photolog.exif_reader import EXIFReader
 
-from photolog import photolog
+from photolog.photolog_blueprint import photolog
 from datetime import datetime
 
 
