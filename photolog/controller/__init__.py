@@ -10,7 +10,4 @@
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
-
-print "controller.__init__.py invoked!"
-
 __all__ = ["login", "photo_upload", "register_user", "map"]

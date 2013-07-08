@@ -10,16 +10,7 @@
 """
 
 
-print "model.__init__.py invoked!"
-
-
 from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
-from photolog.model import user
-from photolog.model import photo
-
-
 __all__ = ['user', 'photo']
-
-print "model:",__all__
