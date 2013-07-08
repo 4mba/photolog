@@ -45,10 +45,10 @@ def create_app(config_filename='resource/config.cfg'):
     - by keaton
 '''
 def not_found(error):
-#     print "404 Page not found"
     return render_template('404.html')
 
 def server_error(error):
-    print "500 Server Error : %s" % error
     return render_template('500.html')
 
+
+        
