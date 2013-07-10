@@ -13,7 +13,7 @@
 
 import os
 from flask import request, redirect, url_for, current_app, send_from_directory \
-				, render_template
+				, render_template, session
 from werkzeug.utils import secure_filename
 
 from photolog.database import DBManager
@@ -35,51 +35,62 @@ def allowed_file(filename):
 @photolog.route('/photo/upload')
 @photolog.route('/photo/upload/<filename>')
 @login_required
-def upload(filename=None):
+def upload_form(filename=None):
 		return render_template('upload.html', filename=filename)
 
 			
 @photolog.route('/photo/upload_photo', methods=['POST'])
 @login_required
 def upload_file():
-				
-	print 'uploading upload_photo size of upload_photo length : %s' % \
-		current_app.config['MAX_CONTENT_LENGTH']
-	try:
-		upload_photo = request.files['upload_photo']
 
-		if upload_photo and allowed_file(upload_photo.filename):
-			# secure_filename은 한글 지원 안됨
-			# filename = secure_filename(upload_photo.filename)
-			filename = upload_photo.filename
-			print "filename : %s" % filename
-			filename = upload_photo.filename
-			upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
-			print "root_path : %s" % current_app.root_path
-			print "upload_folder : %s" % upload_folder
-			upload_photo.save(os.path.join(upload_folder, filename))
-			
-			userid = request.form['userid']			
-			tag = request.form['tag']			
-			comment = request.form['comment']			
-			exif = EXIFReader(upload_folder + filename)
-			geotag_lat = exif.get_geotag_lat()
-			geotag_lng = exif.get_geotag_lng()
-			upload_date = datetime.today()
-			taken_date = datetime.today()
-			print "geotag_lat: %s" % geotag_lat 
-
-			photo = Photo(userid, tag, comment, geotag_lat, geotag_lng, upload_date, taken_date)
-			dao = DBManager.db_session
-			dao.add(photo)
-			dao.commit()
-
-			return render_template('entry_all.html', name=filename)
-		else:
-			raise Exception("No upload_photo or support upload_photo extensions")
-	except Exception as e:
-		print "Upload error : %s" % str(e)
-		render_template('500.html')
+    userid = session['user_info'].username            
+    tag = request.form['tag']            
+    comment = request.form['memo']
+    file = request.files['upload']            
+    
+#    print 'userid: %s' % request.form['userid']
+    print session['user_info'].username
+#    print 'memo: %s', request.form['memo']
+#    
+    
+    return redirect(url_for('.upload_form'))
+#	print 'uploading upload_photo size of upload_photo length : %s' % \
+#		current_app.config['MAX_CONTENT_LENGTH']
+#	try:
+#		upload_photo = request.files['upload_photo']
+#
+#		if upload_photo and allowed_file(upload_photo.filename):
+#			# secure_filename은 한글 지원 안됨
+#			# filename = secure_filename(upload_photo.filename)
+#			filename = upload_photo.filename
+#			print "filename : %s" % filename
+#			filename = upload_photo.filename
+#			upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+#			print "root_path : %s" % current_app.root_path
+#			print "upload_folder : %s" % upload_folder
+#			upload_photo.save(os.path.join(upload_folder, filename))
+#			
+#			userid = request.form['userid']			
+#			tag = request.form['tag']			
+#			comment = request.form['comment']			
+#			exif = EXIFReader(upload_folder + filename)
+#			geotag_lat = exif.get_geotag_lat()
+#			geotag_lng = exif.get_geotag_lng()
+#			upload_date = datetime.today()
+#			taken_date = datetime.today()
+#			print "geotag_lat: %s" % geotag_lat 
+#
+#			photo = Photo(userid, tag, comment, geotag_lat, geotag_lng, upload_date, taken_date)
+#			dao = DBManager.db_session
+#			dao.add(photo)
+#			dao.commit()
+#
+#			return render_template('entry_all.html', name=filename)
+#		else:
+#			raise Exception("No upload_photo or support upload_photo extensions")
+#	except Exception as e:
+#		print "Upload error : %s" % str(e)
+#    render_template('500.html')
 
 
 @photolog.route('/download/<filename>')
