@@ -10,4 +10,4 @@
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
-__all__ = ["login", "photo_upload", "register_user", "map"]
+__all__ = ["login", "photo_upload", "photo_show","register_user", "map"]
