@@ -17,7 +17,8 @@ from functools import wraps
 from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
 from photolog.model.user import User
-   
+from photolog.model.photo import Photo
+
 ''' 로긴이 필요한 페이지에 decorating '''
 def login_required(f):
     @wraps(f)
@@ -34,7 +35,7 @@ def login_required(f):
                 return redirect(url_for('.login', next=request.url))
 
             return f(*args, **kwargs)
-        
+
         except Exception as e:
             print "Login error occurs : %s" % str(e)
 
@@ -46,28 +47,30 @@ def login_required(f):
 @login_required
 def index():
     print "index invoked!"
-    return render_template('entry_all.html')
-   
-   
+    dao = DBManager.db_session
+    
+    return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
+
+
 # @photolog.route('/login', methods=['GET', 'POST'])
 # def login():
 #     session.permanent = True
-# 
+#
 #     login_error = None
 #     next_url = None
 #     print "(%s)login invoked!" % (request.method)
 #     if request.method == 'POST':
-# 
+#
 #         username = request.form['username']
 #         password = request.form['password']
-# 
+#
 #         try:
 #             user = DBManager.db_session.query(User).filter_by(username=username).first()
-# 
-#             print user 
+#
+#             print user
 #         except Exception as e:
 #             print "DB error occurs : " + str(e)
-#             
+#
 #         if user is not None:
 #             if username != user.username or password != user.password:
 #                 login_error = 'Invalid username or  password'
@@ -79,18 +82,18 @@ def index():
 #                  가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
 #                  사용자 정보를 구성하여 session 객체에 추가
 #                 session['user_info'] = user
-# 
+#
 #                 if next_url is None:
 #                     return redirect(url_for('.index'))
 #                 else:
 #                     return redirect(next_url)
 #         else:
 #             login_error = 'User does not exist!'
-# 
+#
 #     elif request.method == 'GET':
 #         next_url = request.args.get('next', None)
 #         print "(%s)next_url is %s" % (request.method, next_url)
-#         
+#
 #     return render_template('login.html', next=next_url, login_error=login_error)
 @photolog.route('/user/login', methods=['GET', 'POST'])
 def login():
@@ -108,10 +111,10 @@ def login():
         try:
             user = dao.query(User).filter_by(username=username).first()
 
-            print user 
+            print user
         except Exception as e:
             print "DB error occurs : " + str(e)
-            
+
         if user is not None:
             if username != user.username or password != user.password:
                 login_error = 'Invalid username or  password'
@@ -134,7 +137,7 @@ def login():
     elif request.method == 'GET':
         next_url = request.args.get('next', None)
         print "(%s)next_url is %s" % (request.method, next_url)
-        
+
     return render_template('login.html', next=next_url, error=login_error)
 
 @photolog.route('/logout')
