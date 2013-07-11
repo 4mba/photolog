@@ -17,11 +17,11 @@ class PhotologConfig(object):
     #: 데이터베이스 연결 URL
     DB_URL= 'sqlite:///' + os.getcwd() + '/photolog/resource/database/photolog'
     #: 사진 업로드 시 사진이 임시로 저장되는 임시 폴더
-    TMP_FOLDER = 'resource/tmp'
+    TMP_FOLDER = 'resource/tmp/'
     #: 업로드 완료된 사진 파일이 저장되는 폴더
-    UPLOAD_FOLDER = 'resource/upload'
-    #: 업로드되는 사진의 최대 크키
-    MAX_CONTENT_LENGTH = 1024
+    UPLOAD_FOLDER = 'resource/upload/'
+    #: 업로드되는 사진의 최대 크키(3메가)
+    MAX_CONTENT_LENGTH = 3 * 1024 * 1024
     #: 세션 타임아웃은 초(second) 단위
     PERMANENT_SESSION_LIFETIME = 60
     #: 쿠기에 저장되는 세션 쿠키
