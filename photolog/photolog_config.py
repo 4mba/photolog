@@ -22,8 +22,8 @@ class PhotologConfig(object):
     UPLOAD_FOLDER = 'resource/upload/'
     #: 업로드되는 사진의 최대 크키(3메가)
     MAX_CONTENT_LENGTH = 3 * 1024 * 1024
-    #: 세션 타임아웃은 초(second) 단위
-    PERMANENT_SESSION_LIFETIME = 60
+    #: 세션 타임아웃은 초(second) 단위(60분)
+    PERMANENT_SESSION_LIFETIME = 60 * 60
     #: 쿠기에 저장되는 세션 쿠키
     SESSION_COOKIE_NAME = 'photolog_session'
     #: 로그 레벨 설정
