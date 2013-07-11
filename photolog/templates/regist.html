@@ -18,7 +18,7 @@
 			  <!-- Username -->
 			  <label class="control-label"  for="username">아이디</label>
 			  <div class="controls">
-			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}"{% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge" readOnly required>
+			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
 			  </div>
 			</div>
 		 
