@@ -91,7 +91,8 @@ def modify_user(username=None):
     
                 photolog_logger.debug(old_user) 
             except Exception as e:
-                photolog_logger.error(str(e)) 
+                photolog_logger.error(str(e))
+                DBManager.db_session.rollback()
                 server_error(500)
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
