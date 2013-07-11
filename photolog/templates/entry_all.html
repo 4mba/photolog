@@ -4,7 +4,7 @@
   {{ super() }}
 {% endblock %}
 
-<!-- 사용자 등록 폼 -->
+<!-- 업로드된 사진을 보여준다 -->
 {% block content %}
 
   <div class="row-fluid">
@@ -14,6 +14,7 @@
                 <tr>
                   <th>#</th>
                   <th>Thumbnails</th>
+                  <th>Size</th>
                   <th>Tag</th>
                   <th>Memo</th>
                   <th>TakenDate</th>
@@ -21,42 +22,24 @@
                 </tr>
               </thead>
               <tbody>
+              
+		      {% for photo in photos %}
                 <tr>
                   <td>1</td>
                   <td> 
 				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
 				    	<img src="http://www.placehold.it/100x80/EFEFEF/AAAAAA&text=no+image" />
+				    	{{ photo.filename }}
 				    </div>
                   </td>
-                  <td>Seoul!</td>
-                  <td>하하하하하하하</td>
-                  <td>2012/01/01</td>
-                  <td>2013/01/01</td>
+                  <td>{{ photo.filesize }}</td>
+                  <td>{{ photo.tag }}</td>
+                  <td>{{ photo.comment }}</td>
+                  <td>{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                  <td>{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
                 </tr>
-                <tr>
-                  <td>2</td>
-                  <td> 
-				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
-				    	<img src="http://www.placehold.it/100x80/EFEFEF/AAAAAA&text=no+image" />
-				    </div>
-                  </td>
-                  <td>Seoul!</td>
-                  <td>하하하하하하하</td>
-                  <td>2012/01/01</td>
-                  <td>2013/01/01</td>
-                </tr>
-                <tr>
-                  <td>3</td>
-                  <td> 
-				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
-				    	<img src="http://www.placehold.it/100x80/EFEFEF/AAAAAA&text=no+image" />
-				    </div>
-                  </td>
-                  <td>Seoul!</td>
-                  <td>하하하하하하하</td>
-                  <td>2012/01/01</td>
-                  <td>2013/01/01</td>
-                </tr>
+			  {% endfor %}
+
               </tbody>
             </table>
         </div>
