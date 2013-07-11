@@ -21,7 +21,7 @@ class Photo(Base):
     __tablename__ = 'photos'
 
     id = Column(Integer, primary_key=True)
-    userid = Column(Integer, ForeignKey(User.id))
+    userid = Column(String(50), ForeignKey(User.id))
     tag = Column(String(100), unique=False)
     comment = Column(String(400), unique=False)
     geotag_lat = Column(String(50), unique=False)
