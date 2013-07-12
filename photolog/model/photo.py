@@ -24,15 +24,19 @@ class Photo(Base):
     userid = Column(String(50), ForeignKey(User.id))
     tag = Column(String(100), unique=False)
     comment = Column(String(400), unique=False)
+    filename = Column(String(400), unique=False)
+    filesize = Column(Integer, unique=False)
     geotag_lat = Column(String(50), unique=False)
     geotag_lng = Column(String(50), unique=False)
     upload_date = Column(DateTime, unique=False)
     taken_date = Column(DateTime, unique=False)
 
-    def __init__(self, userid, tag, comment, geotag_lat, geotag_lng, upload_date, taken_date):
+    def __init__(self, userid, tag, comment, filename, filesize, geotag_lat, geotag_lng, upload_date, taken_date):
         self.userid = userid
         self.tag = tag
         self.comment = comment
+        self.filename = filename
+        self.filesize = filesize
         self.geotag_lat = geotag_lat
         self.geotag_lng = geotag_lng
         self.upload_date = upload_date

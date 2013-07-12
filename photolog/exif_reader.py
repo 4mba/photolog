@@ -68,7 +68,7 @@ class EXIFReader :
     def print_all(self):
         """모든 EXIF 정보를 STDOUT에 출력한다.  """
         
-
+        print "==============================================="
         print "All Information of EXIF in " + self.file_path
 
         for tag in self.tags.keys():
@@ -76,4 +76,5 @@ class EXIFReader :
                 print "Key: %s, value %s" % (tag, self.tags[tag])
 
 
+        print "==============================================="
 

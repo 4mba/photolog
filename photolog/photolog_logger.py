@@ -40,7 +40,9 @@ def _get_logger(logger_name, log_level='debug',
       
     return my_logger
 
-photolog_logger = _get_logger('photolog_logger')
+from photolog import photolog_app
+photolog_logger = _get_logger('photolog_logger'
+                            , photolog_app.config['LOG_LEVEL'])
 
 
 

@@ -41,30 +41,34 @@ def create_app(config_filepath='resource/config.cfg'):
     app.config.from_object(PhotologConfig)
     app.config.from_pyfile(config_filepath, silent=True)
     print_settings(app.config.iteritems())
+    
+    return app
 
-    # 뷰 함수 모듈은 어플리케이션 객체 생성하고 블루프린트 등록전에 
+def init_app():
+        # 뷰 함수 모듈은 어플리케이션 객체 생성하고 블루프린트 등록전에 
     # 뷰 함수가 있는 모듈을 임포트해야 해당 뷰 함수들을 인식할 수 있음
     from photolog.controller import *
     
     from photolog.photolog_blueprint import photolog
-    app.register_blueprint(photolog)
+    photolog_app.register_blueprint(photolog)
     
     # SessionInterface 설정.
     # Redis를 이용한 세션 구현은 cache_session.RedisCacheSessionInterface 임포트하고
     # app.session_interface에 RedisCacheSessionInterface를 할당
     from photolog.cache_session import SimpleCacheSessionInterface
-    app.session_interface = SimpleCacheSessionInterface()
+    photolog_app.session_interface = SimpleCacheSessionInterface()
     
     # 공통으로 적용할 HTTP 400과 500 에러 핸들러를 설정
-    app.error_handler_spec[None][404] = not_found
-    app.error_handler_spec[None][500] = server_error
+    photolog_app.error_handler_spec[None][404] = not_found
+    photolog_app.error_handler_spec[None][500] = server_error
     
     # 데이터베이스 처리 
     from photolog.database import DBManager
-    DBManager.init(app.config['DB_URL'])
+    DBManager.init(photolog_app.config['DB_URL'])
     DBManager.init_db()
     
-    return app
+    return photolog_app
 
 photolog_app = create_app()
+photolog_app = init_app()
 

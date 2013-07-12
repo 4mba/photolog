@@ -19,6 +19,7 @@
 			  <label class="control-label"  for="username">아이디</label>
 			  <div class="controls">
 			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
+			    {% if id_error %}<p class="help-block">{{ id_error }}</p>{% endif %}
 			  </div>
 			</div>
 		 
@@ -35,7 +36,7 @@
 		      <label class="control-label" for="password">비밀번호</label>
 		      <div class="controls">
 		        <input type="password" id="password" name="password" placeholder="최소한 4 글자 이상으로 해주세요" class="input-xlarge" data-minLength=4 required>
-		        {% if error %}<p class="help-block">{{ error }}</p>{% endif %}
+		        {% if pass_error %}<p class="help-block">{{ pass_error }}</p>{% endif %}
 		      </div>
 		    </div>
 		 
