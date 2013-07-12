@@ -13,7 +13,9 @@
 from flask import render_template, request, current_app, session, redirect \
                  , url_for
 from functools import wraps
+from werkzeug import check_password_hash
 
+from photolog.photolog_logger import photolog_logger
 from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
 from photolog.model.user import User
@@ -52,49 +54,6 @@ def index():
     return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
 
 
-# @photolog.route('/login', methods=['GET', 'POST'])
-# def login():
-#     session.permanent = True
-#
-#     login_error = None
-#     next_url = None
-#     print "(%s)login invoked!" % (request.method)
-#     if request.method == 'POST':
-#
-#         username = request.form['username']
-#         password = request.form['password']
-#
-#         try:
-#             user = DBManager.db_session.query(User).filter_by(username=username).first()
-#
-#             print user
-#         except Exception as e:
-#             print "DB error occurs : " + str(e)
-#
-#         if user is not None:
-#             if username != user.username or password != user.password:
-#                 login_error = 'Invalid username or  password'
-#             else:
-#                 if request.args.__contains__('next'):
-#                     next_url = request.args['next']
-#                     print "(%s)next_url is %s" % (request.method, next_url)
-#                  세션에 추가할 정보를 session 객체의 값으로 추가함
-#                  가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
-#                  사용자 정보를 구성하여 session 객체에 추가
-#                 session['user_info'] = user
-#
-#                 if next_url is None:
-#                     return redirect(url_for('.index'))
-#                 else:
-#                     return redirect(next_url)
-#         else:
-#             login_error = 'User does not exist!'
-#
-#     elif request.method == 'GET':
-#         next_url = request.args.get('next', None)
-#         print "(%s)next_url is %s" % (request.method, next_url)
-#
-#     return render_template('login.html', next=next_url, login_error=login_error)
 @photolog.route('/user/login', methods=['GET', 'POST'])
 def login():
     session.permanent = True
@@ -110,13 +69,13 @@ def login():
 
         try:
             user = dao.query(User).filter_by(username=username).first()
-
-            print user
         except Exception as e:
-            print "DB error occurs : " + str(e)
+            photolog_logger.error(str(e))
+            raise Exception(e)
 
         if user is not None:
-            if username != user.username or password != user.password:
+            
+            if username != user.username or not check_password_hash(user.password, password):
                 login_error = 'Invalid username or  password'
             else:
                 if request.args.__contains__('next'):
@@ -140,9 +99,9 @@ def login():
 
     return render_template('login.html', next=next_url, error=login_error)
 
+
 @photolog.route('/logout')
 def logout():
-#     session.pop('user_info', None)
     session.clear()
 
     return redirect(url_for('.index'))
