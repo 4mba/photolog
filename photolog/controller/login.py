@@ -21,6 +21,7 @@ from photolog.database import DBManager
 from photolog.model.user import User
 from photolog.model.photo import Photo
 
+
 ''' 로긴이 필요한 페이지에 decorating '''
 def login_required(f):
     @wraps(f)
@@ -45,7 +46,6 @@ def login_required(f):
 
 
 @photolog.route('/')
-# 로그인 하지 않아도 페이지가 보이도록 수정
 @login_required
 def index():
     print "index invoked!"
@@ -71,7 +71,7 @@ def login():
             user = dao.query(User).filter_by(username=username).first()
         except Exception as e:
             photolog_logger.error(str(e))
-            raise Exception(e)
+            raise e
 
         if user is not None:
             
