@@ -12,6 +12,7 @@
 
 from flask import render_template, request, redirect , url_for
 from sqlalchemy.exc import IntegrityError
+from werkzeug import generate_password_hash
 
 from photolog import server_error
 from photolog.photolog_logger import photolog_logger
@@ -39,7 +40,7 @@ def register_user():
 
         if password == password_confirm:
             try:
-                user = User(username, email, password)
+                user = User(username, email, generate_password_hash(password))
                 DBManager.db_session.add(user)
                 DBManager.db_session.commit()
     
@@ -70,6 +71,7 @@ def register_user():
 def modify_user(username=None):
 
     if request.method == 'POST':
+        email = request.form['email']
         password = request.form['password']
         password_confirm = request.form['password_confirm']
         
@@ -79,21 +81,21 @@ def modify_user(username=None):
             photolog_logger.debug(old_user)  
         except Exception as e:
             photolog_logger.error(str(e))
-            server_error(500)
+            raise e
                 
         if password == '' or password_confirm == '':
             error = "패스워드에 공백은 허용하지 않습니다."
             return render_template('regist.html', user=old_user, pass_error=error)    
         if password == password_confirm:
             try:
-                old_user.password = password
+                old_user.email = email
+                old_user.password = generate_password_hash(password)
                 DBManager.db_session.commit()
-    
-                photolog_logger.debug(old_user) 
+
             except Exception as e:
-                photolog_logger.error(str(e))
                 DBManager.db_session.rollback()
-                server_error(500)
+                photolog_logger.error(str(e))
+                raise e
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
@@ -108,8 +110,8 @@ def modify_user(username=None):
             user = DBManager.db_session.query(User).filter_by(username=username).first()
             photolog_logger.debug(user) 
         except Exception as e:
-                photolog_logger.error(str(e)) 
-                server_error(500)
+            photolog_logger.error(str(e))
+            raise e
         else:
             return render_template('regist.html', user=user)  
 
