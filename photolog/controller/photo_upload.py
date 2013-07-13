@@ -108,4 +108,8 @@ def upload_photo():
 @photolog.route('/download/<filename>')
 @login_required
 def download_file(filename):
-    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
+
+    print filename
+    
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True , mimetype='image/jpg')
+

@@ -32,3 +32,9 @@ def show_all():
     dao = DBManager.db_session
     
     return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
+
+@photolog.route('/photo/show/map')
+@login_required
+def show_map():
+    return render_template('show_map.html')
+

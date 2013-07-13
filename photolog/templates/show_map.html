@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% block title %}Main{% endblock %}
+{% block head %}
+<script type="text/javascript">
+    var map;
+
+    $(document).ready(function(){
+      map = new GMaps({
+        div: '#map-large',
+        lat: -12.043333,
+        lng: -77.028333,
+      });
+      
+    map.addMarker({
+        lat: -12.043333,
+        lng: -77.03,
+        title: 'Lima',
+        details: {
+          database_id: 42,
+          author: 'HPNeo'
+        },
+        click: function(e){
+          if(console.log)
+            console.log(e);
+          alert('You clicked in this marker');
+        }
+      });
+    });
+    
+  </script>
+{% endblock %}
+
+<!-- 업로드된 사진을 보여준다 -->
+{% block content %}
+
+  <div class="row-fluid">
+	<div class="container span12">
+       <div id="map-large"></div>
+    </div>
+  </div>
+	
+	
+	
+{% endblock %}
