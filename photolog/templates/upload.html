@@ -9,12 +9,12 @@
 
   <div class="container well">
 		
-	    <form class="form-horizontal" method='POST' action='/photo/upload_photo' enctype='multipart/form-data' >
+	    <form name="upload" class="form-horizontal" method='POST' action='/photo/upload_photo' enctype='multipart/form-data' runat="server">
 	    	<div class="row-fluid">
 		    	<div class="span4">
 				    <div class="fileupload fileupload-new" data-provides="fileupload">
 					    <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
-					    	<img src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+					    	<img id="preview" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
 					    </div>
 				
 					    <div class="fileupload-preview fileupload-exists thumbnail" 
@@ -29,7 +29,7 @@
 							    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
 							</span>
 						    -->
-					    	<input type="file" class="btn-file input-small" name="upload" />
+					    	<input id="photo" type="file" class="btn-file input-small" name="upload" />
 					    </div>
 					  </div>
 				    <div class="container">
@@ -59,9 +59,79 @@
 				</div> <!-- end of row-fluid span9 -->
 		   </div> <!-- end of row-fluid -->
 		   <div class="container">
-
+                <input type="hidden" name="date" value="">
+                <input type="hidden" name="lat" value="">
+                <input type="hidden" name="lng" value="">
+                
 		   </div>
 	    </form>    
+	    
 	</div>
 
+	<script type="text/javascript">
+	
+
+		
+		// reference code : http://jsfiddle.net/LvsYc/ 
+        function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+		
+		// When photo uploaded
+		$("#photo").change(function() {
+		    
+            readURL(this);
+		    
+		    var file = this.files[0];
+		    fr   = new FileReader;
+		    fr.onloadend = function() {
+		        
+                // Reference code : http://jsfiddle.net/xQnMd/1/
+		        var exif = EXIF.readFromBinaryFile(new BinaryFile(this.result));
+                
+                lat = toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef);
+                lng = toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef);
+                
+                document.forms['upload'].date.value = exif.DateTimeOriginal;
+                document.forms['upload'].lat.value = lat;
+                document.forms['upload'].lng.value = lng;
+                
+                bootbox.alert(document.forms['upload'].date.value +" , "+lat + ","+lng);
+		    };
+		    
+		    fr.readAsBinaryString(file);
+		});
+		
+
+        // Caluate GPS data to decimal value     
+        function translator(deg, min, sec, ref) {
+        
+            d = deg + min/60 + sec/3600;
+
+            return (ref=='S' || ref=='W') ? d*=-1 : d;
+        }
+        
+        
+        function toDecimal(gps_src, gps_ref){
+
+            var temp_array="";
+            temp_ref = gps_ref;
+            temp_array = gps_src.toString();
+            temp_array = temp_array.split(",");
+            deg = temp_array[0];
+            min = temp_array[1];
+            sec = temp_array[2];
+            
+            return parseFloat(translator(deg, min,sec, temp_ref)).toFixed(6);
+        }
+ 
+	</script>
 {% endblock %}
