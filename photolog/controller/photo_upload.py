@@ -24,7 +24,6 @@ from photolog.exif_reader import EXIFReader
 from photolog.photolog_blueprint import photolog
 from datetime import datetime
 import uuid
-from dateutil import parser
 
 
 
@@ -54,7 +53,7 @@ def upload_photo():
     lat = request.form['lat']
     lng = request.form['lng']
     upload_date = datetime.today()
-    taken_date = parser.parse(request.form['date']);
+    taken_date = datetime.strptime(request.form['date'], "%Y:%m:%d %H:%M:%S");
     upload_photo = request.files['upload']
     
     filename = None
