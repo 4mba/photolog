@@ -24,6 +24,8 @@ from photolog.exif_reader import EXIFReader
 from photolog.photolog_blueprint import photolog
 from datetime import datetime
 import uuid
+from dateutil import parser
+
 
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
@@ -49,7 +51,12 @@ def upload_photo():
     userid = session['user_info'].username
     tag = request.form['tag']
     comment = request.form['memo']
+    lat = request.form['lat']
+    lng = request.form['lng']
+    upload_date = datetime.today()
+    taken_date = parser.parse(request.form['date']);
     upload_photo = request.files['upload']
+    
     filename = None
     filesize = 0
 
@@ -69,28 +76,26 @@ def upload_photo():
     except Exception as e:
         print "Upload error : %s" % str(e)
 
-    # EXIF 데이터 파잇ㅇ 예외 처리
-    try :
-        exif = EXIFReader(upload_folder + os.sep + filename)
-        geotag_lat = exif.get_geotag_lat()
-        geotag_lng = exif.get_geotag_lng()
-        upload_date = datetime.today()
-        taken_date = datetime.today()
-        
-        # 디버깅 데이터 확인을 위해 출력 (임시)
-        exif.print_all()
-
-
-    except Exception as e:
-        print "EXIF dara parsing error : %s" % str(e)
-
-        userid = request.form['userid']
-        tag = request.form['tag']
-        comment = request.form['comment']
+#    JavaScript로 처리하기 때문에 기존의 EXIFReader는 사용하지 않음
+#    # EXIF 데이터 파일 예외 처리
+#    try :
+#        exif = EXIFReader(upload_folder + os.sep + filename)
+#        geotag_lat = exif.get_geotag_lat()
+#        geotag_lng = exif.get_geotag_lng()
+#        upload_date = datetime.today()
+#        taken_date = datetime.today()
+#        
+#        # 디버깅 데이터 확인을 위해 출력 (임시)
+#        exif.print_all()
+#
+#
+#    except Exception as e:
+#        print "EXIF dara parsing error : %s" % str(e)
+#
 
     # DB에 저장할 때 발생하는 예외 처리
     try :
-        photo = Photo(userid, tag, comment, filename, filesize, str(geotag_lat), str(geotag_lng), upload_date, taken_date)
+        photo = Photo(userid, tag, comment, filename, filesize, lat, lng, upload_date, taken_date)
         dao = DBManager.db_session
         dao.add(photo)
         dao.commit()
@@ -98,7 +103,7 @@ def upload_photo():
     except Exception as e:
         print "Upload data error : %s" % str(e)
 
-    return render_template('entry_all.html', name=filename)
+    return redirect(url_for('.show_all', name=filename))
 
 
 @photolog.route('/download/<filename>')
