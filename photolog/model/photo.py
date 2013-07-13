@@ -10,7 +10,7 @@
 """
 
 
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, Float, String, ForeignKey, DateTime
 
 from photolog.model.user import User
 
@@ -26,8 +26,8 @@ class Photo(Base):
     comment = Column(String(400), unique=False)
     filename = Column(String(400), unique=False)
     filesize = Column(Integer, unique=False)
-    geotag_lat = Column(String(50), unique=False)
-    geotag_lng = Column(String(50), unique=False)
+    geotag_lat = Column(Float, unique=False)
+    geotag_lng = Column(Float, unique=False)
     upload_date = Column(DateTime, unique=False)
     taken_date = Column(DateTime, unique=False)
 
