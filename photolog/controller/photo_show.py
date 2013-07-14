@@ -32,3 +32,17 @@ def show_all():
     dao = DBManager.db_session
     
     return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
+
+
+
+
+@photolog.route('/photo/download/<path:filename>')
+@login_required
+def download_photo(filename):
+
+    realpath = os.getcwd()+os.sep+'photolog'+os.sep+current_app.config['UPLOAD_FOLDER']
+    
+    return send_from_directory(realpath, filename, as_attachment=True , mimetype='image/jpg')
+
+
+
