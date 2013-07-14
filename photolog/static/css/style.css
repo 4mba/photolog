@@ -12,6 +12,10 @@ body {
   background:#6699cc;
 }
 
+img {
+  max-width: none;
+}
+
 .login {
 
 }
