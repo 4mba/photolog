@@ -19,7 +19,7 @@ from werkzeug.utils import secure_filename
 from photolog.database import DBManager
 from photolog.model.photo import Photo
 from photolog.controller.login import login_required
-from photolog.exif_reader import EXIFReader
+from photolog.photolog_logger import photolog_logger
 
 from photolog.photolog_blueprint import photolog
 from datetime import datetime
@@ -40,12 +40,9 @@ def upload_form(filename=None):
     return render_template('upload.html', filename=filename)
 
 
-@photolog.route('/photo/upload_photo', methods=['POST'])
+@photolog.route('/photo/upload', methods=['POST'])
 @login_required
 def upload_photo():
-
-    print 'uploading upload_photo size of upload_photo length : %s' % \
-        current_app.config['MAX_CONTENT_LENGTH']
 
     userid = session['user_info'].username
     tag = request.form['tag']
@@ -63,7 +60,9 @@ def upload_photo():
     try:
         if upload_photo and allowed_file(upload_photo.filename):
             # secure_filename은 한글 지원 안됨
-            # filename = secure_filename(upload_photo.filename)
+            filename111 = secure_filename(unicode(upload_photo.filename))
+            print filename111
+            
             ext = (upload_photo.filename).rsplit('.', 1)[1]
             filename = userid +'_'+ unicode(uuid.uuid4()) + '.' + ext
             upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
@@ -73,24 +72,8 @@ def upload_photo():
         else:
             raise Exception("File uoload error : illegal file.")
     except Exception as e:
-        print "Upload error : %s" % str(e)
+        photolog_logger.error("Upload error : " + str(e))
 
-#    JavaScript로 처리하기 때문에 기존의 EXIFReader는 사용하지 않음
-#    # EXIF 데이터 파일 예외 처리
-#    try :
-#        exif = EXIFReader(upload_folder + os.sep + filename)
-#        geotag_lat = exif.get_geotag_lat()
-#        geotag_lng = exif.get_geotag_lng()
-#        upload_date = datetime.today()
-#        taken_date = datetime.today()
-#        
-#        # 디버깅 데이터 확인을 위해 출력 (임시)
-#        exif.print_all()
-#
-#
-#    except Exception as e:
-#        print "EXIF dara parsing error : %s" % str(e)
-#
 
     # DB에 저장할 때 발생하는 예외 처리
     try :
@@ -100,8 +83,21 @@ def upload_photo():
         dao.commit()
 
     except Exception as e:
-        print "Upload data error : %s" % str(e)
+        dao.rollback()
+        photolog_logger.error("Upload DB error : " + str(e))
 
     return redirect(url_for('.show_all'))
+
+
+
+@photolog.route('/photo/modify/<photolog_id>')
+@login_required
+def modify(photolog_id):
+    dao = DBManager.db_session
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+    
+    return render_template('upload.html', photo=photo)
+
+
 
 

@@ -28,8 +28,9 @@
                   <td>{{ loop.index }}</td>
                   <td> 
 				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
-				    	<img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="95" height="75"/>
-				    	
+				       <a href="/photo/modify/{{photo.id}}">
+				    	<img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" style="width: 95px; height: 75px;"/>
+				       </a>
 				    </div>
                   </td>
                   <td>{{ sizeof_fmt(photo.filesize) }}</td>
