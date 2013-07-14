@@ -2,28 +2,32 @@
 {% block title %}Main{% endblock %}
 {% block head %}
 <script type="text/javascript">
-    var map;
+var map;
 
-    $(document).ready(function(){
-    
-      map = new GMaps({
-        div: '#map-large',
-        lat: {{ photos[0].geotag_lat }},
-        lng: {{ photos[0].geotag_lng }}
-      });
+$(document).ready(function(){
+  
+	map = new GMaps({
+		div: '#map-large',
+		lat: {{ photos[0].geotag_lat }},
+		lng: {{ photos[0].geotag_lng }}
+	});
+	
 {% for photo in photos %}      
-    map.addMarker({
-        lat: {{ photo.geotag_lat }},
-        lng: {{ photo.geotag_lng }},
-        title: '{{ photo.filename }}',
-        infoWindow: {
-            content: '<div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><div><img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="300" height="200"/></div>'
+	map.addMarker({
+		lat: {{ photo.geotag_lat }},
+		lng: {{ photo.geotag_lng }},
+		title: '{{ photo.filename }}',
+		infoWindow: {
+			content: '<div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><div><a href="javascript:popupImage(\'{{ url_for('photolog.download_photo', photolog_id=photo.id) }}\');"><img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="300" height="200"/></a></div>'
 		}
-      });
+   	});
 {% endfor %}
-    });
+});
     
-  </script>
+function popupImage(url) {
+	bootbox.alert('<img src=\"' + url + '\" width=\"600\" height=\"400\"/>');
+}
+</script>
 {% endblock %}
 
 {% block content %}
