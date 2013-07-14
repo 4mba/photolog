@@ -18,14 +18,14 @@ $(document).ready(function(){
 		lng: {{ photo.geotag_lng }},
 		title: '{{ photo.filename }}',
 		infoWindow: {
-			content: '<div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><div><a href="javascript:popupImage(\'{{ url_for('photolog.download_photo', photolog_id=photo.id) }}\');"><img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="300" height="200"/></a></div>'
+			content: '<div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><div><a href="javascript:popupImage(\'{{ url_for('photolog.download_photo', photolog_id=photo.id) }}\');"><img class="map-image" src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}"/></a></div>'
 		}
    	});
 {% endfor %}
 });
     
 function popupImage(url) {
-	bootbox.alert('<img src=\"' + url + '\" width=\"600\" height=\"400\"/>');
+	bootbox.alert('<img class=\"popup-image\" src=\"' + url + '\"/>');
 }
 </script>
 {% endblock %}
