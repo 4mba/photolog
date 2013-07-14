@@ -16,6 +16,16 @@ img {
   max-width: none;
 }
 
+.map-image {
+	width: 300px;
+	height: 200px;
+}
+
+.popup-image {
+	width: 540px;
+	height: 360px;
+}
+
 .login {
 
 }
