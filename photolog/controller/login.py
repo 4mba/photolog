@@ -22,6 +22,13 @@ from photolog.model.user import User
 from photolog.model.photo import Photo
 
 
+@photolog.teardown_request
+def close_db_session(exception=None):
+    try:
+        DBManager.db_session.remove()
+    except Exception as e:
+        photolog_logger.error(str(e))
+
 def login_required(f):
     """현재 사용자가 로그인 상태인지 확인하는 데코레이터
     로그인 상태에서 접근 가능한 함수에 적용함
