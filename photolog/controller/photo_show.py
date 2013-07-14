@@ -45,14 +45,23 @@ def show_all():
                            sizeof_fmt=sizeof_fmt)
 
 
-@photolog.route('/photo/download/<path:filename>')
+# @photolog.route('/photo/download/<path:filename>')
+# @login_required
+# def download_photo(filename):
+# 
+#     realpath = os.getcwd()+os.sep+'photolog'+os.sep+current_app.config['UPLOAD_FOLDER']
+#     
+#     return send_from_directory(realpath, filename, as_attachment=True , mimetype='image/jpg')
+
+
+@photolog.route('/photo/download/<photolog_id>')
 @login_required
-def download_photo(filename):
-
-    realpath = os.getcwd()+os.sep+'photolog'+os.sep+current_app.config['UPLOAD_FOLDER']
+def download_photo(photolog_id):
+    dao = DBManager.db_session
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+    realpath = photolog.root_path + os.sep + current_app.config['UPLOAD_FOLDER']
     
-    return send_from_directory(realpath, filename, as_attachment=True , mimetype='image/jpg')
-
+    return send_from_directory(realpath, photo.filename, as_attachment=True , mimetype='image/jpg')
 
 
 @photolog.route('/photo/show/map')
