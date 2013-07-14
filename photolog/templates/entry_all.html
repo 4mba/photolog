@@ -25,7 +25,7 @@
               
 		      {% for photo in photos %}
                 <tr>
-                  <td>1</td>
+                  <td>{{ loop.index }}</td>
                   <td> 
 				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
 				    	<img src="/photo/download/{{ photo.filename }}" width="95" height="75"/>
