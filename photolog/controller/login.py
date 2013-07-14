@@ -19,7 +19,6 @@ from photolog.photolog_logger import photolog_logger
 from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
 from photolog.model.user import User
-from photolog.model.photo import Photo
 
 
 @photolog.teardown_request
@@ -28,6 +27,7 @@ def close_db_session(exception=None):
         DBManager.db_session.remove()
     except Exception as e:
         photolog_logger.error(str(e))
+
 
 def login_required(f):
     """현재 사용자가 로그인 상태인지 확인하는 데코레이터
@@ -58,8 +58,6 @@ def login_required(f):
 @login_required
 def index():
     """로그인이 성공한 다음에 보여줄 초기 페이지"""
-    dao = DBManager.db_session
-
     return redirect(url_for('.show_all'))
 
 
