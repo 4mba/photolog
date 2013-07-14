@@ -102,6 +102,6 @@ def upload_photo():
     except Exception as e:
         print "Upload data error : %s" % str(e)
 
-    return redirect(url_for('.show_all', name=filename))
+    return redirect(url_for('.show_all'))
 
 
