@@ -3,7 +3,7 @@
     photolog.photolog_config
     ~~~~~~~~
 
-    photolog 디폴트 설정 모듈. 
+    photolog 디폴트 설정 모듈.
     photolog 어플리케이션에서 사용할 디폴트 설정값을 담고 있는 클래스를 정의함.
 
     :copyright: (c) 2013 by 4mba.
@@ -21,7 +21,7 @@ class PhotologConfig(object):
     #: 업로드 완료된 사진 파일이 저장되는 폴더
     UPLOAD_FOLDER = 'resource/upload/'
     #: 업로드되는 사진의 최대 크키(3메가)
-    MAX_CONTENT_LENGTH = 3 * 1024 * 1024
+    MAX_CONTENT_LENGTH = 10 * 1024 * 1024
     #: 세션 타임아웃은 초(second) 단위(60분)
     PERMANENT_SESSION_LIFETIME = 60 * 60
     #: 쿠기에 저장되는 세션 쿠키
@@ -32,4 +32,4 @@ class PhotologConfig(object):
     LOG_FILE_PATH = 'resource/log/photolog.log'
 
 
-        
+
