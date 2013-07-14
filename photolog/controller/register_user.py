@@ -14,7 +14,6 @@ from flask import render_template, request, redirect , url_for
 from sqlalchemy.exc import IntegrityError
 from werkzeug import generate_password_hash
 
-from photolog import server_error
 from photolog.photolog_logger import photolog_logger
 from photolog.photolog_blueprint import photolog
 from photolog.database import DBManager
@@ -24,8 +23,9 @@ from photolog.controller.login import login_required
 
 @photolog.route('/user/regist/', methods=['GET', 'POST'])
 def register_user():
-
-    print "(%s)register_user invoked!" % (request.method)
+    """포토로그 사용자 등록을 위한 함수"""
+    
+    # HTTP POST로 요청이 오면 사용자 정보를 등록
     if request.method == 'POST':
         
         password = request.form['password']
@@ -54,22 +54,24 @@ def register_user():
                 error = "DB error occurs : " + str(e)
                 photolog_logger.error(error)
                 DBManager.db_session.rollback()
-                server_error(500)
+                raise e
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
         else:
             error = "패스워드가 일치하지 않습니다. 다시 입력해주세요."
             return render_template('regist.html', pass_error=error)
+    #HTTP GET으로 요청이 오면 사용자 등록 화면을 보여줌
     else:
-    # 초기 사용자 등록 화면
         return render_template('regist.html')
 
 
 @photolog.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
 def modify_user(username=None):
-
+    """포토로그 사용자 정보 수정을 위한 함수"""
+    
+    #HTTP POST로 요청이 오면 사용자 정보를 수정함
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
@@ -102,10 +104,8 @@ def modify_user(username=None):
         else:
             error = "패스워드가 일치하지 않습니다. 다시 입력해주세요."
             return render_template('regist.html', user=old_user, pass_error=error)
-    
+    #HTTP GET으로 요청이 오면 사용자 정보 수정 화면을 보여줌
     else:
-        # 사용자 정보 수정 화면
-        print "editing user info..."
         try:
             user = DBManager.db_session.query(User).filter_by(username=username).first()
             photolog_logger.debug(user) 
