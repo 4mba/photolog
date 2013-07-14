@@ -32,7 +32,7 @@
 				    	
 				    </div>
                   </td>
-                  <td>{{ photo.filesize }}</td>
+                  <td>{{ sizeof_fmt(photo.filesize) }}</td>
                   <td>{{ photo.tag }}</td>
                   <td>{{ photo.comment }}</td>
                   <td>{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>

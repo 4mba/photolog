@@ -25,15 +25,24 @@ from datetime import datetime
 import uuid
 
 
+# 파일 사이즈를 일기 편한포맷으로 변경해주는 함수
+def sizeof_fmt(num):
+    for x in ['bytes','KB','MB','GB']:
+        if num < 1024.0:
+            return "%3.1f%s" % (num, x)
+        num /= 1024.0
+    return "%3.1f%s" % (num, 'TB')
+
+
 
 @photolog.route('/photo/show/all')
 @login_required
 def show_all():
     dao = DBManager.db_session
     
-    return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
-
-
+    return render_template('entry_all.html', 
+                           photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all(), 
+                           sizeof_fmt=sizeof_fmt)
 
 
 @photolog.route('/photo/download/<path:filename>')
@@ -45,8 +54,12 @@ def download_photo(filename):
     return send_from_directory(realpath, filename, as_attachment=True , mimetype='image/jpg')
 
 
+
 @photolog.route('/photo/show/map')
 @login_required
 def show_map():
     return render_template('show_map.html')
+
+
+
 
