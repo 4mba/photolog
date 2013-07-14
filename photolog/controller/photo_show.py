@@ -45,4 +45,8 @@ def download_photo(filename):
     return send_from_directory(realpath, filename, as_attachment=True , mimetype='image/jpg')
 
 
+@photolog.route('/photo/show/map')
+@login_required
+def show_map():
+    return render_template('show_map.html')
 
