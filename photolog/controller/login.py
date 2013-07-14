@@ -60,7 +60,7 @@ def index():
     """로그인이 성공한 다음에 보여줄 초기 페이지"""
     dao = DBManager.db_session
 
-    return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
+    return redirect(url_for('.show_all'))
 
 
 @photolog.route('/user/login', methods=['GET', 'POST'])
