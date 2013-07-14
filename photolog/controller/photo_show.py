@@ -35,7 +35,7 @@ def sizeof_fmt(num):
 
 
 
-@photolog.route('/photo/show/all')
+@photolog.route('/photo/show/')
 @login_required
 def show_all():
     dao = DBManager.db_session
