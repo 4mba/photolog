@@ -23,14 +23,13 @@ def print_settings(config):
     print '==================================================================='
 
 ''' HTTP Error Code 404와 500은 errorhanlder에 application 레벨에서
-    적용되므로 blueprint가 적용될 수 없으므로 app 객체 생성시 등록해준다.
-    - by keaton
+    적용되므로 app 객체 생성시 등록해준다.
 '''
 def not_found(error):
-    return render_template('404.html')
+    return render_template('404.html'), 404
 
 def server_error(error):
-    return render_template('500.html')
+    return render_template('500.html'), 500
     
 def create_app(config_filepath='resource/config.cfg'):
     app = Flask(__name__)
@@ -58,7 +57,7 @@ def init_app():
     from photolog.cache_session import SimpleCacheSessionInterface
     photolog_app.session_interface = SimpleCacheSessionInterface()
     
-    # 공통으로 적용할 HTTP 400과 500 에러 핸들러를 설정
+    # 공통으로 적용할 HTTP 404과 500 에러 핸들러를 설정
     photolog_app.error_handler_spec[None][404] = not_found
     photolog_app.error_handler_spec[None][500] = server_error
     
