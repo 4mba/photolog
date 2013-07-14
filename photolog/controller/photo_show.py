@@ -69,7 +69,7 @@ def download_photo(photolog_id):
 def show_map():
     dao = DBManager.db_session
     
-    return render_template('show_map.html', photo=dao.query(Photo).order_by(Photo.upload_date.desc()).first())
+    return render_template('show_map.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
 
 
 

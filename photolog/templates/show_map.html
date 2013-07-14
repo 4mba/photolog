@@ -8,18 +8,19 @@
     
       map = new GMaps({
         div: '#map-large',
-        lat: {{ photo.geotag_lat }},
-        lng: {{ photo.geotag_lng }}
+        lat: {{ photos[0].geotag_lat }},
+        lng: {{ photos[0].geotag_lng }}
       });
-      
+{% for photo in photos %}      
     map.addMarker({
         lat: {{ photo.geotag_lat }},
         lng: {{ photo.geotag_lng }},
-        title: 'Lima',
+        title: '{{ photo.filename }}',
         infoWindow: {
-            content: '<p><div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="300" height="200"/></p>'
+            content: '<div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><div><img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="300" height="200"/></div>'
 		}
       });
+{% endfor %}
     });
     
   </script>
@@ -29,7 +30,6 @@
 
   <div class="row-fluid">
 	<div class="container span12">
-	{{ photo.filename }}
        <div id="map-large"></div>
     </div>
   </div>
