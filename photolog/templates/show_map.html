@@ -5,36 +5,31 @@
     var map;
 
     $(document).ready(function(){
+    
       map = new GMaps({
         div: '#map-large',
-        lat: -12.043333,
-        lng: -77.028333,
+        lat: {{ photo.geotag_lat }},
+        lng: {{ photo.geotag_lng }}
       });
       
     map.addMarker({
-        lat: -12.043333,
-        lng: -77.03,
+        lat: {{ photo.geotag_lat }},
+        lng: {{ photo.geotag_lng }},
         title: 'Lima',
-        details: {
-          database_id: 42,
-          author: 'HPNeo'
-        },
-        click: function(e){
-          if(console.log)
-            console.log(e);
-          alert('You clicked in this marker');
-        }
+        infoWindow: {
+            content: '<p><div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><img src="{{ url_for('photolog.download_photo', photolog_id=photo.id) }}" width="300" height="200"/></p>'
+		}
       });
     });
     
   </script>
 {% endblock %}
 
-<!-- 업로드된 사진을 보여준다 -->
 {% block content %}
 
   <div class="row-fluid">
 	<div class="container span12">
+	{{ photo.filename }}
        <div id="map-large"></div>
     </div>
   </div>

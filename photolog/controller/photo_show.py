@@ -67,7 +67,9 @@ def download_photo(photolog_id):
 @photolog.route('/photo/show/map')
 @login_required
 def show_map():
-    return render_template('show_map.html')
+    dao = DBManager.db_session
+    
+    return render_template('show_map.html', photo=dao.query(Photo).order_by(Photo.upload_date.desc()).first())
 
 
 
