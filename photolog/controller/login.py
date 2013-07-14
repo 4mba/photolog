@@ -22,14 +22,15 @@ from photolog.model.user import User
 from photolog.model.photo import Photo
 
 
-''' 로긴이 필요한 페이지에 decorating '''
 def login_required(f):
+    """현재 사용자가 로그인 상태인지 확인하는 데코레이터
+    로그인 상태에서 접근 가능한 함수에 적용함
+    """
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
             session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
-#             print "session : %s" % session
             is_login = False
             if session.sid == session_key and session.__contains__('user_info') :
                 is_login = True
@@ -40,7 +41,8 @@ def login_required(f):
             return f(*args, **kwargs)
 
         except Exception as e:
-            print "Login error occurs : %s" % str(e)
+            photolog_logger.error("Login error occurs : %s" % str(e))
+            raise e
 
     return decorated_function
 
@@ -48,20 +50,24 @@ def login_required(f):
 @photolog.route('/')
 @login_required
 def index():
-    print "index invoked!"
+    """로그인이 성공한 다음에 보여줄 초기 페이지"""
     dao = DBManager.db_session
-    
+
     return render_template('entry_all.html', photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all())
 
 
 @photolog.route('/user/login', methods=['GET', 'POST'])
 def login():
+    """아이디/패스워드 기반의 로그인 기능을 제공함
+    로그인 성공 시 세션에 사용자 정보를 저장하여 사용함
+    """
+    
     session.permanent = True
     dao = DBManager.db_session
 
     login_error = None
     next_url = None
-    print "(%s)login invoked!" % (request.method)
+
     if request.method == 'POST':
 
         username = request.form['username']
@@ -74,13 +80,12 @@ def login():
             raise e
 
         if user is not None:
-            
             if username != user.username or not check_password_hash(user.password, password):
                 login_error = 'Invalid username or  password'
             else:
                 if request.args.__contains__('next'):
                     next_url = request.args['next']
-                    print "(%s)next_url is %s" % (request.method, next_url)
+                    photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
                 # 사용자 정보를 구성하여 session 객체에 추가
@@ -95,13 +100,15 @@ def login():
 
     elif request.method == 'GET':
         next_url = request.args.get('next', None)
-        print "(%s)next_url is %s" % (request.method, next_url)
+        photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
 
     return render_template('login.html', next=next_url, error=login_error)
 
 
 @photolog.route('/logout')
 def logout():
+    """로그아웃 시에 호출되며 세션을 초기화함"""
+    
     session.clear()
 
     return redirect(url_for('.index'))
