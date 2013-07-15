@@ -97,7 +97,7 @@ def login():
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
                 # 사용자 정보를 구성하여 session 객체에 추가
                 session['user_info'] = user
-                photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
+                
                 if next_url:
                     return redirect(next_url)
                 else:
