@@ -90,14 +90,14 @@ def login():
             if username != user.username or not check_password_hash(user.password, password):
                 login_error = 'Invalid username or  password'
             else:
-                if not request.form['next']:
+                if request.form['next']:
                     next_url = request.form['next']
                     photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
                 # 사용자 정보를 구성하여 session 객체에 추가
                 session['user_info'] = user
-
+                photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
                 if next_url:
                     return redirect(next_url)
                 else:
