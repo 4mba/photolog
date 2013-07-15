@@ -23,6 +23,8 @@ from photolog.model.user import User
 
 @photolog.teardown_request
 def close_db_session(exception=None):
+    """요청이 완료된 후에 db연결에 사용된 세션을 종료함"""
+    
     try:
         DBManager.db_session.remove()
     except Exception as e:
@@ -84,11 +86,11 @@ def login():
             photolog_logger.error(str(e))
             raise e
 
-        if user is not None:
+        if user:
             if username != user.username or not check_password_hash(user.password, password):
                 login_error = 'Invalid username or  password'
             else:
-                if request.form.__contains__('next'):
+                if not request.form['next']:
                     next_url = request.form['next']
                     photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
@@ -96,10 +98,11 @@ def login():
                 # 사용자 정보를 구성하여 session 객체에 추가
                 session['user_info'] = user
 
-                if next_url is None:
-                    return redirect(url_for('.index'))
-                else:
+                if next_url:
                     return redirect(next_url)
+                else:
+                    return redirect(url_for('.index'))
+                    
         else:
             login_error = 'User does not exist!'
 
