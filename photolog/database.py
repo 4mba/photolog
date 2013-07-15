@@ -19,9 +19,8 @@ class DBManager:
     engine = None
         
     @staticmethod
-    def init(db_url):
-        print "DB_URL : %s" % db_url
-        DBManager.engine = create_engine(db_url, echo=True, convert_unicode=True) 
+    def init(db_url, db_log_flag=True):
+        DBManager.engine = create_engine(db_url, echo=db_log_flag, convert_unicode=True) 
         DBManager.db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=DBManager.engine))
     
     @staticmethod
