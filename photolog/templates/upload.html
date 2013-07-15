@@ -13,14 +13,10 @@
 	    	<div class="row-fluid">
 		    	<div class="span4">
 				    <div class="fileupload fileupload-new" data-provides="fileupload">
-					    <div class="fileupload-new thumbnail" style="width: 200px; height: 150px;">
+					    <div class="fileupload-new thumbnail span6" >
 					        <p>
-    					    	<img id="preview" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+    					    	<img id="preview" class="span12" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
 					    	</p>
-					    </div>
-				
-					    <div class="fileupload-preview fileupload-exists thumbnail" 
-					                style="max-width: 200px; max-height: 150px; line-height: 20px;">
 					    </div>
 				
 					    <div>
@@ -31,29 +27,29 @@
 							    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
 							</span>
 						    -->
-					    	<input id="photo" type="file" class="btn-file input-small" name="upload" />
+						    <p>
+					    	<input id="photo" type="file" class="btn-file input-small span12" name="upload" />
+                            </p>
+                            <p>
+                            <input type="text" class="input-large span12" name="tag" placeholder="Tag">
+                            </p>
+                            <p>
+                            <textarea class="input-block-level" rows="3" name="memo" placeholder="memo"></textarea>
+                            </p>
+                            <P>
+                            <button type="submit" name="submit" class="btn btn-medium btn-block btn-primary">저 장</button>
+                            </P>
 					    </div>
 					  </div>
-				    <div class="container">
-				    	<p>
-							<input type="text" class="input-large" name="tag" placeholder="Tag">
-					    </p>
-				    	<p>
-						    <textarea class="input-large" rows="3" name="memo" placeholder="memo"></textarea>
-					    </p>
-					    <p>
-	              			<button type="submit" name="submit" class="btn">저장</button>
-              			</p>
+				    <div class="container-fluid">
               		</div>
 				</div> <!-- end of row-fluid span4 -->
 				<div class="span8">
-				    <div class="container well span8">
-				    	<p>
+				    <div class="container well span12">
 				    		&nbsp; <i class="icon-map-marker"></i> Show Google Map
-                            <div id="map" class="map">
+                            <div id="map" class="map span12" >
                                 
                             </div>
-              			</p>
               		</div>
 				</div> <!-- end of row-fluid span9 -->
 		   </div> <!-- end of row-fluid -->
@@ -77,8 +73,8 @@
             
             reader.onload = function (e) {
                 $('#preview').attr('src', e.target.result);
-                $("#preview").css("width","200px");
-                $("#preview").css("height","150px");
+                // $("#preview").css("width","200px");
+                // $("#preview").css("height","150px");
             }
                 reader.readAsDataURL(input.files[0]);
             }
