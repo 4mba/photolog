@@ -1,5 +1,5 @@
 Flask==0.9
-Flask-SQLAlchemy==0.16
+SQLAlchemy==0.9.7
 Jinja2==2.6
 Redis==2.7.5
 Flask-Uploads=0.1.3
