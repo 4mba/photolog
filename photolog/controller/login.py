@@ -15,9 +15,9 @@ from flask import render_template, request, current_app, session, redirect \
 from functools import wraps
 from werkzeug import check_password_hash
 
+from photolog.database import dao
 from photolog.photolog_logger import photolog_logger
 from photolog.photolog_blueprint import photolog
-from photolog.database import DBManager
 from photolog.model.user import User
 
 
@@ -26,7 +26,7 @@ def close_db_session(exception=None):
     """요청이 완료된 후에 db연결에 사용된 세션을 종료함"""
     
     try:
-        DBManager.db_session.remove()
+        dao.remove()
     except Exception as e:
         photolog_logger.error(str(e))
 
@@ -68,17 +68,17 @@ def login():
     """아이디/패스워드 기반의 로그인 기능을 제공함
     로그인 성공 시 세션에 사용자 정보를 저장하여 사용함
     """
-    
-    session.permanent = True
-    dao = DBManager.db_session
-
-    login_error = None
-    next_url = None
 
     if request.method == 'POST':
-
+        session.permanent = True
+            
+        login_error = None
+    
         username = request.form['username']
         password = request.form['password']
+        next_url = request.form['next']
+        
+        photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
 
         try:
             user = dao.query(User).filter_by(username=username).first()
@@ -90,15 +90,12 @@ def login():
             if username != user.username or not check_password_hash(user.password, password):
                 login_error = 'Invalid username or  password'
             else:
-                if request.form['next']:
-                    next_url = request.form['next']
-                    photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
                 # 사용자 정보를 구성하여 session 객체에 추가
                 session['user_info'] = user
                 
-                if next_url:
+                if next_url != '':
                     return redirect(next_url)
                 else:
                     return redirect(url_for('.index'))
@@ -107,10 +104,10 @@ def login():
             login_error = 'User does not exist!'
 
     elif request.method == 'GET':
-        next_url = request.args.get('next', None)
+        next_url = request.args.get('next', '')
         photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
 
-    return render_template('login.html', next=next_url, error=login_error)
+    return render_template('login.html', next=next_url)
 
 
 @photolog.route('/logout')

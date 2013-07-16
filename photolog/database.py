@@ -9,21 +9,29 @@
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-print "database module invoked!"
 
 class DBManager:
-    db_session = None
-    engine = None
-        
+    """데이터베이스 처리를 담당하는 공통 클래스"""
+    
+    _engine = None
+    session = None
+
     @staticmethod
     def init(db_url, db_log_flag=True):
-        DBManager.engine = create_engine(db_url, echo=db_log_flag, convert_unicode=True) 
-        DBManager.db_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=DBManager.engine))
+        DBManager._engine = create_engine(db_url, echo=db_log_flag, convert_unicode=True) 
+        DBManager.session = scoped_session(sessionmaker(autocommit=False, 
+                                                        autoflush=False, 
+                                                        bind=DBManager._engine))
+        global dao
+        dao = DBManager.session
     
     @staticmethod
     def init_db():
         from photolog.model import Base
-        Base.metadata.create_all(bind=DBManager.engine)
+        Base.metadata.create_all(bind=DBManager._engine)
+
+dao = None        

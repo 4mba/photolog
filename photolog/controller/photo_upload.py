@@ -12,18 +12,17 @@
 
 
 import os
-from flask import request, redirect, url_for, current_app, send_from_directory \
-				, render_template, session
+from flask import request, redirect, url_for, current_app, render_template, session
 from werkzeug.utils import secure_filename
+from datetime import datetime
+import uuid
 
-from photolog.database import DBManager
+from photolog.database import dao
 from photolog.model.photo import Photo
 from photolog.controller.login import login_required
 from photolog.photolog_logger import photolog_logger
-
 from photolog.photolog_blueprint import photolog
-from datetime import datetime
-import uuid
+
 
 
 
@@ -78,7 +77,6 @@ def upload_photo():
     # DB에 저장할 때 발생하는 예외 처리
     try :
         photo = Photo(userid, tag, comment, filename, filesize, lat, lng, upload_date, taken_date)
-        dao = DBManager.db_session
         dao.add(photo)
         dao.commit()
 
@@ -93,7 +91,6 @@ def upload_photo():
 @photolog.route('/photo/modify/<photolog_id>')
 @login_required
 def modify(photolog_id):
-    dao = DBManager.db_session
     photo = dao.query(Photo).filter_by(id=photolog_id).first()
     
     return render_template('upload.html', photo=photo)
