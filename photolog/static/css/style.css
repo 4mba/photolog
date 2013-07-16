@@ -1,10 +1,16 @@
 @import url(http://fonts.googleapis.com/earlyaccess/nanumgothic.css);
 
+
+html {
+	height : 100%;
+}
+
 body {
   font-family; 'Nanum Gothic', Arial, sans-serif;
   background-color: #f2f2f2;
   color: #333333;
   padding-top: 60px;
+  height: 100%;
 }
 
 #map-large {
@@ -30,15 +36,18 @@ img {
 
 }
 
-#map{
+
+#photo-location{
   display: block;
-  width: 95%;
+  width: 100%;
   height: 350px;
+  overflow: auto;
   margin: 0 auto;
   -moz-box-shadow: 0px 5px 20px #ccc;
   -webkit-box-shadow: 0px 5px 20px #ccc;
   box-shadow: 0px 5px 20px #ccc;
 }
+
 
 
 .overlay{
@@ -75,4 +84,6 @@ img {
   border-right:16px solid transparent;
   border-bottom:16px solid #336699;
 }
+
+
 
