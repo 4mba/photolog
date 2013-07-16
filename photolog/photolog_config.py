@@ -30,6 +30,8 @@ class PhotologConfig(object):
     LOG_LEVEL = 'debug'
     #: 디폴트 로그 파일 경로
     LOG_FILE_PATH = 'resource/log/photolog.log'
+    #: 디폴트 SQLAlchemy trace log 설정
+    DB_LOG_FLAG = 'True'
 
 
 
