@@ -34,20 +34,19 @@
                             <input type="text" class="input-large span12" name="tag" placeholder="Tag">
                             </p>
                             <p>
-                            <textarea class="input-block-level" rows="3" name="memo" placeholder="memo"></textarea>
+	                            <textarea class="input-block-level" rows="3" name="memo" placeholder="memo"> 
+	                            </textarea>
                             </p>
                             <P>
-                            <button type="submit" name="submit" class="btn btn-medium btn-block btn-primary">저 장</button>
+                            <button type="submit" name="submit" class="btn btn-medium btn-block btn-primary">저장하기</button>
                             </P>
 					    </div>
 					  </div>
-				    <div class="container-fluid">
-              		</div>
 				</div> <!-- end of row-fluid span4 -->
-				<div class="span8">
-				    <div class="container well span12">
-				    		&nbsp; <i class="icon-map-marker"></i> Show Google Map
-                            <div id="map" class="map span12" >
+				<div class="span8" >
+				    <div class="container well span12" >
+				    		&nbsp; <i class="icon-map-marker"> </i> Show Google Map
+                            <div id="photo-location" class="photo_location span12">
                                 
                             </div>
               		</div>
@@ -73,8 +72,6 @@
             
             reader.onload = function (e) {
                 $('#preview').attr('src', e.target.result);
-                // $("#preview").css("width","200px");
-                // $("#preview").css("height","150px");
             }
                 reader.readAsDataURL(input.files[0]);
             }
@@ -103,7 +100,7 @@
                 
                 map = new GMaps({
                   zoom : 17,
-                  div: '#map',
+                  div: '#photo-location',
                   lat: lat,
                   lng: lng 
                 });
