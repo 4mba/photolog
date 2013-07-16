@@ -32,23 +32,27 @@ def server_error(error):
     return render_template('500.html'), 500
     
 def create_app(config_filepath='resource/config.cfg'):
-    app = Flask(__name__)
+    photolog_app = Flask(__name__)
     
     # 기본 설정은 PhotologConfig 객체에 정의되있고 운영 환경 또는 기본 설정을 변경을 하려면
     # 실행 환경변수인 PHOTOLOG_SETTINGS에 변경할 설정을 담고 있는 파일 경로를 설정 
     from photolog.photolog_config import PhotologConfig
-    app.config.from_object(PhotologConfig)
-    app.config.from_pyfile(config_filepath, silent=True)
-    print_settings(app.config.iteritems())
+    photolog_app.config.from_object(PhotologConfig)
+    photolog_app.config.from_pyfile(config_filepath, silent=True)
+    print_settings(photolog_app.config.iteritems())
     
-    return app
-
-def init_app():
+#     return app
+# 
+# def init_app():
     # 데이터베이스 처리 
     from photolog.database import DBManager
     DBManager.init(photolog_app.config['DB_URL'], 
                    eval(photolog_app.config['DB_LOG_FLAG']))
     DBManager.init_db()
+    
+    # 로그 초기화
+    from photolog.photolog_logger import Log
+    Log.init()
     
     # 뷰 함수 모듈은 어플리케이션 객체 생성하고 블루프린트 등록전에 
     # 뷰 함수가 있는 모듈을 임포트해야 해당 뷰 함수들을 인식할 수 있음
@@ -69,6 +73,6 @@ def init_app():
     
     return photolog_app
 
-photolog_app = create_app()
-photolog_app = init_app()
+# photolog_app = create_app()
+# photolog_app = init_app()
 

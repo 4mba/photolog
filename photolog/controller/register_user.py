@@ -14,7 +14,7 @@ from flask import render_template, request, redirect , url_for, session
 from sqlalchemy.exc import IntegrityError
 from werkzeug import generate_password_hash
 
-from photolog.photolog_logger import photolog_logger
+from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
 from photolog.database import dao
 from photolog.model.user import User
@@ -44,15 +44,15 @@ def register_user():
                 dao.add(user)
                 dao.commit()
     
-                photolog_logger.debug(user) 
+                Log.debug(user) 
             except IntegrityError:
                 error = "아이디(%s)가 중복됩니다.다른 아이디를 사용세요." % username
-                photolog_logger.error(error)
+                Log.error(error)
                 dao.rollback()
                 return render_template('regist.html', id_error=error)
             except Exception as e:
                 error = "DB error occurs : " + str(e)
-                photolog_logger.error(error)
+                Log.error(error)
                 dao.rollback()
                 raise e
             else:
@@ -80,9 +80,9 @@ def modify_user(username=None):
         try:
             old_user = dao.query(User).filter_by(username=username).first()
     
-            photolog_logger.debug(old_user)  
+            Log.debug(old_user)  
         except Exception as e:
-            photolog_logger.error(str(e))
+            Log.error(str(e))
             raise e
                 
         if password == '' or password_confirm == '':
@@ -96,7 +96,7 @@ def modify_user(username=None):
 
             except Exception as e:
                 dao.rollback()
-                photolog_logger.error(str(e))
+                Log.error(str(e))
                 raise e
             else:
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
@@ -108,9 +108,9 @@ def modify_user(username=None):
     else:
         try:
             user = dao.query(User).filter_by(username=username).first()
-            photolog_logger.debug(user) 
+            Log.debug(user) 
         except Exception as e:
-            photolog_logger.error(str(e))
+            Log.error(str(e))
             raise e
         else:
             return render_template('regist.html', user=user)
@@ -126,10 +126,10 @@ def unregist():
             dao.delete(user)
             dao.commit()
         else:
-            photolog_logger.error("존재하지 않는 사용자의 탈퇴시도 : %s", username)
+            Log.error("존재하지 않는 사용자의 탈퇴시도 : %s", username)
             raise Exception
     except Exception as e:
-        photolog_logger.error(str(e))
+        Log.error(str(e))
         dao.rollback()
         raise e
     else:

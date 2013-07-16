@@ -20,7 +20,7 @@ import uuid
 from photolog.database import dao
 from photolog.model.photo import Photo
 from photolog.controller.login import login_required
-from photolog.photolog_logger import photolog_logger
+from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
 
 
@@ -71,7 +71,7 @@ def upload_photo():
         else:
             raise Exception("File uoload error : illegal file.")
     except Exception as e:
-        photolog_logger.error("Upload error : " + str(e))
+        Log.error("Upload error : " + str(e))
 
 
     # DB에 저장할 때 발생하는 예외 처리
@@ -82,7 +82,7 @@ def upload_photo():
 
     except Exception as e:
         dao.rollback()
-        photolog_logger.error("Upload DB error : " + str(e))
+        Log.error("Upload DB error : " + str(e))
 
     return redirect(url_for('.show_all'))
 

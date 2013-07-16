@@ -16,7 +16,7 @@ from functools import wraps
 from werkzeug import check_password_hash
 
 from photolog.database import dao
-from photolog.photolog_logger import photolog_logger
+from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
 from photolog.model.user import User
 
@@ -28,7 +28,7 @@ def close_db_session(exception=None):
     try:
         dao.remove()
     except Exception as e:
-        photolog_logger.error(str(e))
+        Log.error(str(e))
 
 
 def login_required(f):
@@ -50,7 +50,7 @@ def login_required(f):
             return f(*args, **kwargs)
 
         except Exception as e:
-            photolog_logger.error("Login error occurs : %s" % str(e))
+            Log.error("Login error occurs : %s" % str(e))
             raise e
 
     return decorated_function
@@ -78,12 +78,12 @@ def login():
         password = request.form['password']
         next_url = request.form['next']
         
-        photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
+        Log.info("(%s)next_url is %s" % (request.method, next_url))
 
         try:
             user = dao.query(User).filter_by(username=username).first()
         except Exception as e:
-            photolog_logger.error(str(e))
+            Log.error(str(e))
             raise e
 
         if user:
@@ -105,7 +105,7 @@ def login():
 
     elif request.method == 'GET':
         next_url = request.args.get('next', '')
-        photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
+        Log.info("(%s)next_url is %s" % (request.method, next_url))
 
     return render_template('login.html', next=next_url, error=login_error)
 
