@@ -10,7 +10,7 @@
 """
 
 
-from flask import render_template, request, redirect , url_for
+from flask import render_template, request, redirect , url_for, session
 from sqlalchemy.exc import IntegrityError
 from werkzeug import generate_password_hash
 
@@ -113,5 +113,22 @@ def modify_user(username=None):
             photolog_logger.error(str(e))
             raise e
         else:
-            return render_template('regist.html', user=user)  
+            return render_template('regist.html', user=user)
+
+
+@photolog.route('/user/leave/', methods=['GET'])
+def leave():
+    username = session['user_info'].username
+    print username
+    try:
+        user = dao.query(User).filter_by(username=username).first()
+        dao.delete(user)
+        dao.commit()
+    except Exception as e:
+        photolog_logger.error(str(e))
+        dao.rollback()
+        raise e
+    else:
+        return redirect(url_for('.login'))
+
 

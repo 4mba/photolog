@@ -9,7 +9,7 @@
 
   <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" >
 	<div class="modal-head">
-		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;회원가입</h3>
+		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;{% if user %}회원 정보 수정{% else %}회원 가입{% endif %}</h3>
 	</div>
 	<div class="modal-body">
 		<form class="form-horizontal" action='#' method="POST">
@@ -51,7 +51,8 @@
 		    <div class="control-group">
 		      <!-- Button -->
 		      <div class="controls">
-		        <button class="btn btn-success">{% if user %}회원정보 수정{% else %}가입하기{% endif %}</button>
+		        <button class="btn btn-success">{% if user %}회원 정보 수정{% else %}가입하기{% endif %}</button>
+		        {% if user %}<button id="unregist" class="btn btn-primary">서비스 탈퇴</button><a id="leave" href="#">서비스 탈퇴</a>{% endif %}
 		      </div>
 		    </div>
 		  </fieldset>
@@ -61,6 +62,15 @@
 
     <script type="text/javascript">
  		$('#regist').modal('show');
+ 		
+ 	    $('#leave').click(function(){
+             bootbox.confirm("정말 포토로그 서비스 사용을 그만두시겠습니까?", function(result) {
+                 if(result){
+                     window.location="{{ url_for('photolog.unregist') }}"
+                 }
+             });
+
+         });
     </script>
 
 
