@@ -68,11 +68,11 @@ def login():
     """아이디/패스워드 기반의 로그인 기능을 제공함
     로그인 성공 시 세션에 사용자 정보를 저장하여 사용함
     """
-
+    
+    login_error = None
+    
     if request.method == 'POST':
         session.permanent = True
-            
-        login_error = None
     
         username = request.form['username']
         password = request.form['password']
@@ -107,7 +107,7 @@ def login():
         next_url = request.args.get('next', '')
         photolog_logger.info("(%s)next_url is %s" % (request.method, next_url))
 
-    return render_template('login.html', next=next_url)
+    return render_template('login.html', next=next_url, error=login_error)
 
 
 @photolog.route('/logout')
