@@ -116,14 +116,18 @@ def modify_user(username=None):
             return render_template('regist.html', user=user)
 
 
-@photolog.route('/user/unregist/', methods=['GET'])
+@photolog.route('/user/unregist/')
+@login_required
 def unregist():
     username = session['user_info'].username
-    print username
     try:
         user = dao.query(User).filter_by(username=username).first()
-        dao.delete(user)
-        dao.commit()
+        if user.username == username:
+            dao.delete(user)
+            dao.commit()
+        else:
+            photolog_logger.error("존재하지 않는 사용자의 탈퇴시도 : %s", username)
+            raise Exception
     except Exception as e:
         photolog_logger.error(str(e))
         dao.rollback()
