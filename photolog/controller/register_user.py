@@ -116,8 +116,8 @@ def modify_user(username=None):
             return render_template('regist.html', user=user)
 
 
-@photolog.route('/user/leave/', methods=['GET'])
-def leave():
+@photolog.route('/user/unregist/', methods=['GET'])
+def unregist():
     username = session['user_info'].username
     print username
     try:
