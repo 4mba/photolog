@@ -12,6 +12,6 @@
 
 if __name__ == '__main__':
     print "starting test server..."
-    from photolog import photolog_app
-    photolog_app.run(host='0.0.0.0', port=5000)
+    from photolog import create_app
+    create_app().run(host='0.0.0.0', port=5000)
 
