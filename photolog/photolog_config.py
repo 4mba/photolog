@@ -15,7 +15,9 @@ import os
 
 class PhotologConfig(object):
     #: 데이터베이스 연결 URL
-    DB_URL= 'sqlite:///' + os.getcwd() + '/photolog/resource/database/photolog'
+    DB_URL= 'sqlite:///'
+    #: 데이터베이스 파일 경로
+    DB_FILE_PATH= os.getcwd() + '/photolog/resource/database/photolog'
     #: 사진 업로드 시 사진이 임시로 저장되는 임시 폴더
     TMP_FOLDER = 'resource/tmp/'
     #: 업로드 완료된 사진 파일이 저장되는 폴더
@@ -29,7 +31,7 @@ class PhotologConfig(object):
     #: 로그 레벨 설정
     LOG_LEVEL = 'debug'
     #: 디폴트 로그 파일 경로
-    LOG_FILE_PATH = 'resource/log/photolog.log'
+    LOG_FILE_PATH = 'photolog/resource/log/photolog.log'
     #: 디폴트 SQLAlchemy trace log 설정
     DB_LOG_FLAG = 'True'
 
