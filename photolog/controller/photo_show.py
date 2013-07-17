@@ -41,7 +41,7 @@ def sizeof_fmt(num):
 @photolog.route('/photo/show/')
 @login_required
 def show_all():    
-    userid = session['user_info'].id
+    userid = session['user_info'].username
     
     return render_template('entry_all.html', 
                            photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.upload_date.desc()).all(), 
@@ -61,7 +61,7 @@ def download_photo(photolog_id):
 @login_required
 def show_map(): 
     try:
-        userid = session['user_info'].id
+        userid = session['user_info'].username
         Log.debug(userid)
         return render_template('show_map.html', photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.taken_date.desc()).all())
     except Exception as e:
