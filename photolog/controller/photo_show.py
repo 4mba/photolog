@@ -22,6 +22,9 @@ from photolog.exif_reader import EXIFReader
 
 from photolog.photolog_blueprint import photolog
 from datetime import datetime
+
+from photolog.photolog_logger import Log
+
 import uuid
 
 
@@ -38,8 +41,10 @@ def sizeof_fmt(num):
 @photolog.route('/photo/show/')
 @login_required
 def show_all():    
+    userid = session['user_info'].id
+    
     return render_template('entry_all.html', 
-                           photos=dao.query(Photo).order_by(Photo.upload_date.desc()).all(), 
+                           photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.upload_date.desc()).all(), 
                            sizeof_fmt=sizeof_fmt)
 
 
@@ -55,8 +60,14 @@ def download_photo(photolog_id):
 @photolog.route('/photo/show/map')
 @login_required
 def show_map(): 
-    return render_template('show_map.html', photos=dao.query(Photo).order_by(Photo.taken_date.desc()).all())
-
+    try:
+        userid = session['user_info'].id
+        Log.debug(userid)
+        return render_template('show_map.html', photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.taken_date.desc()).all())
+    except Exception as e:
+        Log.error(str(e))
+        raise e
+    
 
 
 
