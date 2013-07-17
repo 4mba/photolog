@@ -56,18 +56,14 @@
 	              <a href="#" class="navbar-link"><i class="icon-user"></i> Logout</a>
 	            </p>
 	            <ul class="nav">
-					<li class="active"><a href="/">최근기록</a></li>
-					<li><a href="{% if session.user_info %}{{ url_for('photolog.modify_user', username=session.user_info.username) }}{% endif %}">개인정보 수정</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">메뉴
-							<b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Link</a></li>
-							<li><a href="#">Link</a></li>
-							<li><a href="#">Link</a></li>
-						</ul>
+		        		<li class="active"><a  href="{{ url_for('photolog.show_map') }}" ><i class="icon-map-marker icon-large"></i> 지도에서 사진보기 </a></li>
+		        		<li class="active"><a  href="{{ url_for('photolog.show_all') }}" ><i class="icon-th-list icon-large"></i> 사진 목록 보기 </a></li>
+		        		<li class="active">
+					<a  href="{{ url_for('photolog.upload_form') }}" ><i class="icon-camera-retro icon-large"> 사진 올리기 </i></a>
 					</li>
+			     </ul>
+	            <ul class="nav pull-right">
+					<li><a href="{% if session.user_info %}{{ url_for('photolog.modify_user', username=session.user_info.username) }}{% endif %}">개인정보 수정</a></li>
 				</ul>
 				<form class="navbar-search pull-left form-search" action="{{ url_for('photolog.search_photo') }}" method="POST">
 					<div class="input-append">
@@ -104,13 +100,6 @@
 	          </button>
 			  <div id="footer-menu" class="nav-collapse collapse">
 			        <p id="since" class="navbar-text pull-right">Since 2013</p>
-		        	<ul class="nav">
-		        		<li class="active"><a  href="{{ url_for('photolog.show_map') }}" ><i class="icon-map-marker icon-large"></i> 지도에서 사진보기 </a></li>
-		        		<li class="active"><a  href="{{ url_for('photolog.show_all') }}" ><i class="icon-th-list icon-large"></i> 사진 목록 보기 </a></li>
-		        		<li class="active">
-					<a  href="{{ url_for('photolog.upload_form') }}" ><i class="icon-camera-retro icon-large"> 사진 올리기 </i></a>
-					</li>
-			     </ul>
 			</div>
 	        </div>
 	      </div>
