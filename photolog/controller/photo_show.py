@@ -25,12 +25,14 @@ from datetime import datetime
 
 from photolog.photolog_logger import Log
 
+from sqlalchemy import or_
+
 import uuid
 
 
 # 파일 사이즈를 일기 편한포맷으로 변경해주는 함수
 def sizeof_fmt(num):
-    for x in ['bytes','KB','MB','GB']:
+    for x in ['bytes', 'KB', 'MB', 'GB']:
         if num < 1024.0:
             return "%3.1f%s" % (num, x)
         num /= 1024.0
@@ -43,8 +45,8 @@ def sizeof_fmt(num):
 def show_all():    
     userid = session['user_info'].username
     
-    return render_template('entry_all.html', 
-                           photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.upload_date.desc()).all(), 
+    return render_template('entry_all.html',
+                           photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.upload_date.desc()).all(),
                            sizeof_fmt=sizeof_fmt)
 
 
@@ -60,14 +62,22 @@ def download_photo(photolog_id):
 @photolog.route('/photo/show/map')
 @login_required
 def show_map(): 
-    try:
-        userid = session['user_info'].username
-        Log.debug(userid)
-        return render_template('show_map.html', photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.taken_date.desc()).all())
-    except Exception as e:
-        Log.error(str(e))
-        raise e
+    userid = session['user_info'].username
+    Log.debug(userid)
+    return render_template('show_map.html', photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.taken_date.desc()).all())
     
-
+@photolog.route('/photo/search', methods=['POST'])
+@login_required
+def search_photo():    
+    search_word = request.form['search_word'];
+    Log.debug(search_word)
+    
+    if (search_word == ''):
+        return show_all();
+    
+    userid = session['user_info'].username    
+    return render_template('entry_all.html',
+                           photos=dao.query(Photo).filter_by(userid=userid).filter(or_(Photo.comment.like("%" + search_word + "%"), Photo.tag.like("%" + search_word + "%"))).order_by(Photo.upload_date.desc()).all(),
+                           sizeof_fmt=sizeof_fmt)
 
 

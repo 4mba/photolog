@@ -69,9 +69,9 @@
 						</ul>
 					</li>
 				</ul>
-				<form class="navbar-search pull-left form-search" action="">
+				<form class="navbar-search pull-left form-search" action="{{ url_for('photolog.search_photo') }}" method="POST">
 					<div class="input-append">
-						<input type="text" class="input-small search-query" placeholder="Search">
+						<input type="text" name="search_word" class="input-small search-query" placeholder="Search">
 						<button type="submit" class="btn btn-primary"><i class="icon-search"></i></button>
 					</div>
 				</form>
