@@ -22,6 +22,9 @@ from photolog.exif_reader import EXIFReader
 
 from photolog.photolog_blueprint import photolog
 from datetime import datetime
+
+from photolog.photolog_logger import Log
+
 import uuid
 
 
@@ -55,8 +58,14 @@ def download_photo(photolog_id):
 @photolog.route('/photo/show/map')
 @login_required
 def show_map(): 
-    return render_template('show_map.html', photos=dao.query(Photo).order_by(Photo.taken_date.desc()).all())
-
+    try:
+        userid = session['user_info'].id
+        Log.debug(userid)
+        return render_template('show_map.html', photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.taken_date.desc()).all())
+    except Exception as e:
+        Log.error(str(e))
+        raise e
+    
 
 
 
