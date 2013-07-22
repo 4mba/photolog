@@ -75,28 +75,77 @@
                 reader.readAsDataURL(input.files[0]);
             }
         }
+
+
 		
 		// When photo uploaded
 		$("#photo").change(function() {
 		    
+
+            // navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
+//             
+            // function foundLocation(position)
+            // {
+              // var lat = position.coords.latitude;
+              // var long = position.coords.longitude;
+              // alert('Found location: ' + lat + ', ' + long);
+            // }
+            // function noLocation()
+            // {
+              // alert('Could not find location');
+            // }
+            
+
             readURL(this);
 		    
 		    var file = this.files[0];
 		    fr   = new FileReader;
+
 		    fr.onloadend = function() {
 		        
                 // Reference code : http://jsfiddle.net/xQnMd/1/
 		        var exif = EXIF.readFromBinaryFile(new BinaryFile(this.result));
+		        var lat;
+                var lng;
+                var date;
                 
-                lat = toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef);
-                lng = toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef);
+                // exif에서 GPS정보를 가져올 수 없는 경우
+                if(exif.GPSLatitude == undefined) {
+                    
+                    navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
+                    
+                    function foundLocation(position) {
+                        lat = parseFloat(position.coords.latitude).toFixed(6);
+                        lng = parseFloat(position.coords.longitude).toFixed(6);
+                        
+                        var now = new Date(); 
+                        date = now.toString("yyyy:MM:dd"); 
+                        alert("lat:"+lat +",lng:"+lng +",date:"+date);
+                    }
+
+                    function noLocation(){
+                      alert('Could not find location');
+                    }
+                    
+                }
+                // exif에서 GPS정보를 가져올 수 있는 경우
+                else {
+                    lat = toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef);
+                    lng = toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef);
+                    date = exif.DateTimeOriginal;
+                    
+                    //exif에 사진을 찍은 date정보가 없을 경우 현재시간으로 대체
+                    if(date == undefined){
+                        var now = new Date();
+                        date = now.toString("yy:MM:DD HH:MM:SS"); 
+                    }
+                }
                 
-             
-                document.forms['upload'].date.value = exif.DateTimeOriginal;
-                document.forms['upload'].lat.value = lat;
-                document.forms['upload'].lng.value = lng;
+                $('[name=date]').val(date);
+                $('[name=lat]').val(lat);
+                $('[name=lng]').val(lng);
                 
-                
+
                 map = new GMaps({
                   zoom : 17,
                   div: '#photo-location',

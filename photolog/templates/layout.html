@@ -36,12 +36,12 @@
 		<script type="text/javascript" src="{{ url_for('static',filename='js/gmaps.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static',filename='js/exif.js') }}"></script>
         <script type="text/javascript" src="{{ url_for('static',filename='js/binaryajax.js') }}"></script>
-     
+
 		{% block head %}{% endblock %}
   </head>
   <body>
 
-	<div id="header-menu">
+	<div id="header-menu" class="span12">
 		<div class="navbar navbar-inverse navbar-fixed-top">
 	      <div class="navbar-inner">
 	        <div class="container-fluid">
@@ -79,7 +79,7 @@
 
 
 	<!-- content-->
-	<div id="photolog-content">
+	<div id="photolog-content" class="span12">
 
     		{% block content %}{% endblock %}
 
@@ -89,17 +89,12 @@
 
 
 	<!-- footer begin -->
-	<div id="footer">
+	<div id="footer" class="span12">
 	    <div class="navbar navbar-inverse navbar-fixed-bottom">
 	      <div class="navbar-inner">
 	        <div class="container-fluid">
-	          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-			            <span class="icon-bar"></span>
-	          </button>
 			  <div id="footer-menu" class="nav-collapse collapse">
-			        <p id="since" class="navbar-text pull-right">Since 2013</p>
+			        <p id="since" class="navbar-text pull-left">Since 2013</p>
 			</div>
 	        </div>
 	      </div>

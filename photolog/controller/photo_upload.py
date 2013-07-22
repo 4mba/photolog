@@ -49,18 +49,24 @@ def upload_photo():
     lat = request.form['lat']
     lng = request.form['lng']
     upload_date = datetime.today()
-    taken_date = datetime.strptime(request.form['date'], "%Y:%m:%d %H:%M:%S");
-    upload_photo = request.files['upload']
+
+    try:
+        taken_date = datetime.strptime(request.form['date'], "%Y:%m:%d %H:%M:%S");
+    except Exception as e:
+        taken_date = datetime.today()
     
+    upload_photo = request.files['upload']
     filename = None
     filesize = 0
+    filename111 = secure_filename(unicode(upload_photo.filename))
+    filename_orig = upload_photo.filename
+    print "securefile:"+filename111
+    print "original:"+ upload_photo.filename
 
     # 파일 업로드시 발생하는 예외 처리
     try:
         if upload_photo and allowed_file(upload_photo.filename):
             # secure_filename은 한글 지원 안됨
-            filename111 = secure_filename(unicode(upload_photo.filename))
-            print filename111
             
             ext = (upload_photo.filename).rsplit('.', 1)[1]
             filename = userid +'_'+ unicode(uuid.uuid4()) + '.' + ext
@@ -76,7 +82,7 @@ def upload_photo():
 
     # DB에 저장할 때 발생하는 예외 처리
     try :
-        photo = Photo(userid, tag, comment, filename, filesize, lat, lng, upload_date, taken_date)
+        photo = Photo(userid, tag, comment, filename_orig, filename, filesize, lat, lng, upload_date, taken_date)
         dao.add(photo)
         dao.commit()
 
