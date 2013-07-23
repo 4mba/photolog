@@ -43,7 +43,8 @@ def upload_form(filename=None):
 @login_required
 def upload_photo():
 
-    userid = session['user_info'].username
+    user_id = session['user_info'].id
+    username = session['user_info'].username
     tag = request.form['tag']
     comment = request.form['memo']
     lat = request.form['lat']
@@ -69,26 +70,30 @@ def upload_photo():
             # secure_filename은 한글 지원 안됨
             
             ext = (upload_photo.filename).rsplit('.', 1)[1]
-            filename = userid +'_'+ unicode(uuid.uuid4()) + '.' + ext
+            filename = username +'_'+ unicode(uuid.uuid4()) + '.' + ext
             upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
             upload_photo.save(os.path.join(upload_folder, filename))
             filesize = os.stat(upload_folder+filename).st_size
+            
+            print "filename:" + filename
 
         else:
-            raise Exception("File uoload error : illegal file.")
+            raise Exception("File upload error : illegal file.")
     except Exception as e:
-        Log.error("Upload error : " + str(e))
+        Log.error(str(e))
+        raise e
 
 
     # DB에 저장할 때 발생하는 예외 처리
     try :
-        photo = Photo(userid, tag, comment, filename_orig, filename, filesize, lat, lng, upload_date, taken_date)
+        photo = Photo(user_id, tag, comment, filename_orig, filename, filesize, lat, lng, upload_date, taken_date)
         dao.add(photo)
         dao.commit()
 
     except Exception as e:
         dao.rollback()
         Log.error("Upload DB error : " + str(e))
+        raise e
 
     return redirect(url_for('.show_all'))
 
