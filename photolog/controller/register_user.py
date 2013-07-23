@@ -125,7 +125,7 @@ def unregist():
         user = dao.query(User).filter_by(id=user_id).first()
         if user.id == user_id:
             dao.delete(user)
-            # 업로드된 사진 파일 삭
+            # 업로드된 사진 파일 삭제
             try:
                 upload_folder = os.path.join(current_app.root_path, 
                                              current_app.config['UPLOAD_FOLDER'])
@@ -142,8 +142,12 @@ def unregist():
         dao.rollback()
         raise e
     else:
-        return redirect(url_for('.login'))
+        return redirect(url_for('.leave'))
 
+@photolog.route('/leave')
+def leave():
+        return render_template('unregist.html')
+    
 def __delete_files(filepath, username):
     import glob
     del_filepath_rule = filepath  + username + "_*"
