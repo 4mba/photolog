@@ -23,9 +23,6 @@ from photolog.controller.login import login_required
 from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
 
-
-
-
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
 def allowed_file(filename):
@@ -53,7 +50,7 @@ def upload_photo():
 
     try:
         taken_date = datetime.strptime(request.form['date'], "%Y:%m:%d %H:%M:%S");
-    except Exception as e:
+    except :
         taken_date = datetime.today()
     
     upload_photo = request.files['upload']
@@ -64,7 +61,6 @@ def upload_photo():
     print "securefile:"+filename111
     print "original:"+ upload_photo.filename
 
-    # 파일 업로드시 발생하는 예외 처리
     try:
         if upload_photo and allowed_file(upload_photo.filename):
             # secure_filename은 한글 지원 안됨
@@ -83,8 +79,6 @@ def upload_photo():
         Log.error(str(e))
         raise e
 
-
-    # DB에 저장할 때 발생하는 예외 처리
     try :
         photo = Photo(user_id, tag, comment, filename_orig, filename, filesize, lat, lng, upload_date, taken_date)
         dao.add(photo)
@@ -105,7 +99,3 @@ def modify(photolog_id):
     photo = dao.query(Photo).filter_by(id=photolog_id).first()
     
     return render_template('upload.html', photo=photo)
-
-
-
-
