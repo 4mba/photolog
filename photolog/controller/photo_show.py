@@ -11,27 +11,20 @@
 
 
 import os
-from flask import request, redirect, url_for, current_app, send_from_directory \
+from flask import request, current_app, send_from_directory \
 				, render_template, session
-from werkzeug.utils import secure_filename
+from sqlalchemy import or_
 
 from photolog.database import dao
 from photolog.model.photo import Photo
 from photolog.controller.login import login_required
-from photolog.exif_reader import EXIFReader
-
 from photolog.photolog_blueprint import photolog
-from datetime import datetime
-
 from photolog.photolog_logger import Log
 
-from sqlalchemy import or_
 
-import uuid
-
-
-# 파일 사이즈를 일기 편한포맷으로 변경해주는 함수
 def sizeof_fmt(num):
+    """파일 사이즈를 일기 편한포맷으로 변경해주는 함수"""
+    
     for x in ['bytes', 'KB', 'MB', 'GB']:
         if num < 1024.0:
             return "%3.1f%s" % (num, x)
@@ -39,14 +32,13 @@ def sizeof_fmt(num):
     return "%3.1f%s" % (num, 'TB')
 
 
-
 @photolog.route('/photo/show/')
 @login_required
 def show_all():    
-    userid = session['user_info'].username
+    user_id = session['user_info'].id
     
     return render_template('entry_all.html',
-                           photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.upload_date.desc()).all(),
+                           photos=dao.query(Photo).filter_by(user_id=user_id).order_by(Photo.upload_date.desc()).all(),
                            sizeof_fmt=sizeof_fmt)
 
 
@@ -62,10 +54,11 @@ def download_photo(photolog_id):
 @photolog.route('/photo/show/map')
 @login_required
 def show_map(): 
-    userid = session['user_info'].username
-    Log.debug(userid)
-    return render_template('show_map.html', photos=dao.query(Photo).filter_by(userid=userid).order_by(Photo.taken_date.desc()).all())
-    
+    user_id = session['user_info'].id
+    Log.debug(user_id)
+    return render_template('show_map.html', photos=dao.query(Photo).filter_by(user_id=user_id).order_by(Photo.taken_date.desc()).all())
+
+
 @photolog.route('/photo/search', methods=['POST'])
 @login_required
 def search_photo():    
@@ -75,9 +68,7 @@ def search_photo():
     if (search_word == ''):
         return show_all();
     
-    userid = session['user_info'].username    
+    user_id = session['user_info'].id    
     return render_template('entry_all.html',
-                           photos=dao.query(Photo).filter_by(userid=userid).filter(or_(Photo.comment.like("%" + search_word + "%"), Photo.tag.like("%" + search_word + "%"))).order_by(Photo.upload_date.desc()).all(),
+                           photos=dao.query(Photo).filter_by(user_id=user_id).filter(or_(Photo.comment.like("%" + search_word + "%"), Photo.tag.like("%" + search_word + "%"))).order_by(Photo.upload_date.desc()).all(),
                            sizeof_fmt=sizeof_fmt)
-
-
