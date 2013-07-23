@@ -21,7 +21,7 @@ class Photo(Base):
     __tablename__ = 'photos'
 
     id = Column(Integer, primary_key=True)
-    userid = Column(String(50), ForeignKey(User.id))
+    user_id = Column(Integer, ForeignKey(User.id))
     tag = Column(String(100), unique=False)
     comment = Column(String(400), unique=False)
     filename_orig = Column(String(400), unique=False)
@@ -32,8 +32,8 @@ class Photo(Base):
     upload_date = Column(DateTime, unique=False)
     taken_date = Column(DateTime, unique=False)
 
-    def __init__(self, userid, tag, comment, filename_orig, filename, filesize, geotag_lat, geotag_lng, upload_date, taken_date):
-        self.userid = userid
+    def __init__(self, user_id, tag, comment, filename_orig, filename, filesize, geotag_lat, geotag_lng, upload_date, taken_date):
+        self.user_id = user_id
         self.tag = tag
         self.comment = comment
         self.filename_orig = filename_orig
@@ -45,4 +45,4 @@ class Photo(Base):
         self.taken_date = taken_date
 
     def __repr__(self):
-        return '<Photo %r %r>' % (self.userid, self.upload_date)
+        return '<Photo %r %r>' % (self.user_id, self.upload_date)
