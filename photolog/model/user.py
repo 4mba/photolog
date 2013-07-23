@@ -11,6 +11,7 @@
 
 
 from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import relationship
 
 from photolog.model import Base
 
@@ -21,8 +22,10 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     username = Column(String(50), unique=True)
     email = Column(String(50), unique=True)
-    password = Column(String(120), unique=False)
+    password = Column(String(55), unique=False)
 
+    photos = relationship('Photo', backref='user', cascade='all, delete, delete-orphan')
+    
     def __init__(self, name, email, password):
         self.username = name
         self.email = email
