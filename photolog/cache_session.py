@@ -72,6 +72,9 @@ class CacheSessionInterface(SessionInterface):
 
         cache_exp = self.get_cache_expiration_time(app, session)
         
+        
+        
+        
         val = dict(session)
         self.cache.set(self.prefix + session.sid, val, 
                        int(cache_exp.total_seconds()))
