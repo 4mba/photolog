@@ -51,6 +51,17 @@ def download_photo(photolog_id):
     return send_from_directory(realpath, photo.filename, as_attachment=True , mimetype='image/jpg')
 
 
+
+@photolog.route('/photo/thumbnail/<photolog_id>')
+@login_required
+def download_thumbnail(photolog_id):
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+    realpath = photolog.root_path + os.sep + current_app.config['UPLOAD_FOLDER']
+    
+    return send_from_directory(realpath, "thumb_"+photo.filename, as_attachment=True , mimetype='image/jpg')
+
+
+
 @photolog.route('/photo/show/map')
 @login_required
 def show_map(): 
