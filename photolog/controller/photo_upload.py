@@ -22,6 +22,8 @@ from photolog.model.photo import Photo
 from photolog.controller.login import login_required
 from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
+from PIL import Image
+
 
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'gif'])
 
@@ -56,25 +58,26 @@ def upload_photo():
     upload_photo = request.files['upload']
     filename = None
     filesize = 0
-    filename111 = secure_filename(unicode(upload_photo.filename))
     filename_orig = upload_photo.filename
-    print "securefile:"+filename111
-    print "original:"+ upload_photo.filename
 
     try:
         if upload_photo and allowed_file(upload_photo.filename):
             # secure_filename은 한글 지원 안됨
             
             ext = (upload_photo.filename).rsplit('.', 1)[1]
-            filename = username +'_'+ unicode(uuid.uuid4()) + '.' + ext
+            filename = secure_filename(username +'_'+ unicode(uuid.uuid4())+"."+ext)
+            
             upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
             upload_photo.save(os.path.join(upload_folder, filename))
+            
             filesize = os.stat(upload_folder+filename).st_size
             
-            print "filename:" + filename
+            make_thumbnails(filename)
+            
 
         else:
             raise Exception("File upload error : illegal file.")
+
     except Exception as e:
         Log.error(str(e))
         raise e
@@ -99,3 +102,29 @@ def modify(photolog_id):
     photo = dao.query(Photo).filter_by(id=photolog_id).first()
     
     return render_template('upload.html', photo=photo)
+
+
+
+
+def make_thumbnails(filename):
+    
+    upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+
+    original_file = upload_folder+filename
+    target_name = upload_folder+"thumb_"+filename
+    
+    try:
+        im = Image.open(original_file)
+        im = im.convert('RGB')
+        im.thumbnail((300,300), Image.ANTIALIAS)
+        im.save(target_name)
+
+    except Exception as e:
+        Log.error("Thumbnails creation error : " + target_name+" , "+str(e))
+        raise e
+    
+
+@photolog.route('/iphone')
+def iphone():
+    return render_template('iphone.html')
+
