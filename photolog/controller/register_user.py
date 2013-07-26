@@ -150,9 +150,18 @@ def leave():
     
 def __delete_files(filepath, username):
     import glob
+    
+    #: 원본 이미지 파일 제거
     del_filepath_rule = filepath  + username + "_*"
     files = glob.glob(del_filepath_rule)
     for f in files:
         Log.debug(f)
         os.remove(f)
 
+    #: 썸네일 제거
+    del_filepath_rule = filepath  + "thumb_*"
+    files = glob.glob(del_filepath_rule)
+    for f in files:
+        Log.debug(f)
+        os.remove(f)
+    
