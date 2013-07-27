@@ -15,7 +15,7 @@
 				    <div class="fileupload fileupload-new" data-provides="fileupload">
 					    <div class="fileupload-new thumbnail span6" >
 					        <p>
-    					    	<img id="preview" class="span12" src="http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image" />
+    					    	<img id="preview" class="span12" src="{% if photo %} {{ url_for('photolog.download_thumbnail', photolog_id=photo.id) }} {% else %}http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image{% endif %}" />
 					    	</p>
 					    </div>
 				
@@ -27,14 +27,18 @@
 							    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
 							</span>
 						    -->
-						    <p>
-					    	<input id="photo" type="file" class="btn-file input-small span12" name="upload" />
+                            <p>
+						    {% if photo %}
+						    &nbsp; 
+						    {% else %}
+        					    	<input id="photo" type="file" class="btn-file input-small span12" name="upload" />
+                            {% endif %} 
                             </p>
                             <p>
-                            <input type="text" class="input-large span12" name="tag" placeholder="Tag">
+                            <input type="text" class="input-large span12" name="tag" placeholder="Tag" value="{% if photo %}{{photo.tag}}{% endif %}">
                             </p>
                             <p>
-	                            <textarea class="input-block-level" rows="3" name="memo" placeholder="memo"></textarea>
+	                            <textarea class="input-block-level" rows="3" name="memo" placeholder="memo">{% if photo %}{{photo.comment}}{% endif %}</textarea>
                             </p>
                             <P>
                             <button type="submit" name="submit" class="btn btn-medium btn-block btn-primary">저장하기</button>
@@ -59,10 +63,9 @@
 				</div> <!-- end of row-fluid span9 -->
 		   </div> <!-- end of row-fluid -->
 		   <div class="container">
-                <input type="hidden" name="date" value="">
-                <input type="hidden" name="lat" value="">
-                <input type="hidden" name="lng" value="">
-                
+                <input type="hidden" name="date" value="{% if photo %}{{photo.taken_date.strftime('%Y:%m:%d %H:%M:%S')}}{% endif %}}">
+                <input type="hidden" name="lat" value="{% if photo %}{{photo.geotag_lat}}{% endif %}">
+                <input type="hidden" name="lng" value="{% if photo %}{{photo.geotag_lng}}{% endif %}">
 		   </div>
 	    </form>    
 	    
@@ -79,9 +82,16 @@
         map = new GMaps({
           zoom : 17,
           div: '#photo-location',
-          lat: 37.565467,
-          lng: 126.975431 
+          lat: {% if photo %}{{ photo.geotag_lat }}{% else %} 37.565467 {% endif %},
+          lng: {% if photo %}{{ photo.geotag_lng }}{% else %} 126.975431 {% endif %} 
         });
+
+        {% if photo %}
+          map.addMarker({
+            lat: {{ photo.geotag_lat }},
+            lng: {{ photo.geotag_lng }},
+          });
+        {% endif %}
 
         
         // 검색된 위치 업데이트
@@ -105,8 +115,8 @@
                         $('[name=lat]').val(lat);
                         $('[name=lng]').val(lng);
                         
-                        alert("lat:"+lat);
-                        alert("lat:"+ $('[name=lat]').val());
+                        // alert("lat:"+lat);
+                        // alert("lat:"+ $('[name=lat]').val());
 
                     }
                 }
@@ -116,20 +126,25 @@
 
         $('#upload').submit(function(e){
             
-            
             if($('[name=tag]').val() == "" || $('[name=memo]').val() == "") {
                 bootbox.alert("태그와 메모를 남겨 주세요");
                 return false;
             }
-
-            if($('input[type=file]').val() == "") {
-                bootbox.alert("사진파일을 선택해주세요");
-                return false;
-            }
+            
+            {% if photo %} 
+            {% else %}
+                if($('input[type=file]').val() == "") {
+                    bootbox.alert("사진파일을 선택해주세요");
+                    return false;
+                }
+            {% endif %}
             
             if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
                 bootbox.alert("위치정보를 입력해주세요");
                 return false;
+            }else{
+                $('[name=lat]').val(lat);
+                $('[name=lng]').val(lng);
             }
             
         });
@@ -180,13 +195,9 @@
 
                     // update location
                     map.setCenter(lat, lng)
-                    
-                    map.drawOverlay({
+                    map.addMarker({
                         lat: lat,
-                        lng: lng,
-                        content: '<div class="overlay">Here!<div class="overlay_arrow above"></div></div>',
-                        verticalAlign: 'top',
-                        horizontalAlign: 'center'
+                        lng: lng
                     });
                 }
 
