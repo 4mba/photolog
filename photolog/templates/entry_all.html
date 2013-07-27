@@ -19,6 +19,8 @@
                   <th>Memo</th>
                   <th>TakenDate</th>
                   <th>UploadDate</th>
+                  <th>수정</th>
+                  <th>삭제</th>
                 </tr>
               </thead>
               <tbody>
@@ -28,16 +30,23 @@
                   <td style="vertical-align:middle;">{{ loop.index }}</td>
                   <td style="vertical-align:middle;"> 
 				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
-				       <a href="/photo/modify/{{photo.id}}">
-				    	<img src="{{ url_for('photolog.download_thumbnail', photolog_id=photo.id) }}" style="width: 95px; height: 75px;"/>
-				       </a>
+				        
+				       <!-- <a href="/photo/modify/{{photo.id}}"> -->
+				    	<img src="{{ url_for('photolog.download_thumbnail', photolog_id=photo.id) }}" onclick="javascript:show('{{ url_for('photolog.download_photo', photolog_id=photo.id) }}');" style="width: 95px; height: 75px;"/>
+				       <!-- </a> -->
 				    </div>
                   </td>
-                  <td style="vertical-align:middle;">  <span class="badge badge-success">{{ sizeof_fmt(photo.filesize) }}</span></td>
+                  <td style="vertical-align:middle;"><span class="badge badge-success">{{ sizeof_fmt(photo.filesize) }}</span></td>
                   <td style="vertical-align:middle;"><span class="label label-info">{{ photo.tag }}</span></td>
                   <td style="vertical-align:middle;">{{ photo.comment }}</td>
                   <td style="vertical-align:middle;">{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td style="vertical-align:middle;">{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                  <td style="vertical-align:middle;">
+                      <button class="btn btn-primary btn-mini" onclick="javascript:modify('{{ url_for('photolog.modify', photolog_id=photo.id)}}');">수정</span>
+                  </td>
+                  <td style="vertical-align:middle;">
+                      <button class="btn btn-danger btn-mini" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">삭제</span>
+                  </td>
                 </tr>
 			  {% endfor %}
 
@@ -68,5 +77,38 @@
 		</p>
 		</div>
 	</div>
+
+<script>
+
+function show(url){
+    bootbox.alert("<a href='"+url+"' target='_blank'><img src='"+url+"' style='width:100%;'></a>");    
+}
+
+
+function modify(url){
+    window.location.href = url;
+}
+
+
+function remove(url){
+
+    alert(url);
+
+    bootbox.confirm("삭제 하시겠습니까?", function(result) {
+        
+        
+        
+        if(result == true){
+            window.location.href= url;
+        }
+
+    }); 
+
+}
+
+</script>
 	
 {% endblock %}
+
+
+
