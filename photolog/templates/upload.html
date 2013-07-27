@@ -7,10 +7,10 @@
 <!-- File Upload Form -->
 {% block content %}
 
-  <div class="container well">
+  <div class="container span12">
 		
-	    <form name="upload" class="form-horizontal" method='POST' action='/photo/upload' enctype='multipart/form-data' runat="server">
-	    	<div class="row-fluid">
+	    <form id="upload" name="upload" class="form-horizontal span12" method='POST' action='/photo/upload' enctype='multipart/form-data' runat="server">
+	    	<div class="row-fluid span12">
 		    	<div class="span4">
 				    <div class="fileupload fileupload-new" data-provides="fileupload">
 					    <div class="fileupload-new thumbnail span6" >
@@ -42,12 +42,19 @@
 					    </div>
 					  </div>
 				</div> <!-- end of row-fluid span4 -->
-				<div class="span8" >
-				    <div class="container well span12" >
-				    		&nbsp; <i class="icon-map-marker"> </i> Show Google Map
-                            <div id="photo-location" class="photo_location span12">
-                                
-                            </div>
+				<div class="span8 well" >
+    
+                    <div class="span12" >
+
+                        <div class="input-append">
+                            <p>
+                                <input class="span12" id="address" name="address" type="text" placeholder="지역이름">
+                                <button id="address-search" class="btn btn-success" type="button">찾기</button>
+                            </p>
+                        </div>
+
+                        <div id="photo-location" class="photo_location span12">
+                        </div>
               		</div>
 				</div> <!-- end of row-fluid span9 -->
 		   </div> <!-- end of row-fluid -->
@@ -63,6 +70,71 @@
 
 	<script type="text/javascript">
 	
+        var lat; // GPSLatitude
+        var lng; // GPSLongitude
+        var date;// DateTimeOriginal
+
+
+        // 기본위치로 서울 덕수궁으로 표시한다.
+        map = new GMaps({
+          zoom : 17,
+          div: '#photo-location',
+          lat: 37.565467,
+          lng: 126.975431 
+        });
+
+        
+        // 검색된 위치 업데이트
+        $('#address-search').click(function(e){
+            e.preventDefault();
+            
+            GMaps.geocode({
+                address: $('#address').val().trim(),
+                callback: function(results, status){
+                    if(status=='OK'){
+                        var latlng = results[0].geometry.location;
+                        map.setCenter(latlng.lat(), latlng.lng());
+                        map.addMarker({
+                            lat: latlng.lat(),
+                            lng: latlng.lng()
+                        });
+                        
+                        lat = latlng.lat();
+                        lng = latlng.lng();
+
+                        $('[name=lat]').val(lat);
+                        $('[name=lng]').val(lng);
+                        
+                        alert("lat:"+lat);
+                        alert("lat:"+ $('[name=lat]').val());
+
+                    }
+                }
+            });
+        });
+
+
+        $('#upload').submit(function(e){
+            
+            
+            if($('[name=tag]').val() == "" || $('[name=memo]').val() == "") {
+                bootbox.alert("태그와 메모를 남겨 주세요");
+                return false;
+            }
+
+            if($('input[type=file]').val() == "") {
+                bootbox.alert("사진파일을 선택해주세요");
+                return false;
+            }
+            
+            if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
+                bootbox.alert("위치정보를 입력해주세요");
+                return false;
+            }
+            
+        });
+
+      
 
 		// reference code : http://jsfiddle.net/LvsYc/ 
         function readURL(input) {
@@ -80,21 +152,6 @@
 		
 		// When photo uploaded
 		$("#photo").change(function() {
-		    
-
-            // navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
-//             
-            // function foundLocation(position)
-            // {
-              // var lat = position.coords.latitude;
-              // var long = position.coords.longitude;
-              // alert('Found location: ' + lat + ', ' + long);
-            // }
-            // function noLocation()
-            // {
-              // alert('Could not find location');
-            // }
-            
 
             readURL(this);
 		    
@@ -105,28 +162,11 @@
 		        
                 // Reference code : http://jsfiddle.net/xQnMd/1/
 		        var exif = EXIF.readFromBinaryFile(new BinaryFile(this.result));
-		        var lat;
-                var lng;
-                var date;
+
                 
                 // exif에서 GPS정보를 가져올 수 없는 경우
                 if(exif.GPSLatitude == undefined) {
-                    
-                    navigator.geolocation.getCurrentPosition(foundLocation, noLocation);
-                    
-                    function foundLocation(position) {
-                        lat = parseFloat(position.coords.latitude).toFixed(6);
-                        lng = parseFloat(position.coords.longitude).toFixed(6);
-                        
-                        var now = new Date(); 
-                        date = now.toString("yyyy:MM:dd"); 
-                        alert("lat:"+lat +",lng:"+lng +",date:"+date);
-                    }
-
-                    function noLocation(){
-                      alert('Could not find location');
-                    }
-                    
+                    bootbox.alert("사진에서 GPS정보를 가져올 수 없습니다. 위치를 검색해 주세요");
                 }
                 // exif에서 GPS정보를 가져올 수 있는 경우
                 else {
@@ -134,33 +174,21 @@
                     lng = toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef);
                     date = exif.DateTimeOriginal;
                     
-                    //exif에 사진을 찍은 date정보가 없을 경우 현재시간으로 대체
-                    if(date == undefined){
-                        var now = new Date();
-                        date = now.toString("yy:MM:DD HH:MM:SS"); 
-                    }
-                }
-                
-                $('[name=date]').val(date);
-                $('[name=lat]').val(lat);
-                $('[name=lng]').val(lng);
-                
+                    $('[name=date]').val(date);
+                    $('[name=lat]').val(lat);
+                    $('[name=lng]').val(lng);
 
-                map = new GMaps({
-                  zoom : 17,
-                  div: '#photo-location',
-                  lat: lat,
-                  lng: lng 
-                });
-                
-                
-                map.drawOverlay({
-                    lat: map.getCenter().lat(),
-                    lng: map.getCenter().lng(),
-                    content: '<div class="overlay">Here!<div class="overlay_arrow above"></div></div>',
-                    verticalAlign: 'top',
-                    horizontalAlign: 'center'
-                });
+                    // update location
+                    map.setCenter(lat, lng)
+                    
+                    map.drawOverlay({
+                        lat: lat,
+                        lng: lng,
+                        content: '<div class="overlay">Here!<div class="overlay_arrow above"></div></div>',
+                        verticalAlign: 'top',
+                        horizontalAlign: 'center'
+                    });
+                }
 
 
 		    };
