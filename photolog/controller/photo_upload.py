@@ -106,6 +106,34 @@ def modify(photolog_id):
 
 
 
+
+@photolog.route('/photo/remove/<photolog_id>')
+@login_required
+def remove(photolog_id):
+
+    user_id = session['user_info'].id
+    
+    try:
+        photo = dao.query(Photo).filter_by(id=str(photolog_id)).first()
+        
+        dao.delete(photo)
+        dao.commit()
+
+        upload_folder = str(os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER']))
+        
+        os.remove(upload_folder + str(photo.filename))
+        os.remove(upload_folder + "thumb_"+str(photo.filename))
+
+    except Exception as e:
+        dao.rollback()
+        Log.error("Photo remove error : " + photolog_id+":"+user_id+" , "+str(e))
+        raise e
+    
+    return redirect(url_for('.show_all'))
+
+
+
+
 def make_thumbnails(filename):
     
     upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
@@ -123,8 +151,4 @@ def make_thumbnails(filename):
         Log.error("Thumbnails creation error : " + target_name+" , "+str(e))
         raise e
     
-
-@photolog.route('/iphone')
-def iphone():
-    return render_template('iphone.html')
 
