@@ -45,7 +45,7 @@ def upload_photo():
     user_id = session['user_info'].id
     username = session['user_info'].username
     tag = request.form['tag']
-    comment = request.form['memo']
+    comment = request.form['comment']
     lat = request.form['lat']
     lng = request.form['lng']
     upload_date = datetime.today()
@@ -93,6 +93,40 @@ def upload_photo():
         raise e
 
     return redirect(url_for('.show_all'))
+
+
+
+
+
+
+
+@photolog.route('/photo/update/<photolog_id>', methods=['POST'])
+@login_required
+def update_photo(photolog_id):
+
+    tag = request.form['tag']
+    comment = request.form['comment']
+    lat = request.form['lat']
+    lng = request.form['lng']
+    
+    print 'lat:'+lat
+    print 'lng:'+lng
+
+    try :
+        photo = dao.query(Photo).filter_by(id=photolog_id).first()
+
+        photo = Photo(photo.user_id, tag, comment, photo.filename_orig, photo.filename, photo.filesize, lat, lng, photo.upload_date, photo.taken_date)
+        dao.add(photo)
+        dao.commit()
+
+    except Exception as e:
+        dao.rollback()
+        Log.error("Update DB error : " + str(e))
+        raise e
+
+    return redirect(url_for('.show_all'))
+
+
 
 
 
