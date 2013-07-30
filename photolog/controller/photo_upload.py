@@ -113,10 +113,14 @@ def update_photo(photolog_id):
     print 'lng:'+lng
 
     try :
+        
         photo = dao.query(Photo).filter_by(id=photolog_id).first()
-
-        photo = Photo(photo.user_id, tag, comment, photo.filename_orig, photo.filename, photo.filesize, lat, lng, photo.upload_date, photo.taken_date)
-        dao.add(photo)
+        
+        photo.tag = tag
+        photo.comment = comment
+        photo.geotag_lat = lat
+        photo.geotag_lng = lng
+        
         dao.commit()
 
     except Exception as e:
@@ -133,6 +137,7 @@ def update_photo(photolog_id):
 @photolog.route('/photo/modify/<photolog_id>')
 @login_required
 def modify(photolog_id):
+
     photo = dao.query(Photo).filter_by(id=photolog_id).first()
     
     return render_template('upload.html', photo=photo)
