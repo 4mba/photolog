@@ -78,31 +78,28 @@
 		</div>
 	</div>
 
-<script>
 
-function show(url){
-    bootbox.alert("<a href='"+url+"' target='_blank' title='다운로드'><img src='"+url+"' style='width:100%;'></a>");    
-}
+<script type="text/javascript">
 
-
-function modify(url){
-    window.location.href = url;
-}
+    function show(url){
+        bootbox.alert("<a href='"+url+"' target='_blank' title='다운로드'><img src='"+url+"' style='width:100%;'></a>");    
+    }
+    
 
 
-function remove(url){
+    function modify(url){
+        window.location.href = url;
+    }
 
-    bootbox.confirm("삭제 하시겠습니까?", function(result) {
-        
-        alert(result+":");
-        
-        if(result == true){
-            window.location.href= url;
-        }
 
-    }); 
-
-}
+    function remove(url){
+    
+        bootbox.confirm("삭제 하시겠습니까?", function(result) {
+            if(result == true){
+                window.location.href= url;
+            }
+        }); 
+    }
 
 </script>
 	
