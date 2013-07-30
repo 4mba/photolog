@@ -54,9 +54,6 @@
 	          </button>
 	          <a class="brand" href="{{ url_for('photolog.index') }}">&nbsp;<i class="icon-picture"></i>Photolog</a>
 	          <div class="nav-collapse collapse">
-	            <p id="logout" class="navbar-text pull-right">
-	              <a href="#" class="navbar-link"><i class="icon-user"></i> Logout</a>
-	            </p>
 	            <ul class="nav">
 		        		<li class="active"><a  href="{{ url_for('photolog.show_map') }}" ><i class="icon-map-marker icon-large"></i> 지도에서 사진보기 </a></li>
 		        		<li class="active"><a  href="{{ url_for('photolog.show_all') }}" ><i class="icon-th-list icon-large"></i> 사진 목록 보기 </a></li>
@@ -65,7 +62,8 @@
 					</li>
 			     </ul>
 	            <ul class="nav pull-right">
-					<li><a href="{% if session.user_info %}{{ url_for('photolog.modify_user', username=session.user_info.username) }}{% endif %}">개인정보 수정</a></li>
+                    <li><a href="{% if session.user_info %}{{ url_for('photolog.modify_user', username=session.user_info.username) }}{% endif %}">개인정보 수정</a></li>
+                    <li><a id="logout" href="#" class="navbar-link"><i class="icon-user"></i> Logout</a></li>
 				</ul>
 				<form class="navbar-search pull-left form-search" action="{{ url_for('photolog.search_photo') }}" method="POST">
 					<div class="input-append">
