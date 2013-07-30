@@ -7,11 +7,15 @@ html {
 
 body {
   font-family; 'Nanum Gothic', Arial, sans-serif;
-  background-color: #f2f2f2;
+  /*background-color: #f2f2f2;*/
   color: #333333;
-  padding-top: 60px;
+  /*padding-top: 60px;*/
   height: 100%;
+  vertical-align : middle;
+  text-align : middle;
 }
+
+
 
 #map-large {
   height:500px;
@@ -32,9 +36,6 @@ img {
 	height: 360px;
 }
 
-.login {
-
-}
 
 
 #photo-location{
@@ -86,4 +87,11 @@ img {
 }
 
 
+td.valign-middle {
+    vertical-align : middle;
+}
 
+
+th {
+    text-align : center;
+}
