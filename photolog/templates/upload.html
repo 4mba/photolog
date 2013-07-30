@@ -7,127 +7,143 @@
 <!-- File Upload Form -->
 {% block content %}
 
-  <div class="container span12">
+    <div class="container-fluid span12">
 		
-	    <form id="upload" name="upload" class="form-horizontal span12" method='POST' action='/photo/upload' enctype='multipart/form-data' runat="server">
-	    	<div class="row-fluid span12">
-		    	<div class="span4">
-				    <div class="fileupload fileupload-new" data-provides="fileupload">
-					    <div class="fileupload-new thumbnail span6" >
-					        <p>
-    					    	<img id="preview" class="span12" src="{% if photo %} {{ url_for('photolog.download_thumbnail', photolog_id=photo.id) }} {% else %}http://www.placehold.it/200x150/EFEFEF/AAAAAA&text=no+image{% endif %}" />
-					    	</p>
-					    </div>
-				
-					    <div>
-					    	<!--
-						    <span class="btn btn-file">
-						    	<span class="fileupload-new">Select image</span>
-						    	<span class="fileupload-exists">Change</span>
-							    <a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
-							</span>
-						    -->
-                            <p>
-						    {% if photo %}
-						    &nbsp; 
-						    {% else %}
-        					    	<input id="photo" type="file" class="btn-file input-small span12" name="upload" />
-                            {% endif %} 
-                            </p>
-                            <p>
-                            <input type="text" class="input-large span12" name="tag" placeholder="Tag" value="{% if photo %}{{photo.tag}}{% endif %}">
-                            </p>
-                            <p>
-	                            <textarea class="input-block-level" rows="3" name="memo" placeholder="memo">{% if photo %}{{photo.comment}}{% endif %}</textarea>
-                            </p>
-                            <P>
-                            <button type="submit" name="submit" class="btn btn-medium btn-block btn-primary">저장하기</button>
-                            </P>
-					    </div>
-					  </div>
-				</div> <!-- end of row-fluid span4 -->
-				<div class="span8 well" >
+        <div class="row-fluid"> <!-- Begin photo data input -->
+            <div class="span4 well" style="height: 430px;"> <!-- first column begin -->
+                <form id="upload" name="upload" class="form-horizontal span12" method="POST" action="{% if photo %}{{ url_for('photolog.update_photo', photolog_id=photo.id) }}{% else %}{{ url_for('photolog.upload_photo') }}{% endif %}" enctype="multipart/form-data" >
+                    <div class="fileupload fileupload-new" data-provides="fileupload">
+                        {% if photo %}
+                            <div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;">
+                                <a href="{{url_for('photolog.download_photo', photolog_id=photo.id)}}" target="_blank">
+                                    <img src="{{url_for('photolog.download_thumbnail', photolog_id=photo.id)}}" width="200" height="150">
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="fileupload-preview thumbnail" style="width: 200px; height: 150px;"> </div>
+                            <div>
+                                <span class="btn btn-file btn-info">
+                                    <span class="fileupload-new"> <i class="icon-picture"></i> 사진찾기</span>
+                                    <span class="fileupload-exists"> <i class="icon-pencil"></i> 변경</span>
+                                    <input id="photo" type="file" name="upload" />
+                                </span>
+                                <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"> <i class="icon-remove"></i> 지우기</a>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <p>
+                        <input type="text" class="input-large input-block-level" name="tag" placeholder="Tag" value="{% if photo %}{{photo.tag}}{% endif %}">
+                    </p>
+                    
+                    <p>
+                        <textarea class="input-block-level" rows="5" name="comment" placeholder="comment">{% if photo %}{{photo.comment}}{% endif %}</textarea>
+                    </p>
+
+                    <div>
+                        <input type="hidden" name="date" value="">
+                        <input type="hidden" name="lat"  value="">
+                        <input type="hidden" name="lng"  value="">
+                    </div>
+                </form>        
+            </div> <!-- end of first column -->
+        
+            <div class="span8 well" style="height: 430px;" > <!-- begin map data -->
+            
+                <div class="input-append" style="margin-bottom: 10px;">
+                    <input  id="address" name="address" type="text" placeholder="지역이름" style="width: 110px;">
+                    <button id="address-search" class="btn btn-success" type="button">
+                        <i class="icon-search"></i> 검색
+                    </button>
+                    <button id="current-location" class="btn btn-primary" type="button" onclick="javascript:currentLocation();">
+                        <i class="icon-map-marker"></i> 현재
+                    </button>
+                </div>
+                
+                <div id="photo-location" class="photo_location span12"> </div>
     
-                    <div class="span12" >
+            </div> <!-- end of map-data  -->      
+        </div> <!-- end of first row -->
 
-                        <div class="input-append">
-                            <p>
-                                <input class="span12" id="address" name="address" type="text" placeholder="지역이름">
-                                <button id="address-search" class="btn btn-success" type="button">찾기</button>
-                            </p>
-                        </div>
+            
+        <div class="row-fluid">
+            <div class="span12">
+                <div>
+                   <button class="btn btn-block btn-primary span4" onclick="javacscript:$('#upload').submit();"><i class="icon-save"></i> 저장하기</button>
+                </div>
+            </div>
+        </div>
 
-                        <div id="photo-location" class="photo_location span12">
-                        </div>
-              		</div>
-				</div> <!-- end of row-fluid span9 -->
-		   </div> <!-- end of row-fluid -->
-		   <div class="container">
-                <input type="hidden" name="date" value="{% if photo %}{{photo.taken_date.strftime('%Y:%m:%d %H:%M:%S')}}{% endif %}}">
-                <input type="hidden" name="lat" value="{% if photo %}{{photo.geotag_lat}}{% endif %}">
-                <input type="hidden" name="lng" value="{% if photo %}{{photo.geotag_lng}}{% endif %}">
-		   </div>
-	    </form>    
-	    
-	</div>
+        </div>
+	</div> <!-- End of Container -->
 
 	<script type="text/javascript">
 	
-        var lat; // GPSLatitude
-        var lng; // GPSLongitude
-        var date;// DateTimeOriginal
-
-
-        // 기본위치로 서울 덕수궁으로 표시한다.
+        // 기본위치로 서울 덕수궁을 지도에 표시한다.
         map = new GMaps({
-          zoom : 17,
-          div: '#photo-location',
-          lat: {% if photo %}{{ photo.geotag_lat }}{% else %} 37.565467 {% endif %},
-          lng: {% if photo %}{{ photo.geotag_lng }}{% else %} 126.975431 {% endif %} 
+            zoom : 17,
+            div: '#photo-location',
+            lat: {% if photo %}{{ photo.geotag_lat }}{% else %} 37.565467 {% endif %},
+            lng: {% if photo %}{{ photo.geotag_lng }}{% else %} 126.975431 {% endif %} 
         });
 
+        // 사진에 대한 정보가 있는 경우
         {% if photo %}
-          map.addMarker({
-            lat: {{ photo.geotag_lat }},
-            lng: {{ photo.geotag_lng }},
-          });
+            map.addMarker({
+                lat: {{ photo.geotag_lat }},
+                lng: {{ photo.geotag_lng }}
+            });
+            
+            // Form의 GPS정보를 업데이트한다. 
+            $('[name=lat]').val('{{ photo.geotag_lat }}');
+            $('[name=lng]').val('{{ photo.geotag_lng }}');
+
+        {% else %}
+            // GPS 정보를 가져올 수 있는 경우, 현재 위치로 업데이트한다.
+            currentLocation();
         {% endif %}
 
         
-        // 검색된 위치 업데이트
+        // 사용자가 위치를 검색 하는 경우
         $('#address-search').click(function(e){
             e.preventDefault();
             
+            if($('#address').val().trim() == "") {
+                bootbox.alert('지역이름을 입력하세요.');
+                return false;
+            }
+            
+            // 입력된 위치를 검색하여 위치를 보여준다
             GMaps.geocode({
                 address: $('#address').val().trim(),
                 callback: function(results, status){
                     if(status=='OK'){
                         var latlng = results[0].geometry.location;
                         map.setCenter(latlng.lat(), latlng.lng());
+                        
+                        // 최종 위치만 필요함으로 이미 설정된 모든 marker를 제거한다.
+                        map.removeMarkers();
+                        // 최종 위치 마킹
                         map.addMarker({
                             lat: latlng.lat(),
                             lng: latlng.lng()
                         });
                         
-                        lat = latlng.lat();
-                        lng = latlng.lng();
-
-                        $('[name=lat]').val(lat);
-                        $('[name=lng]').val(lng);
+                        // 최종 위치정보 업데이트
+                        $('[name=lat]').val(latlng.lat());
+                        $('[name=lng]').val(latlng.lng());
                         
-                        // alert("lat:"+lat);
-                        // alert("lat:"+ $('[name=lat]').val());
-
                     }
                 }
             });
         });
 
-
+        // upload 버튼이 눌러 졌을때
         $('#upload').submit(function(e){
             
-            if($('[name=tag]').val() == "" || $('[name=memo]').val() == "") {
-                bootbox.alert("태그와 메모를 남겨 주세요");
+            //POST 되기 전에 값 검증을 한다. 
+            if($('[name=tag]').val() == "" || $('[name=comment]').val() == "") {
+                bootbox.alert("태그와 설명을 남겨 주세요");
                 return false;
             }
             
@@ -138,38 +154,19 @@
                     return false;
                 }
             {% endif %}
-            
+
             if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
                 bootbox.alert("위치정보를 입력해주세요");
                 return false;
-            }else{
-                $('[name=lat]').val(lat);
-                $('[name=lng]').val(lng);
             }
+            
             
         });
-
       
 
-		// reference code : http://jsfiddle.net/LvsYc/ 
-        function readURL(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function (e) {
-                $('#preview').attr('src', e.target.result);
-            }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-
-		
-		// When photo uploaded
+		// 사진 업로드가 완료되었을때
 		$("#photo").change(function() {
 
-            readURL(this);
-		    
 		    var file = this.files[0];
 		    fr   = new FileReader;
 
@@ -177,38 +174,33 @@
 		        
                 // Reference code : http://jsfiddle.net/xQnMd/1/
 		        var exif = EXIF.readFromBinaryFile(new BinaryFile(this.result));
-
                 
                 // exif에서 GPS정보를 가져올 수 없는 경우
                 if(exif.GPSLatitude == undefined) {
                     bootbox.alert("사진에서 GPS정보를 가져올 수 없습니다. 위치를 검색해 주세요");
                 }
+                
                 // exif에서 GPS정보를 가져올 수 있는 경우
                 else {
-                    lat = toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef);
-                    lng = toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef);
-                    date = exif.DateTimeOriginal;
-                    
-                    $('[name=date]').val(date);
-                    $('[name=lat]').val(lat);
-                    $('[name=lng]').val(lng);
+                    // 사진파일의 exif를 이용하여 해당 값들을 설정함
+                    $('[name=date]').val(exif.DateTimeOriginal);
+                    $('[name=lat]').val(toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef));
+                    $('[name=lng]').val(toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef));
 
-                    // update location
-                    map.setCenter(lat, lng)
+                    // 위치정보 업데이트
+                    map.setCenter($('[name=lat]').val(), $('[name=lng]').val())
                     map.addMarker({
-                        lat: lat,
-                        lng: lng
+                        lat: $('[name=lat]').val(),
+                        lng: $('[name=lng]').val()
                     });
                 }
-
-
 		    };
 		    
 		    fr.readAsBinaryString(file);
 		});
 		
 
-
+        // Exif정보를 파싱후 ConvertDMSToDD 로 전달하여 decimal 값을 리턴한다.
         function toDecimal(gps_src, gps_ref){
 
             var temp_array="";
@@ -221,10 +213,10 @@
             ref = gps_ref;
                         
             return ConvertDMSToDD(deg, min, sec, ref);
-            // return parseFloat(translator(deg, min, sec, ref)).toFixed(6);
         }
 
- 
+        
+        // Exif에서 읽어온 GPS정보를 decimal 값으로 변환하는 함수
         function ConvertDMSToDD(days, minutes, seconds, direction) {
 
             var dd = parseFloat(days) + parseFloat(minutes/60) + parseFloat(seconds/(60*60));
@@ -237,6 +229,36 @@
         }
 
 
- 
+        // HTML5의 위치정보를 이용하여 현재 위치를 얻어옴
+        function currentLocation(){
+            GMaps.geolocate({
+                success: function(position) {
+                    map.setCenter(position.coords.latitude, position.coords.longitude);
+                    // 최종 위치만 필요함으로 이미 설정된 모든 marker를 제거한다.
+                    map.removeMarkers();
+     
+                    map.addMarker({
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    });
+
+                    // 최종 위치정보 업데이트
+                    $('[name=lat]').val(position.coords.latitude);
+                    $('[name=lng]').val(position.coords.longitude);
+                },
+
+                error: function(error) {
+                    bootbox.alert('GPS정보 읽기를 실패하였습니다. : ' + error.message);
+                },
+
+                not_supported: function() {
+                    bootbox.alert("GPS정보를 제공하지 않는 브라우저 입니다.");
+                },
+
+                always: function() {
+                    //Do Nothing
+                }
+            });
+        }
 	</script>
 {% endblock %}
