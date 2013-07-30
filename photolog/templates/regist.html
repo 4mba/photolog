@@ -7,16 +7,13 @@
 <!-- 사용자 등록 폼 -->
 {% block content %}
 
-  <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" >
-
-    <div class="container-fluid">
+  <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" style="position:absolute; overflow:scroll;">
 
     	<div class="modal-head">
             <button class="close" data-dismiss="modal"><i class="icon-remove"></i></button>
     		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;{% if user %}회원 정보 수정{% else %}회원 가입{% endif %}</h3>
     	</div>
-	
-        
+    	            
     	<div class="modal-body">
     		<form class="form-horizontal" action='#' method="POST">
     		  <fieldset>
@@ -64,8 +61,6 @@
     		  </fieldset>
     		</form>
     	</div>
-
-    </div> <!-- end of Container -->
 
 </div>
 
