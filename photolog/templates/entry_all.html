@@ -8,17 +8,17 @@
 {% block content %}
 
   <div class="row-fluid span12">
-	<div class="container span12">
-            <table class="table table-hover text-center span12">
+	<div class="span12 valign-middle">
+            <table class="table table-hover text-center" align="center">
               <thead>
                 <tr>
                   <th>#</th>
-                  <th>Thumbnails</th>
-                  <th>Size</th>
-                  <th>Tag</th>
-                  <th>Memo</th>
-                  <th>TakenDate</th>
-                  <th>UploadDate</th>
+                  <th>미리보기</th>
+                  <th>용량</th>
+                  <th>태그</th>
+                  <th>메모</th>
+                  <th>찍은날</th>
+                  <th>올린날</th>
                   <th>수정</th>
                   <th>삭제</th>
                 </tr>
@@ -27,8 +27,8 @@
               
 		      {% for photo in photos %}
                 <tr>
-                  <td style="vertical-align:middle;">{{ loop.index }}</td>
-                  <td style="vertical-align:middle;"> 
+                  <td class="valign-middle">{{ loop.index }}</td>
+                  <td class="valign-middle"> 
 				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
 				        
 				       <!-- <a href="/photo/modify/{{photo.id}}"> -->
@@ -36,16 +36,16 @@
 				       <!-- </a> -->
 				    </div>
                   </td>
-                  <td style="vertical-align:middle;"><span class="badge badge-success">{{ sizeof_fmt(photo.filesize) }}</span></td>
-                  <td style="vertical-align:middle;"><span class="label label-info">{{ photo.tag }}</span></td>
-                  <td style="vertical-align:middle;">{{ photo.comment }}</td>
-                  <td style="vertical-align:middle;">{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                  <td style="vertical-align:middle;">{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
-                  <td style="vertical-align:middle;">
-                      <button class="btn btn-primary btn-mini" onclick="javascript:modify('{{ url_for('photolog.modify', photolog_id=photo.id)}}');">수정</span>
+                  <td class="valign-middle"><span class="badge badge-success">{{ sizeof_fmt(photo.filesize) }}</span></td>
+                  <td class="valign-middle"><span class="label label-info">{{ photo.tag }}</span></td>
+                  <td class="valign-middle">{{ photo.comment }}</td>
+                  <td class="valign-middle">{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                  <td class="valign-middle">{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                  <td class="valign-middle">
+                      <button class="btn btn-default btn-mini" onclick="javascript:modify('{{ url_for('photolog.modify', photolog_id=photo.id)}}');"><i class="icon-pencil"></i></button>
                   </td>
-                  <td style="vertical-align:middle;">
-                      <button class="btn btn-danger btn-mini" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">삭제</span>
+                  <td class="valign-middle">
+                      <button class="btn btn-default btn-mini" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');"><i class="icon-remove"></i></button>
                   </td>
                 </tr>
 			  {% endfor %}
@@ -81,7 +81,7 @@
 <script>
 
 function show(url){
-    bootbox.alert("<a href='"+url+"' target='_blank'><img src='"+url+"' style='width:100%;'></a>");    
+    bootbox.alert("<a href='"+url+"' target='_blank' title='다운로드'><img src='"+url+"' style='width:100%;'></a>");    
 }
 
 
@@ -92,11 +92,9 @@ function modify(url){
 
 function remove(url){
 
-    alert(url);
-
     bootbox.confirm("삭제 하시겠습니까?", function(result) {
         
-        
+        alert(result+":");
         
         if(result == true){
             window.location.href= url;
