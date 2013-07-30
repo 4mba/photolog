@@ -8,56 +8,65 @@
 {% block content %}
 
   <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" >
-	<div class="modal-head">
-		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;{% if user %}회원 정보 수정{% else %}회원 가입{% endif %}</h3>
-	</div>
-	<div class="modal-body">
-		<form class="form-horizontal" action='#' method="POST">
-		  <fieldset>
-			<div class="control-group">
-			  <!-- Username -->
-			  <label class="control-label"  for="username">아이디</label>
-			  <div class="controls">
-			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
-			    {% if id_error %}<p class="help-block">{{ id_error }}</p>{% endif %}
-			  </div>
-			</div>
-		 
-		    <div class="control-group">
-		      <!-- E-mail -->
-		      <label class="control-label" for="email">E-mail</label>
-		      <div class="controls">
-		        <input type="email" id="email" name="email" {% if user %}value="{{ user.email }}"{% endif %} placeholder="이메일 주소를 입력해주세요" class="input-xlarge" required>
-		      </div>
-		    </div>
-		 
-		    <div class="control-group">
-		      <!-- Password-->
-		      <label class="control-label" for="password">비밀번호</label>
-		      <div class="controls">
-		        <input type="password" id="password" name="password" placeholder="최소한 4 글자 이상으로 해주세요" class="input-xlarge" data-minLength=4 required>
-		        {% if pass_error %}<p class="help-block">{{ pass_error }}</p>{% endif %}
-		      </div>
-		    </div>
-		 
-		    <div class="control-group">
-		      <!-- Password -->
-		      <label class="control-label"  for="password_confirm">비밀번호(재입력)</label>
-		      <div class="controls">
-		        <input type="password" id="password_confirm" name="password_confirm" placeholder="비밀번호를 다시 입력해주세요" class="input-xlarge" required>
-		      </div>
-		    </div>
-		 
-		    <div class="control-group">
-		      <!-- Button -->
-		      <div class="controls">
-		        <button class="btn btn-success">{% if user %}회원 정보 수정{% else %}가입하기{% endif %}</button>
-		        {% if user %}<button id="unregist" class="btn btn-primary">서비스 탈퇴</button>{% endif %}
-		      </div>
-		    </div>
-		  </fieldset>
-		</form>
-	</div>
+
+    <div class="container-fluid">
+
+    	<div class="modal-head">
+            <button class="close" data-dismiss="modal"><i class="icon-remove"></i></button>
+    		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;{% if user %}회원 정보 수정{% else %}회원 가입{% endif %}</h3>
+    	</div>
+	
+        
+    	<div class="modal-body">
+    		<form class="form-horizontal" action='#' method="POST">
+    		  <fieldset>
+    			<div class="control-group">
+    			  <!-- Username -->
+    			  <label class="control-label"  for="username">아이디</label>
+    			  <div class="controls">
+    			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
+    			    {% if id_error %}<p class="help-block">{{ id_error }}</p>{% endif %}
+    			  </div>
+    			</div>
+    		 
+    		    <div class="control-group">
+    		      <!-- E-mail -->
+    		      <label class="control-label" for="email">E-mail</label>
+    		      <div class="controls">
+    		        <input type="email" id="email" name="email" {% if user %}value="{{ user.email }}"{% endif %} placeholder="이메일 주소를 입력해주세요" class="input-xlarge" required>
+    		      </div>
+    		    </div>
+    		 
+    		    <div class="control-group">
+    		      <!-- Password-->
+    		      <label class="control-label" for="password">비밀번호</label>
+    		      <div class="controls">
+    		        <input type="password" id="password" name="password" placeholder="최소한 4 글자 이상으로 해주세요" class="input-xlarge" data-minLength=4 required>
+    		        {% if pass_error %}<p class="help-block">{{ pass_error }}</p>{% endif %}
+    		      </div>
+    		    </div>
+    		 
+    		    <div class="control-group">
+    		      <!-- Password -->
+    		      <label class="control-label"  for="password_confirm">비밀번호(재입력)</label>
+    		      <div class="controls">
+    		        <input type="password" id="password_confirm" name="password_confirm" placeholder="비밀번호를 다시 입력해주세요" class="input-xlarge" required>
+    		      </div>
+    		    </div>
+    		 
+    		    <div class="control-group">
+    		      <!-- Button -->
+    		      <div class="controls">
+    		        <button class="btn btn-success">{% if user %}회원 정보 수정{% else %}가입하기{% endif %}</button>
+    		        {% if user %}<button id="unregist" class="btn btn-primary">서비스 탈퇴</button>{% endif %}
+    		      </div>
+    		    </div>
+    		  </fieldset>
+    		</form>
+    	</div>
+
+    </div> <!-- end of Container -->
+
 </div>
 
     <script type="text/javascript">
