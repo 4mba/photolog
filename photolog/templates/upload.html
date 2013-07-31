@@ -10,7 +10,7 @@
     <div class="container-fluid span12">
 		
         <div class="row-fluid"> <!-- Begin photo data input -->
-            <div class="span4 well" style="height: 430px;"> <!-- first column begin -->
+            <div class="span4 well" style="height: 420px;"> <!-- first column begin -->
                 <form id="upload" name="upload" class="form-horizontal span12" method="POST" action="{% if photo %}{{ url_for('photolog.update_photo', photolog_id=photo.id) }}{% else %}{{ url_for('photolog.upload_photo') }}{% endif %}" enctype="multipart/form-data" >
                     <div class="fileupload fileupload-new" data-provides="fileupload">
                         {% if photo %}
@@ -48,7 +48,7 @@
                 </form>        
             </div> <!-- end of first column -->
         
-            <div class="span8 well" style="height: 430px;" > <!-- begin map data -->
+            <div class="span8 well" style="height: 420px;" > <!-- begin map data -->
             
                 <div class="input-append" style="margin-bottom: 10px;">
                     <input  id="address" name="address" type="text" placeholder="지역이름" style="width: 110px;">
@@ -67,7 +67,7 @@
 
             
         <div class="row-fluid">
-            <div class="span12">
+            <div class="span12" style="margin-top: -10px;">
                 <div>
                    <button class="btn btn-block btn-primary span4" onclick="javacscript:$('#upload').submit();"><i class="icon-save"></i> 저장하기</button>
                 </div>
@@ -103,7 +103,28 @@
             currentLocation();
         {% endif %}
 
+
+        // 지도에서 마우스클릭으로 사용자가 원하는 위치를 직접 입력 가능하도록 해주는 함수
+        GMaps.on('click', map.map, function(event) {
+            var index = map.markers.length;
+            var lat = event.latLng.lat();
+            var lng = event.latLng.lng();
+            
+            // 최종 위치만 필요함으로 이미 설정된 모든 marker를 제거한다.
+            map.removeMarkers();
+
+            map.addMarker({
+                lat: lat,
+                lng: lng,
+            });
+
+            // 최종 위치정보 업데이트
+            $('[name=lat]').val(lat);
+            $('[name=lng]').val(lng);
+        });
         
+        
+            
         // 사용자가 위치를 검색 하는 경우
         $('#address-search').click(function(e){
             e.preventDefault();
