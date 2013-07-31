@@ -41,8 +41,12 @@
                   <td class="valign-middle">{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td class="valign-middle">{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td class="valign-middle">
-                      <span class="label label-important" onclick="javascript:modify('{{ url_for('photolog.modify', photolog_id=photo.id)}}');"><i class="icon-pencil"></i></span>  
-                      <span class="label label-warning" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');"><i class="icon-remove"></i></span>
+                      <span class="label label-important" onclick="javascript:modify('{{ url_for('photolog.modify', photolog_id=photo.id)}}');">
+                          <i class="icon-pencil"></i>
+                      </span>  
+                      <span class="label label-warning" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">
+                          <i class="icon-remove"></i>
+                      </span>
                   </td>
                 </tr>
 			  {% endfor %}
