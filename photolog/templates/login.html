@@ -7,38 +7,51 @@
 
 {% block content %}
     <!-- HTML Source Code from : http://bootsnipp.com/snipps/full-width-login-form -->
-    <div class="container">
+    <div class="container-fluid" >
       <div class="row">
-        <div id="login" class="modal fade well" data-keyboard="false" data-backdrop="static" style="display: show; position:absolute; overflow:auto;">
-          <legend>로그인 하기 </legend>
-          {% if error %}
-          <div class="alert alert-error">
-            <a class="close" data-dismiss="alert" href="#">×</a>{{ error }}
-          </div>
-          {% endif %}
+        <form method="POST" action="{{ url_for('photolog.login') }}" accept-charset="UTF-8">
+        <div id="login-form" class="modal fade modal-login" data-keyboard="false" data-backdrop="static" style="display: show; position:absolute; overflow:auto;">
+
+            <div class="modal-head">
+              <legend>&nbsp;<i class="icon-user"></i> 로그인 하기</legend>
+              {% if error %}
+              <div class="alert alert-error">
+                <a class="close" data-dismiss="alert" href="#">×</a>{{ error }}
+              </div>
+              {% endif %}
+           </div>
 
           <div class="modal-body">
-            <form method="POST" action="{{ url_for('photolog.login') }}" accept-charset="UTF-8">
               <input type="hidden" name="next" value="{{ next }}" >
-              <input type="text" id="username" class="span4" name="username" placeholder="Username">
-              <input type="password" id="password" class="span4" name="password" placeholder="Password">
+              <input type="text" id="username" class="input-block-level" name="username" placeholder="Username">
+              <input type="password" id="password" class="input-block-level" name="password" placeholder="Password">
               <label class="checkbox">
                   <input type="checkbox" name="remember" value="1"> ID 기억하기
               </label>
-              <div class="modal-footer">
-                <button type="submit" name="submit" class="btn btn-info btn-block">로그인</button>
-                <a href="{{ url_for('photolog.register_user') }}" class="btn btn-default btn-block" >가입하기</a>
-              </div>
-           </form>
           </div> <!-- modal-body -->
+          
+          <div class="modal-footer">
+              <button type="submit" name="submit" class="btn btn-info">로그인</button>
+              <a href="{{ url_for('photolog.register_user') }}" class="btn btn-success" >가입하기</a>
+          </div>          
+
         
         </div> <!-- login -->
+       </form>
       </div> <!-- row -->
     </div> <!-- container -->
 
     <script type="text/javascript">
-      $('#login').modal('show');
+      // $('#login-form').modal('show').css ({
+//           
+          // 'margin-left': function () {
+              // return -($(this).width() / 2);
+          // }         
+      // });
+//       
+      $('#login-form').modal('show');
       $('#username').focus();
+      
     </script>
 
     
