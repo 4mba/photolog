@@ -9,6 +9,10 @@
     :license: MIT LICENSE 2.0, see license for more details.
 """
 
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
 
 if __name__ == '__main__':
     print "starting test server..."
