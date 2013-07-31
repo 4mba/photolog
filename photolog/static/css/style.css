@@ -15,7 +15,10 @@ body {
   text-align : middle;
 }
 
-
+body .modal-login {
+    width: 300px;
+    /*margin-left: -150px;*/
+}
 
 #map-large {
   height:500px;
