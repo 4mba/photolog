@@ -7,15 +7,16 @@
 <!-- 사용자 등록 폼 -->
 {% block content %}
 
-  <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" style="position:absolute; overflow:auto;">
+<form class="form-horizontal" action='#' method="POST">
 
-    	<div class="modal-head">
+    <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" style="position:absolute; overflow:auto;">
+
+    	<div class="modal-header">
             <button class="close" data-dismiss="modal" onclick="javascript:history.back(1);"><i class="icon-remove"></i> &nbsp;</button>
     		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;{% if user %}회원 정보 수정{% else %}회원 가입{% endif %}</h3>
     	</div>
     	            
     	<div class="modal-body">
-    		<form class="form-horizontal" action='#' method="POST">
     		  <fieldset>
     			<div class="control-group">
     			  <!-- Username -->
@@ -51,18 +52,16 @@
     		      </div>
     		    </div>
     		 
-    		    <div class="control-group">
-    		      <!-- Button -->
-    		      <div class="controls">
-    		        <button class="btn btn-success">{% if user %}회원 정보 수정{% else %}가입하기{% endif %}</button>
-    		        {% if user %}<button id="unregist" class="btn btn-primary">서비스 탈퇴</button>{% endif %}
-    		      </div>
-    		    </div>
     		  </fieldset>
-    		</form>
-    	</div>
+    	</div> <!-- modal-body -->
+    	
+    	<div class="modal-footer">
+            <button class="btn btn-success">{% if user %}회원 정보 수정{% else %}가입하기{% endif %}</button>
+            {% if user %}<button id="unregist" class="btn btn-primary">서비스 탈퇴</button>{% endif %}
+    	</div> <!-- modal-footer -->
 
-</div>
+    </div>
+</form>
 
     <script type="text/javascript">
  		$('#regist').modal('show');
