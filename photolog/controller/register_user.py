@@ -25,7 +25,7 @@ from photolog.controller.login import login_required
 @photolog.route('/user/regist', methods=['POST', 'GET'])
 def register_user():
     """포토로그 사용자 등록을 위한 함수"""
-    print "%s invoked!" % request.method
+
     # HTTP POST로 요청이 오면 사용자 정보를 등록
     if request.method == 'POST':
 
