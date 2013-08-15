@@ -208,7 +208,9 @@
                     $('[name=lat]').val(toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef));
                     $('[name=lng]').val(toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef));
 
-                    // 위치정보 업데이트
+                    // 최종 위치만 필요함으로 이미 설정된 모든 marker를 제거한다.
+                    map.removeMarkers();
+                                            // 위치정보 업데이트
                     map.setCenter($('[name=lat]').val(), $('[name=lng]').val())
                     map.addMarker({
                         lat: $('[name=lat]').val(),
