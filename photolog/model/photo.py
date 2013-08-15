@@ -33,6 +33,8 @@ class Photo(Base):
     taken_date = Column(DateTime, unique=False)
 
     def __init__(self, user_id, tag, comment, filename_orig, filename, filesize, geotag_lat, geotag_lng, upload_date, taken_date):
+        """Photo 모델 클래스를 초기화 한다."""
+        
         self.user_id = user_id
         self.tag = tag
         self.comment = comment
@@ -44,5 +46,8 @@ class Photo(Base):
         self.upload_date = upload_date
         self.taken_date = taken_date
 
+
     def __repr__(self):
+        """모델의 주요 정보를 출력한다."""        
+        
         return '<Photo %r %r>' % (self.user_id, self.upload_date)
