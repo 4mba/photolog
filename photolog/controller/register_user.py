@@ -25,7 +25,7 @@ from photolog.controller.login import login_required
 @photolog.route('/user/regist', methods=['POST', 'GET'])
 def register_user():
     """포토로그 사용자 등록을 위한 함수"""
-    print "%s invoked!" % request.method
+
     # HTTP POST로 요청이 오면 사용자 정보를 등록
     if request.method == 'POST':
 
@@ -79,32 +79,33 @@ def modify_user(username=None):
         password_confirm = request.form['password_confirm']
         
         try:
-            old_user = dao.query(User).filter_by(username=username).first()
+            current_user = dao.query(User).filter_by(username=username).first()
     
-            Log.debug(old_user)  
+            Log.debug(current_user)  
         except Exception as e:
             Log.error(str(e))
             raise e
                 
         if password == '' or password_confirm == '':
             error = "패스워드에 공백은 허용하지 않습니다."
-            return render_template('regist.html', user=old_user, pass_error=error)    
+            return render_template('regist.html', user=current_user, pass_error=error)    
         if password == password_confirm:
             try:
-                old_user.email = email
-                old_user.password = generate_password_hash(password)
+                current_user.email = email
+                current_user.password = generate_password_hash(password)
                 dao.commit()
-
             except Exception as e:
                 dao.rollback()
                 Log.error(str(e))
                 raise e
             else:
+                update_user = current_user
+                session['user_info'] = update_user
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
         else:
             error = "패스워드가 일치하지 않습니다. 다시 입력해주세요."
-            return render_template('regist.html', user=old_user, pass_error=error)
+            return render_template('regist.html', user=current_user, pass_error=error)
     #HTTP GET으로 요청이 오면 사용자 정보 수정 화면을 보여줌
     else:
         try:
@@ -145,6 +146,7 @@ def unregist():
         return redirect(url_for('.leave'))
 
 @photolog.route('/leave')
+@login_required
 def leave():
         return render_template('unregist.html')
     
