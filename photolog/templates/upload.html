@@ -32,13 +32,15 @@
                         {% endif %}
                     </div>
                     
-                    <p>
-                        <input type="text" class="input-large input-block-level" name="tag" placeholder="Tag" value="{% if photo %}{{photo.tag}}{% endif %}">
-                    </p>
-                    
-                    <p>
-                        <textarea class="input-block-level" rows="5" name="comment" placeholder="comment">{% if photo %}{{photo.comment}}{% endif %}</textarea>
-                    </p>
+                    <div> <!-- TAG, COMMENT FORM-->
+                        <p>
+                            <input type="text" class="input-large input-block-level" name="tag" placeholder="Tag" value="{% if photo %}{{photo.tag}}{% endif %}">
+                        </p>
+                        
+                        <p>
+                            <textarea class="input-block-level" rows="5" name="comment" placeholder="comment">{% if photo %}{{photo.comment}}{% endif %}</textarea>
+                        </p>
+                    </div>
 
                     <div>
                         <input type="hidden" name="date" value="">
