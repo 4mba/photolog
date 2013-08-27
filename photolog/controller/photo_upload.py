@@ -28,19 +28,16 @@ from PIL import Image
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
 
-
-def allowed_file(filename):
+def __allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
-
 @photolog.route('/photo/upload')
-@photolog.route('/photo/upload/<filename>')
 @login_required
-def upload_form(filename=None):
+def upload_form():
     """ 사진파일을 업로드 하기 위해 업로드폼 화면으로 전환시켜주는 함수 """
     
-    return render_template('upload.html', filename=filename)
+    return render_template('upload.html')
 
 
 
@@ -73,7 +70,7 @@ def upload_photo():
 
     try:
         #: 파일 확장자 검사 : 현재 jpg, jpeg만 가능
-        if upload_photo and allowed_file(upload_photo.filename):
+        if upload_photo and __allowed_file(upload_photo.filename):
             
             ext = (upload_photo.filename).rsplit('.', 1)[1]
 
@@ -81,6 +78,7 @@ def upload_photo():
             filename = secure_filename(username +'_'+ unicode(uuid.uuid4())+"."+ext)
             
             upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+            
             upload_photo.save(os.path.join(upload_folder, filename))
             
             filesize = os.stat(upload_folder+filename).st_size
@@ -88,7 +86,6 @@ def upload_photo():
             #: 썸네일을 만든다.
             make_thumbnails(filename)
             
-
         else:
             raise Exception("File upload error : illegal file.")
 
@@ -167,8 +164,7 @@ def remove(photolog_id):
         dao.delete(photo)
         dao.commit()
 
-        upload_folder = str(os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER']))
-        
+        upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
         os.remove(upload_folder + str(photo.filename))
         os.remove(upload_folder + "thumb_"+str(photo.filename))
 
