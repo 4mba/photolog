@@ -32,6 +32,7 @@
     		      <label class="control-label" for="email">E-mail</label>
     		      <div class="controls">
     		        <input type="email" id="email" name="email" {% if user %}value="{{ user.email }}"{% endif %} placeholder="이메일 주소를 입력해주세요" class="input-xlarge" required>
+    		        {% if email_error %}<p class="help-block">{{ email_error }}</p>{% endif %}
     		      </div>
     		    </div>
     		 
