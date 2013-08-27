@@ -35,8 +35,9 @@ def login_required(f):
     """현재 사용자가 로그인 상태인지 확인하는 데코레이터
     로그인 상태에서 접근 가능한 함수에 적용함
     """
+    
     @wraps(f)
-    def decorated_function(*args, **kwargs):
+    def check_login(*args, **kwargs):
         try:
             session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
@@ -50,10 +51,10 @@ def login_required(f):
             return f(*args, **kwargs)
 
         except Exception as e:
-            Log.error("Login error occurs : %s" % str(e))
+            Log.error("check_login error occurs : %s" % str(e))
             raise e
 
-    return decorated_function
+    return check_login
 
 
 @photolog.route('/')
@@ -91,7 +92,7 @@ def login():
                 login_error = 'Invalid username or  password'
             else:
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
-                # 가령, UserInfo 클래스 같은 사용자 정보를 추가하는 객체 생성하고
+                # 가령, User 클래스 같은 사용자 정보를 추가하는 객체 생성하고
                 # 사용자 정보를 구성하여 session 객체에 추가
                 session['user_info'] = user
                 
@@ -103,7 +104,7 @@ def login():
         else:
             login_error = 'User does not exist!'
 
-    elif request.method == 'GET':
+    else:
         next_url = request.args.get('next', '')
         Log.info("(%s)next_url is %s" % (request.method, next_url))
 
@@ -111,6 +112,7 @@ def login():
 
 
 @photolog.route('/logout')
+@login_required
 def logout():
     """로그아웃 시에 호출되며 세션을 초기화함"""
     
