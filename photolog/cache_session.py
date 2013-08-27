@@ -63,7 +63,6 @@ class CacheSessionInterface(SessionInterface):
         domain = self.get_cookie_domain(app)
         
         if not session:
-
             self.cache.delete(self.prefix + session.sid)
             if session.modified:
                 response.delete_cookie(app.session_cookie_name,
@@ -71,9 +70,6 @@ class CacheSessionInterface(SessionInterface):
             return
 
         cache_exp = self.get_cache_expiration_time(app, session)
-        
-        
-        
         
         val = dict(session)
         self.cache.set(self.prefix + session.sid, val, 
