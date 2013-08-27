@@ -34,11 +34,10 @@ def register_user():
             
         username = request.form['username']
         email = request.form['email']
-
-        if password == '' or password_confirm == '':
-            error = "패스워드에 공백은 허용하지 않습니다."
-            return render_template('regist.html', pass_error=error)  
-
+ 
+        data_error = __validate_data(username, email, password, password_confirm)
+        if data_error: return data_error
+            
         if password == password_confirm:
             try:
                 user = User(username, email, generate_password_hash(password))
@@ -67,24 +66,32 @@ def register_user():
         return render_template('regist.html')
 
 
+def __validate_data(username, email, password, password_confirm):
+    template = None
+    if username == '':
+        error = "사용자명에 공백은 허용하지 않습니다."
+        template = render_template('regist.html', id_error=error) 
+    elif email == '':
+        error = "이메일에 공백은 허용하지 않습니다."
+        template = render_template('regist.html', email_error=error) 
+    elif password == '' or password_confirm == '':
+        error = "패스워드에 공백은 허용하지 않습니다."
+        template = render_template('regist.html', pass_error=error)
+    return template 
+        
+
 @photolog.route('/user/<username>', methods=['GET', 'POST'])
 @login_required
-def modify_user(username=None):
+def modify_user(username):
     """포토로그 사용자 정보 수정을 위한 함수"""
+    
+    current_user = __get_user(username)
     
     #HTTP POST로 요청이 오면 사용자 정보를 수정함
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
         password_confirm = request.form['password_confirm']
-        
-        try:
-            current_user = dao.query(User).filter_by(username=username).first()
-    
-            Log.debug(current_user)  
-        except Exception as e:
-            Log.error(str(e))
-            raise e
                 
         if password == '' or password_confirm == '':
             error = "패스워드에 공백은 허용하지 않습니다."
@@ -99,8 +106,10 @@ def modify_user(username=None):
                 Log.error(str(e))
                 raise e
             else:
-                update_user = current_user
-                session['user_info'] = update_user
+                # 변경된 사용자 정보를 세션에 반영
+                session['user_info'].email = current_user.email
+                session['user_info'].password = current_user.password
+                session['user_info'].password_confirm = current_user.password
                 # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
                 return redirect(url_for('.login'))
         else:
@@ -108,15 +117,17 @@ def modify_user(username=None):
             return render_template('regist.html', user=current_user, pass_error=error)
     #HTTP GET으로 요청이 오면 사용자 정보 수정 화면을 보여줌
     else:
-        try:
-            user = dao.query(User).filter_by(username=username).first()
-            Log.debug(user) 
-        except Exception as e:
-            Log.error(str(e))
-            raise e
-        else:
-            return render_template('regist.html', user=user)
+        return render_template('regist.html', user=current_user)
 
+def __get_user(username):
+    try:
+        current_user = dao.query(User).filter_by(username=username).first()
+
+        Log.debug(current_user)
+        return current_user  
+    except Exception as e:
+        Log.error(str(e))
+        raise e
 
 @photolog.route('/user/unregist')
 @login_required
@@ -161,7 +172,7 @@ def __delete_files(filepath, username):
         os.remove(f)
 
     #: 썸네일 제거
-    del_filepath_rule = filepath  + "thumb_*"
+    del_filepath_rule = filepath  + "thumb_" + username + "_*"
     files = glob.glob(del_filepath_rule)
     for f in files:
         Log.debug(f)
