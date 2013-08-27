@@ -44,11 +44,13 @@ def create_app(config_filepath='resource/config.cfg'):
         
     # 로그 초기화
     from photolog.photolog_logger import Log
-    Log.init(log_filepath=photolog_app.config['LOG_FILE_PATH'])
+    log_filepath = os.path.join(photolog_app.root_path, photolog_app.config['LOG_FILE_PATH'])
+    Log.init(log_filepath=log_filepath)
     
     # 데이터베이스 처리 
     from photolog.database import DBManager
-    db_url = photolog_app.config['DB_URL'] + photolog_app.config['DB_FILE_PATH']
+    db_filepath = os.path.join(photolog_app.root_path, photolog_app.config['DB_FILE_PATH'])
+    db_url = photolog_app.config['DB_URL'] + db_filepath
     DBManager.init(db_url, eval(photolog_app.config['DB_LOG_FLAG']))    
     DBManager.init_db()
        
