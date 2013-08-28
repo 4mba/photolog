@@ -11,14 +11,11 @@
 """
 
 
-import os
-
 class PhotologConfig(object):
     #: 데이터베이스 연결 URL
     DB_URL= 'sqlite:///'
     #: 데이터베이스 파일 경로
     DB_FILE_PATH= 'resource/database/photolog'
-    print "db file:" + DB_FILE_PATH
     #: 사진 업로드 시 사진이 임시로 저장되는 임시 폴더
     TMP_FOLDER = 'resource/tmp/'
     #: 업로드 완료된 사진 파일이 저장되는 폴더
