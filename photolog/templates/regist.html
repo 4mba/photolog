@@ -6,7 +6,52 @@
 
 <!-- 사용자 등록 폼 -->
 {% block content %}
+<script type=text/javascript>
+  $(function() {
+    var submit_form = function(e) {
+      if ($('input[name=username]').val() != '') {
+        $.ajax({
+        	url         : '/user/check_name'
+           ,type        : 'POST'
+           ,cache       : false
+           ,data        : JSON.stringify({
+        	   username: $('input[name=username]').val()
+             })
+           ,contentType : 'application/json; charset=utf-8'
+           ,dataType    : 'json'
+           ,success     : function(data) {
+        	   username = $('input[name=username]').val();
+        	   if (data.result) {
+        		   
+                   bootbox.alert(username + '는 사용 가능한 아이디입니다.', function() {
+                	   $('input[name=email]').focus();
+                  
+                   });
 
+        	   } else {
+                   bootbox.alert(username + '는 이미 사용중입니다. 다른 아이디를 사용하세요.', function() {
+                       $('#username').val('');
+                       $('input[name=username]').focus();
+                       
+                   });
+        	   }
+        		   
+             }
+           ,error: function(result) {
+        	   bootbox.alert('통신에 오류가 발생했습니다. 잠시 후에 다시 사용하세요.')
+           }
+        });
+        
+      } else { 
+    	  bootbox.alert('사용자명을 넣어주세요.')
+      }
+      return false;
+    };
+        
+    $('button#username_check').bind('click', submit_form);
+    $('input[name=username]').focus();
+  });
+</script>
 <form class="form-horizontal" action='#' method="POST">
 
     <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" style="position:absolute; overflow:auto;">
@@ -23,6 +68,7 @@
     			  <label class="control-label"  for="username">아이디</label>
     			  <div class="controls">
     			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
+    			    <button id="username_check" class="btn btn-primary">아이디 중복 확인</button>
     			    {% if id_error %}<p class="help-block">{{ id_error }}</p>{% endif %}
     			  </div>
     			</div>

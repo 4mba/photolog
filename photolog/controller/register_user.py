@@ -11,7 +11,8 @@
 
 
 import os
-from flask import render_template, request, redirect , url_for, session, current_app
+from flask import render_template, request, redirect , url_for, session, \
+                  current_app, jsonify
 from sqlalchemy.exc import IntegrityError
 from werkzeug import generate_password_hash
 
@@ -177,4 +178,14 @@ def __delete_files(filepath, username):
     for f in files:
         Log.debug(f)
         os.remove(f)
-    
+
+
+@photolog.route('/user/check_name', methods=['POST'])
+def check_name():
+    username = request.json['username']
+    print username
+    #: DB에서 username 중복 확인 
+    if __get_user(username) :
+        return jsonify(result = False)
+    else:
+        return jsonify(result = True)    
