@@ -37,7 +37,7 @@ def login_required(f):
     """
     
     @wraps(f)
-    def check_login(*args, **kwargs):
+    def decorated_function(*args, **kwargs):
         try:
             session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
@@ -54,7 +54,7 @@ def login_required(f):
             Log.error("check_login error occurs : %s" % str(e))
             raise e
 
-    return check_login
+    return decorated_function
 
 
 @photolog.route('/')
