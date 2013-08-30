@@ -22,20 +22,15 @@
            ,success     : function(data) {
         	   username = $('input[name=username]').val();
         	   if (data.result) {
-        		   
                    bootbox.alert(username + '는 사용 가능한 아이디입니다.', function() {
                 	   $('input[name=email]').focus();
-                  
                    });
-
         	   } else {
                    bootbox.alert(username + '는 이미 사용중입니다. 다른 아이디를 사용하세요.', function() {
                        $('#username').val('');
-                       $('input[name=username]').focus();
-                       
+                       $('input[name=username]').focus(); 
                    });
         	   }
-        		   
              }
            ,error: function(result) {
         	   bootbox.alert('통신에 오류가 발생했습니다. 잠시 후에 다시 사용하세요.')
@@ -68,7 +63,7 @@
     			  <label class="control-label"  for="username">아이디</label>
     			  <div class="controls">
     			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
-    			    <button id="username_check" class="btn btn-primary">아이디 중복 확인</button>
+    			    {% if not user %}<button id="username_check" class="btn btn-primary">아이디 중복 확인</button>{% endif %}
     			    {% if id_error %}<p class="help-block">{{ id_error }}</p>{% endif %}
     			  </div>
     			</div>
@@ -115,11 +110,10 @@
  		
  		
         $('#unregist').click(function(){
-            
+
             $('#regist').modal('hide');
 
             bootbox.confirm("정말 포토로그 서비스 사용을 그만두시겠습니까?", function(result) {
-
                 if(result){
                     // window.location="{{ url_for('photolog.unregist') }}"
                     $(location).attr('href',"{{ url_for('photolog.unregist') }}");
@@ -129,16 +123,6 @@
                 }
                 
             });
-
-         });
-
-
- 	    $('#leave').click(function(){
-             bootbox.confirm("정말 포토로그 서비스 사용을 그만두시겠습니까?", function(result) {
-                 if(result){
-                     window.location="{{ url_for('photolog.unregist') }}"
-                 }
-             });
 
          });
     </script>
