@@ -51,7 +51,7 @@ def login_required(f):
             return f(*args, **kwargs)
 
         except Exception as e:
-            Log.error("check_login error occurs : %s" % str(e))
+            Log.error("while checking session, error occurs : %s" % str(e))
             raise e
 
     return decorated_function
