@@ -126,8 +126,7 @@ def logout():
 class LoginForm(Form):
     """로그인 화면에서 사용자명과 패스워드 입력값을 검증함"""
     
-    username = TextField('Username', [validators.Length(min=4, max=50, message='사용자명은 4자리 이상 50자리 이하로 입력하세요.')])
-    password = PasswordField('New Password', [validators.Required('패스워드를 입력하세요.'), \
-                             validators.Length(min=4, max=50, message='패스워드 4자리 이상 50자리 이하로 입력하세요.')])
+    username = TextField('Username', [validators.Length(min=4, max=50, message='사용자명을 입력하세요.')])
+    password = PasswordField('New Password', [validators.Required('패스워드를 입력하세요.')])
     next_url = HiddenField('Next URL')
     
