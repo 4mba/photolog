@@ -15,6 +15,7 @@ from flask import render_template, request, redirect , url_for, session, \
                   current_app, jsonify
 from sqlalchemy.exc import IntegrityError
 from werkzeug import generate_password_hash
+from wtforms import Form, TextField, PasswordField, validators
 
 from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
@@ -27,18 +28,16 @@ from photolog.controller.login import login_required
 def register_user():
     """포토로그 사용자 등록을 위한 함수"""
 
+    form = RegisterForm(request.form)
     # HTTP POST로 요청이 오면 사용자 정보를 등록
-    if request.method == 'POST':
+    if request.method == 'POST' and form.validate():
 
-        password = request.form['password']
-        password_confirm = request.form['password_confirm']
+        password = form.password.data
+        password_confirm = form.password_confirm.data
             
-        username = request.form['username']
-        email = request.form['email']
- 
-        data_error = __validate_data(username, email, password, password_confirm)
-        if data_error: return data_error
-            
+        username = form.username.data
+        email = form.email.data
+  
         if password == password_confirm:
             try:
                 user = User(username, email, generate_password_hash(password))
@@ -61,24 +60,24 @@ def register_user():
                 return redirect(url_for('.login'))
         else:
             error = "패스워드가 일치하지 않습니다. 다시 입력해주세요."
-            return render_template('regist.html', pass_error=error)
+            return render_template('regist.html', pass_error=error, form=form)
     #HTTP GET으로 요청이 오면 사용자 등록 화면을 보여줌
     else:
-        return render_template('regist.html')
+        return render_template('regist.html', form=form)
 
-
-def __validate_data(username, email, password, password_confirm):
-    template = None
-    if username == '':
-        error = "사용자명에 공백은 허용하지 않습니다."
-        template = render_template('regist.html', id_error=error) 
-    elif email == '':
-        error = "이메일에 공백은 허용하지 않습니다."
-        template = render_template('regist.html', email_error=error) 
-    elif password == '' or password_confirm == '':
-        error = "패스워드에 공백은 허용하지 않습니다."
-        template = render_template('regist.html', pass_error=error)
-    return template 
+# 
+# def __validate_data(username, email, password, password_confirm):
+#     template = None
+#     if username == '':
+#         error = "사용자명에 공백은 허용하지 않습니다."
+#         template = render_template('regist.html', id_error=error) 
+#     elif email == '':
+#         error = "이메일에 공백은 허용하지 않습니다."
+#         template = render_template('regist.html', email_error=error) 
+#     elif password == '' or password_confirm == '':
+#         error = "패스워드에 공백은 허용하지 않습니다."
+#         template = render_template('regist.html', pass_error=error)
+#     return template 
         
 
 @photolog.route('/user/<username>', methods=['GET', 'POST'])
@@ -87,38 +86,30 @@ def modify_user(username):
     """포토로그 사용자 정보 수정을 위한 함수"""
     
     current_user = __get_user(username)
-    
+    form = RegisterForm(request.form)
     #HTTP POST로 요청이 오면 사용자 정보를 수정함
-    if request.method == 'POST':
-        email = request.form['email']
-        password = request.form['password']
-        password_confirm = request.form['password_confirm']
-                
-        if password == '' or password_confirm == '':
-            error = "패스워드에 공백은 허용하지 않습니다."
-            return render_template('regist.html', user=current_user, pass_error=error)    
-        if password == password_confirm:
-            try:
-                current_user.email = email
-                current_user.password = generate_password_hash(password)
-                dao.commit()
-            except Exception as e:
-                dao.rollback()
-                Log.error(str(e))
-                raise e
-            else:
-                # 변경된 사용자 정보를 세션에 반영
-                session['user_info'].email = current_user.email
-                session['user_info'].password = current_user.password
-                session['user_info'].password_confirm = current_user.password
-                # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-                return redirect(url_for('.login'))
+    if request.method == 'POST' and form.validate():
+        email = form.email.data
+        password = form.password.data
+                  
+        try:
+            current_user.email = email
+            current_user.password = generate_password_hash(password)
+            dao.commit()
+        except Exception as e:
+            dao.rollback()
+            Log.error(str(e))
+            raise e
         else:
-            error = "패스워드가 일치하지 않습니다. 다시 입력해주세요."
-            return render_template('regist.html', user=current_user, pass_error=error)
+            # 변경된 사용자 정보를 세션에 반영
+            session['user_info'].email = current_user.email
+            session['user_info'].password = current_user.password
+            session['user_info'].password_confirm = current_user.password
+            # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
+            return redirect(url_for('.login'))
     #HTTP GET으로 요청이 오면 사용자 정보 수정 화면을 보여줌
     else:
-        return render_template('regist.html', user=current_user)
+        return render_template('regist.html', user=current_user, form=form)
 
 def __get_user(username):
     try:
@@ -188,4 +179,15 @@ def check_name():
     if __get_user(username) :
         return jsonify(result = False)
     else:
-        return jsonify(result = True)    
+        return jsonify(result = True)
+    
+
+class RegisterForm(Form):
+    """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
+    
+    username = TextField('Username', [validators.Length(min=4, max=50, message='사용자명은 4자리 이상 50자리 이하로 입력하세요.')])
+    email = TextField('Email', [validators.Email(message='형식에 맞지 않는 이메일입니다.')])
+    password = PasswordField('New Password', [validators.Required('패스워드를 입력하세요.'), \
+                             validators.Length(min=4, max=50, message='패스워드 4자리 이상 50자리 이하로 입력하세요.'), \
+                             validators.EqualTo('password_confirm', message='패스워드가 일치하지 않습니다.')])
+    password_confirm  = PasswordField('Confirm Password')   

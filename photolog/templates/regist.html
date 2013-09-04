@@ -47,6 +47,7 @@
     $('input[name=username]').focus();
   });
 </script>
+{% from "_formhelpers.html" import render_field %}
 <form class="form-horizontal" action='#' method="POST">
 
     <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" style="position:absolute; overflow:auto;">
@@ -62,9 +63,13 @@
     			  <!-- Username -->
     			  <label class="control-label"  for="username">아이디</label>
     			  <div class="controls">
-    			    <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>
-    			    {% if not user %}<button id="username_check" class="btn btn-primary">아이디 중복 확인</button>{% endif %}
-    			    {% if id_error %}<p class="help-block">{{ id_error }}</p>{% endif %}
+    			    <!-- <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>-->
+    			    {% if user %}
+    			     {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.", value=user.username, readOnly="True")  }}
+    			    {% else %}
+    			    {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.") }}
+    			    <button id="username_check" class="btn btn-primary">아이디 중복 확인</button>
+    			    {% endif %}
     			  </div>
     			</div>
     		 
@@ -72,8 +77,12 @@
     		      <!-- E-mail -->
     		      <label class="control-label" for="email">E-mail</label>
     		      <div class="controls">
-    		        <input type="email" id="email" name="email" {% if user %}value="{{ user.email }}"{% endif %} placeholder="이메일 주소를 입력해주세요" class="input-xlarge" required>
-    		        {% if email_error %}<p class="help-block">{{ email_error }}</p>{% endif %}
+    		        <!-- input type="email" id="email" name="email" {% if user %}value="{{ user.email }}"{% endif %} placeholder="이메일 주소를 입력해주세요" class="input-xlarge" required> -->
+    		        {% if user %}
+                     {{ render_field(form.email, class="input-xlarge", placeholder="형식에 맞게 이메일을 입력해주세요.", value=user.email)  }}
+                    {% else %}
+                    {{ render_field(form.email, class="input-xlarge", placeholder="형식에 맞게 이메일을 입력해주세요.") }}
+                    {% endif %}
     		      </div>
     		    </div>
     		 
@@ -81,8 +90,7 @@
     		      <!-- Password-->
     		      <label class="control-label" for="password">비밀번호</label>
     		      <div class="controls">
-    		        <input type="password" id="password" name="password" placeholder="최소한 4 글자 이상으로 해주세요" class="input-xlarge" data-minLength=4 required>
-    		        {% if pass_error %}<p class="help-block">{{ pass_error }}</p>{% endif %}
+    		        {{ render_field(form.password, class="input-xlarge", placeholder="최소한 4 글자 이상으로 해주세요.") }}
     		      </div>
     		    </div>
     		 
@@ -90,7 +98,7 @@
     		      <!-- Password -->
     		      <label class="control-label"  for="password_confirm">비밀번호(재입력)</label>
     		      <div class="controls">
-    		        <input type="password" id="password_confirm" name="password_confirm" placeholder="비밀번호를 다시 입력해주세요" class="input-xlarge" required>
+    		        {{ render_field(form.password_confirm, class="input-xlarge", placeholder="비밀번호를 다시 입력해주세요.") }}
     		      </div>
     		    </div>
     		 
