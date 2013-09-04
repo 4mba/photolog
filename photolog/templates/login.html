@@ -9,6 +9,7 @@
     <!-- HTML Source Code from : http://bootsnipp.com/snipps/full-width-login-form -->
     <div class="container-fluid" >
       <div class="row">
+        {% from "_formhelpers.html" import render_field %}
         <form method="POST" action="{{ url_for('photolog.login') }}" accept-charset="UTF-8">
         <div id="login-form" class="modal fade modal-login" data-keyboard="false" data-backdrop="static" style="display: show; position:absolute; overflow:auto;">
 
@@ -22,9 +23,9 @@
            </div>
 
           <div class="modal-body">
-              <input type="hidden" name="next" value="{{ next }}" >
-              <input type="text" id="username" class="input-block-level" name="username" placeholder="Username">
-              <input type="password" id="password" class="input-block-level" name="password" placeholder="Password">
+              {{ render_field(form.next_url, value= next_url) }}
+              {{ render_field(form.username, class="input-block-level", placeholder="Username") }}
+              {{ render_field(form.password, class="input-block-level", placeholder="Password") }}
               <label class="checkbox">
                   <input type="checkbox" name="remember" value="1"> ID 기억하기
               </label>

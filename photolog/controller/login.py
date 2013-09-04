@@ -14,6 +14,7 @@ from flask import render_template, request, current_app, session, redirect \
                  , url_for
 from functools import wraps
 from werkzeug import check_password_hash
+from wtforms import Form, TextField, PasswordField, HiddenField, validators
 
 from photolog.database import dao
 from photolog.photolog_logger import Log
@@ -71,14 +72,16 @@ def login():
     """
     
     login_error = None
-    
-    if request.method == 'POST':
+    form = LoginForm(request.form)
+    if request.method == 'POST' and form.validate():
         session.permanent = True
     
-        username = request.form['username']
-        password = request.form['password']
-        next_url = request.form['next']
-        
+#         username = form['username']
+#         password = form['password']
+#         next_url = form['next_url']
+        username = form.username.data
+        password = form.password.data
+        next_url = form.next_url.data
         Log.info("(%s)next_url is %s" % (request.method, next_url))
 
         try:
@@ -108,7 +111,7 @@ def login():
         next_url = request.args.get('next', '')
         Log.info("(%s)next_url is %s" % (request.method, next_url))
 
-    return render_template('login.html', next=next_url, error=login_error)
+    return render_template('login.html', next_url=next_url, error=login_error, form=form)
 
 
 @photolog.route('/logout')
@@ -120,3 +123,11 @@ def logout():
 
     return redirect(url_for('.index'))
 
+class LoginForm(Form):
+    """로그인 화면에서 사용자명과 패스워드 입력값을 검증함"""
+    
+    username = TextField('Username', [validators.Length(min=4, max=50, message='사용자명은 4자리 이상 50자리 이하로 입력하세요.')])
+    password = PasswordField('New Password', [validators.Required('패스워드를 입력하세요.'), \
+                             validators.Length(min=4, max=50, message='패스워드 4자리 이상 50자리 이하로 입력하세요.')])
+    next_url = HiddenField('Next URL')
+    
