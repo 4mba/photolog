@@ -13,7 +13,6 @@
 import os
 from flask import render_template, request, redirect , url_for, session, \
                   current_app, jsonify
-from sqlalchemy.exc import IntegrityError
 from werkzeug import generate_password_hash
 from wtforms import Form, TextField, PasswordField, validators
 
@@ -24,71 +23,54 @@ from photolog.model.user import User
 from photolog.controller.login import login_required
 
 
-@photolog.route('/user/regist', methods=['POST', 'GET'])
+@photolog.route('/user/regist', methods=['POST'])
 def register_user():
     """포토로그 사용자 등록을 위한 함수"""
 
     form = RegisterForm(request.form)
-    # HTTP POST로 요청이 오면 사용자 정보를 등록
-    if request.method == 'POST' and form.validate():
 
-        password = form.password.data
-        password_confirm = form.password_confirm.data
-            
+    if form.validate():
+
         username = form.username.data
         email = form.email.data
-  
-        if password == password_confirm:
-            try:
-                user = User(username, email, generate_password_hash(password))
-                dao.add(user)
-                dao.commit()
-            
-                Log.debug(user) 
-            except IntegrityError:
-                error = "아이디(%s)가 중복됩니다.다른 아이디를 사용세요." % username
-                Log.error(error)
-                dao.rollback()
-                return render_template('regist.html', id_error=error)
-            except Exception as e:
-                error = "DB error occurs : " + str(e)
-                Log.error(error)
-                dao.rollback()
-                raise e
-            else:
-                # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-                return redirect(url_for('.login'))
+        password = form.password.data
+
+        try:
+            user = User(username, email, generate_password_hash(password))
+            dao.add(user)
+            dao.commit()
+        
+            Log.debug(user) 
+        except Exception as e:
+            error = "DB error occurs : " + str(e)
+            Log.error(error)
+            dao.rollback()
+            raise e
         else:
-            error = "패스워드가 일치하지 않습니다. 다시 입력해주세요."
-            return render_template('regist.html', pass_error=error, form=form)
-    #HTTP GET으로 요청이 오면 사용자 등록 화면을 보여줌
+            # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
+            return redirect(url_for('.login')) 
     else:
         return render_template('regist.html', form=form)
-
-# 
-# def __validate_data(username, email, password, password_confirm):
-#     template = None
-#     if username == '':
-#         error = "사용자명에 공백은 허용하지 않습니다."
-#         template = render_template('regist.html', id_error=error) 
-#     elif email == '':
-#         error = "이메일에 공백은 허용하지 않습니다."
-#         template = render_template('regist.html', email_error=error) 
-#     elif password == '' or password_confirm == '':
-#         error = "패스워드에 공백은 허용하지 않습니다."
-#         template = render_template('regist.html', pass_error=error)
-#     return template 
+    
         
+@photolog.route('/user/regist')
+def register_user_form():
+    """포토로그 사용자 등록을 위한 폼을 제공하는 함수"""
+    
+    form = RegisterForm(request.form)
+    
+    return render_template('regist.html', form=form)
 
-@photolog.route('/user/<username>', methods=['GET', 'POST'])
+    
+@photolog.route('/user/<username>', methods=['POST'])
 @login_required
-def modify_user(username):
+def update_user(username):
     """포토로그 사용자 정보 수정을 위한 함수"""
     
     current_user = __get_user(username)
     form = RegisterForm(request.form)
-    #HTTP POST로 요청이 오면 사용자 정보를 수정함
-    if request.method == 'POST' and form.validate():
+
+    if form.validate():
         email = form.email.data
         password = form.password.data
                   
@@ -107,9 +89,18 @@ def modify_user(username):
             session['user_info'].password_confirm = current_user.password
             # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
             return redirect(url_for('.login'))
-    #HTTP GET으로 요청이 오면 사용자 정보 수정 화면을 보여줌
     else:
         return render_template('regist.html', user=current_user, form=form)
+
+@photolog.route('/user/<username>')
+@login_required
+def update_user_form(username):
+    """포토로그 사용자 정보 수정 화면을 보여주는 함수"""
+    
+    current_user = __get_user(username)
+    form = RegisterForm(request.form, current_user)
+    
+    return render_template('regist.html', user=current_user, form=form)
 
 def __get_user(username):
     try:

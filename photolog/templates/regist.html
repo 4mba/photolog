@@ -65,7 +65,7 @@
     			  <div class="controls">
     			    <!-- <input type="text" id="username" name="username" {% if user %}value="{{ user.username }}" readOnly {% endif %} placeholder="문자와 숫자로 공백없이 입력해주세요" class="input-xlarge"  required>-->
     			    {% if user %}
-    			     {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.", value=user.username, readOnly="True")  }}
+    			     {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.", readOnly="True")  }}
     			    {% else %}
     			    {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.") }}
     			    <button id="username_check" class="btn btn-primary">아이디 중복 확인</button>
@@ -77,12 +77,7 @@
     		      <!-- E-mail -->
     		      <label class="control-label" for="email">E-mail</label>
     		      <div class="controls">
-    		        <!-- input type="email" id="email" name="email" {% if user %}value="{{ user.email }}"{% endif %} placeholder="이메일 주소를 입력해주세요" class="input-xlarge" required> -->
-    		        {% if user %}
-                     {{ render_field(form.email, class="input-xlarge", placeholder="형식에 맞게 이메일을 입력해주세요.", value=user.email)  }}
-                    {% else %}
                     {{ render_field(form.email, class="input-xlarge", placeholder="형식에 맞게 이메일을 입력해주세요.") }}
-                    {% endif %}
     		      </div>
     		    </div>
     		 
