@@ -30,7 +30,7 @@
                   <td class="valign-middle"> 
 				    <div class="fileupload-new thumbnail" style="width: 100px; height: 80px;">
 				        
-				       <!-- <a href="/photo/modify/{{photo.id}}"> -->
+				       <!-- <a href="/photo/update_form/{{photo.id}}"> -->
 				    	<img src="{{ url_for('photolog.download_thumbnail', photolog_id=photo.id) }}" onclick="javascript:show('{{ url_for('photolog.download_photo', photolog_id=photo.id) }}');" style="width: 95px; height: 75px;"/>
 				       <!-- </a> -->
 				    </div>
@@ -41,7 +41,7 @@
                   <td class="valign-middle">{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td class="valign-middle">{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td class="valign-middle">
-                      <span class="label label-important" onclick="javascript:modify('{{ url_for('photolog.modify', photolog_id=photo.id)}}');">
+                      <span class="label label-important" onclick="javascript:update_form('{{ url_for('photolog.update_form', photolog_id=photo.id)}}');">
                           <i class="icon-pencil"></i>
                       </span>  
                       <span class="label label-warning" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">
@@ -88,7 +88,7 @@
     
 
 
-    function modify(url){
+    function update_form(url){
         window.location.href = url;
     }
 
