@@ -11,6 +11,7 @@
 		
         <div class="row-fluid"> <!-- Begin photo data input -->
             <div class="span4 well" style="height: 420px;"> <!-- first column begin -->
+                {% from "_formhelpers.html" import render_field %}
                 <form id="upload" name="upload" class="form-horizontal span12" method="POST" action="{% if photo %}{{ url_for('photolog.update_photo', photolog_id=photo.id) }}{% else %}{{ url_for('photolog.upload_photo') }}{% endif %}" enctype="multipart/form-data" >
                     <div class="fileupload fileupload-new" data-provides="fileupload">
                         {% if photo %}
@@ -25,7 +26,8 @@
                                 <span class="btn btn-file btn-info">
                                     <span class="fileupload-new"> <i class="icon-picture"></i> 사진찾기</span>
                                     <span class="fileupload-exists"> <i class="icon-pencil"></i> 변경</span>
-                                    <input id="photo" type="file" name="upload" />
+                                     {{ render_field(form.photo) }}
+                                      <!--  <input id="photo" name="photo" type="file" /> -->
                                 </span>
                                 <a href="#" class="btn fileupload-exists" data-dismiss="fileupload"> <i class="icon-remove"></i> 지우기</a>
                             </div>
@@ -34,18 +36,18 @@
                     
                     <div> <!-- TAG, COMMENT FORM-->
                         <p>
-                            <input type="text" class="input-large input-block-level" name="tag" placeholder="Tag" value="{% if photo %}{{photo.tag}}{% endif %}">
+                            {{ render_field(form.tag, class="input-large input-block-level", placeholder="Tag") }}
                         </p>
                         
                         <p>
-                            <textarea class="input-block-level" rows="5" name="comment" placeholder="comment">{% if photo %}{{photo.comment}}{% endif %}</textarea>
+                            {{ render_field(form.comment, class="input-block-level", placeholder="Comment", row="5") }}
                         </p>
                     </div>
 
                     <div>
-                        <input type="hidden" name="date" value="">
-                        <input type="hidden" name="lat"  value="">
-                        <input type="hidden" name="lng"  value="">
+                        {{ render_field(form.lat) }}
+                        {{ render_field(form.lng) }}
+                        {{ render_field(form.taken_date) }}
                     </div>
                 </form>        
             </div> <!-- end of first column -->
@@ -206,7 +208,7 @@
                 // exif에서 GPS정보를 가져올 수 있는 경우
                 else {
                     // 사진파일의 exif를 이용하여 해당 값들을 설정함
-                    $('[name=date]').val(exif.DateTimeOriginal);
+                    $('[name=taken_date]').val(exif.DateTimeOriginal);
                     $('[name=lat]').val(toDecimal(exif.GPSLatitude, exif.GPSLatitudeRef));
                     $('[name=lng]').val(toDecimal(exif.GPSLongitude, exif.GPSLongitudeRef));
 
