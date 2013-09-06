@@ -37,7 +37,7 @@ def __allowed_file(filename):
 
 @photolog.route('/photo/upload')
 @login_required
-def upload_form():
+def upload_photo_form():
     """ 사진파일을 업로드 하기 위해 업로드폼 화면으로 전환시켜주는 함수 """
     
     form = PhotoUploadForm(request.form)
@@ -164,7 +164,7 @@ def update_photo(photolog_id):
 
 @photolog.route('/photo/update/<photolog_id>')
 @login_required
-def update_form(photolog_id):
+def update_photo_form(photolog_id):
     """ 업로드폼에서 입력한 값들을 수정하기 위해 DB값을 읽어와 업로드폼 화면으로 전달한다. """
     
     photo = dao.query(Photo).filter_by(id=photolog_id).first()
