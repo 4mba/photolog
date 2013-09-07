@@ -11,3 +11,10 @@ WTForms==1.0.4
 #apt-get install zlib1g-dev
 #apt-get install libpng12-dev
 #pip install PIL
+oauth==1.0.1
+oauth2==1.5.211
+oauthlib==0.5.0
+requests==1.2.3
+requests-oauthlib==0.3.2
+twython==3.0.0
+
