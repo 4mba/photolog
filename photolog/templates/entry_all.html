@@ -38,12 +38,15 @@
                   <td class="valign-middle">{{ photo.taken_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td class="valign-middle">{{ photo.upload_date.strftime('%Y-%m-%d %H:%M') }}</td>
                   <td class="valign-middle">
-                      <span class="label label-important" onclick="javascript:update_photo_form('{{ url_for('photolog.update_photo_form', photolog_id=photo.id)}}');">
+                      <a class="btn btn-success btn-mini" href='#' onclick="javascript:update_photo_form('{{ url_for('photolog.update_photo_form', photolog_id=photo.id)}}');">
                           <i class="icon-pencil"></i>
-                      </span>  
-                      <span class="label label-warning" onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">
+                      </a>  
+                      <a class="btn btn-warning btn-mini" href='#' onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">
                           <i class="icon-remove"></i>
-                      </span>
+                      </a>
+                      <a class="btn btn-primary btn-mini" href='#' onclick="javascript:twit('/sns/twitter/send/{{photo.id}}');" >
+                          <i class="icon-twitter"></i>
+                      </a>
                   </td>
                 </tr>
 			  {% endfor %}
@@ -93,6 +96,15 @@
     function remove(url){
     
         bootbox.confirm("삭제 하시겠습니까?", function(result) {
+            if(result == true){
+                window.location.href= url;
+            }
+        }); 
+    }
+
+    function twit(url){
+    
+        bootbox.confirm("트위터로 전송 하시겠습니까?", function(result) {
             if(result == true){
                 window.location.href= url;
             }
