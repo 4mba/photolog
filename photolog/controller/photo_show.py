@@ -51,6 +51,21 @@ def download_photo(photolog_id):
     return send_from_directory(realpath, photo.filename, as_attachment=True , mimetype='image/jpg')
 
 
+def photo_realpath(photolog_id):
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+    realpath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+    realpath = realpath + os.sep + photo.filename
+    
+    print 'realpath:'+realpath
+    
+    return realpath
+
+
+def photo_comment(photolog_id):
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+    
+    return photo.comment
+
 
 @photolog.route('/photo/thumbnail/<photolog_id>')
 @login_required
