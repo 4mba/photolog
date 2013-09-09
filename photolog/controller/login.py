@@ -40,7 +40,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            session_key = 
+            session_key = \
                 request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
             is_login = False
@@ -48,7 +48,7 @@ def login_required(f):
                 is_login = True
 
             if not is_login:
-                return redirect(url_for('.login', next=request.url))
+                return redirect(url_for('.login_form', next=request.url))
 
             return f(*args, **kwargs)
 
@@ -66,15 +66,14 @@ def index():
     return redirect(url_for('.show_all'))
 
 
-@photolog.route('/user/login', methods=['GET', 'POST'])
+@photolog.route('/user/login', methods=['POST'])
 def login():
     """아이디/패스워드 기반의 로그인 기능을 제공함
     로그인 성공 시 세션에 사용자 정보를 저장하여 사용함
     """
     
-    login_error = None
     form = LoginForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if form.validate():
         session.permanent = True
     
         username = form.username.data
@@ -103,17 +102,25 @@ def login():
                     return redirect(url_for('.index'))
         else:
             login_error = 'User does not exist!'
+            
+        return render_template('login.html', 
+                       next_url=next_url, 
+                       error=login_error, 
+                       form=form)
 
-    else:
-        next_url = request.args.get('next', '')
-        Log.info("(%s)next_url is %s" % (request.method, next_url))
+@photolog.route('/user/login')
+def login_form():
+    """아이디/패스워드 기반의 로그인 화면을 제공함 """
+    
+    next_url = request.args.get('next', '')
+    Log.info("(%s)next_url is %s" % (request.method, next_url))
+    
+    form = LoginForm(request.form)
 
     return render_template('login.html', 
-                           next_url=next_url, 
-                           error=login_error, 
+                           next_url=next_url,
                            form=form)
-
-
+    
 @photolog.route('/logout')
 @login_required
 def logout():
