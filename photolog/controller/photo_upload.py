@@ -27,7 +27,6 @@ from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
 
 
-
 ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
 
@@ -43,7 +42,6 @@ def upload_photo_form():
     form = PhotoUploadForm(request.form)
     
     return render_template('upload.html', form=form)
-
 
 
 @photolog.route('/photo/upload', methods=['POST'])
@@ -118,12 +116,7 @@ def upload_photo():
     
         return redirect(url_for('.show_all'))
     else:
-        for key in form.errors.keys():
-            print key 
-            for error in form.errors[key]:
-                print error
         return render_template('upload.html', form=form)
-
 
 
 @photolog.route('/photo/update/<photolog_id>', methods=['POST'])
@@ -131,9 +124,7 @@ def upload_photo():
 def update_photo(photolog_id):
     """ 사진 업로드 화면에서 사용자가 수정한 내용을 DB에 업데이트 한다. """
 
-    #: 변경전 원래의 photo 테이블 값을 읽어 온다.
-    photo = dao.query(Photo).filter_by(id=photolog_id).first()
-    form = PhotoUploadForm(request.form, photo)
+    form = PhotoUploadForm(request.form)
 
     if form.validate(): 
         #: 업데이트 대상 항목들
@@ -143,6 +134,8 @@ def update_photo(photolog_id):
         lng = form.lng.data
         
         try :
+            #: 변경전 원래의 photo 테이블 값을 읽어 온다.
+            photo = dao.query(Photo).filter_by(id=photolog_id).first()
             #: 업데이트 값 셋팅
             photo.tag = tag
             photo.comment = comment
