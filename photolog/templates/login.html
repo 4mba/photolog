@@ -23,9 +23,9 @@
            </div>
 
           <div class="modal-body">
-              {{ render_field(form.next_url, value= next_url) }}
               {{ render_field(form.username, class="input-block-level", placeholder="Username") }}
               {{ render_field(form.password, class="input-block-level", placeholder="Password") }}
+              {{ render_field(form.next_url, value= next_url) }}
               <label class="checkbox">
                   <input type="checkbox" name="remember" value="1"> ID 기억하기
               </label>
