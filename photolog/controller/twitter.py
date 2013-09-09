@@ -10,25 +10,18 @@
 """
 
 
-from flask import request, redirect, url_for, current_app, send_from_directory \
-				, render_template, session
-from sqlalchemy import or_
+from flask import request, redirect, url_for, current_app, session
+from twython import Twython
 
-from photolog.database import dao
 from photolog.controller.login import login_required
 from photolog.controller.photo_show import photo_realpath
 from photolog.controller.photo_show import photo_comment
 from photolog.photolog_blueprint import photolog
 from photolog.photolog_logger import Log
-from twython import Twython
-
-
-# 트위터에 등록된 photolog 어플리케이션 인증키 (https://dev.twitter.com/)
-APP_KEY    = 'tha1vwfKSJ0jlDcdCryvag'
-APP_SECRET = '84qXU6uv1XyDbM780civoBA7U4mnmKEQ0FnaBQn63go'
 
 
 @photolog.route('/sns/twitter/send/<photolog_id>')
+@login_required
 def send(photolog_id):
     """ photolog_id에 해당하는 사진과 커멘트를 트위터로 전송하는 함수 """
 
@@ -47,11 +40,15 @@ def send(photolog_id):
 
 
 @photolog.route('/sns/twitter/oauth/<photolog_id>')
+@login_required
 def oauth(photolog_id):
     """ twitter로부터 인증토큰을 받기 위한 함수 """
     
-    twitter = Twython(APP_KEY, APP_SECRET)
-    auth = twitter.get_authentication_tokens(callback_url='http://photolog.codingstar.net:5000/sns/twitter/callback/'+photolog_id)
+    twitter = Twython(current_app.config['TWIT_APP_KEY'], 
+                      current_app.config['TWIT_APP_SECRET'])
+    auth = twitter.get_authentication_tokens(
+            callback_url='http://' + current_app.config['SERVER_NAME'] + \
+            '/sns/twitter/callback/' + photolog_id)
     
     # 중간단계로 받은 임시 인증토큰은 최종인증을 위해 필요하므로 세션에 저장한다. 
     session['OAUTH_TOKEN'] = auth['oauth_token']
@@ -64,6 +61,7 @@ def oauth(photolog_id):
 
 
 @photolog.route('/sns/twitter/callback/<photolog_id>')
+@login_required
 def callback(photolog_id):
     """ twitter로부터 callback url이 요청되었을때 
         최종인증을 한 후 트위터로 해당 사진과 커멘트를 전송한다.  
@@ -78,11 +76,16 @@ def callback(photolog_id):
     oauth_verifier     = request.args['oauth_verifier']
     
     # 임시로 받은 인증토큰을 이용하여 twitter 객체를 만들고 인증토큰을 검증한다.     
-    twitter = Twython(APP_KEY, APP_SECRET, OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+    twitter = Twython(current_app.config['TWIT_APP_KEY'], 
+                      current_app.config['TWIT_APP_SECRET'], 
+                      OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
     final_step = twitter.get_authorized_tokens(oauth_verifier)    
     
     # oauth_verifier를 통해 얻은 최종 인증토큰을 이용하여 twitter 객체를 새로 생성한다.
-    twitter = Twython(APP_KEY, APP_SECRET, final_step['oauth_token'], final_step['oauth_token_secret'])
+    twitter = Twython(current_app.config['TWIT_APP_KEY'], 
+                      current_app.config['TWIT_APP_SECRET'], 
+                      final_step['oauth_token'], 
+                      final_step['oauth_token_secret'])
     session['TWITTER'] = twitter
 
     # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
