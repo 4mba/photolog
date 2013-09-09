@@ -36,7 +36,9 @@ def register_user():
         password = form.password.data
 
         try:
-            user = User(username, email, generate_password_hash(password))
+            user = User(username, 
+                        email, 
+                        generate_password_hash(password))
             dao.add(user)
             dao.commit()
         
@@ -100,7 +102,9 @@ def update_user_form(username):
     current_user = __get_user(username)
     form = RegisterForm(request.form, current_user)
     
-    return render_template('regist.html', user=current_user, form=form)
+    return render_template('regist.html', 
+                           user=current_user, 
+                           form=form)
 
 def __get_user(username):
     try:
