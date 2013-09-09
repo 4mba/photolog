@@ -40,7 +40,8 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         try:
-            session_key = request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
+            session_key = 
+                request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
 
             is_login = False
             if session.sid == session_key and session.__contains__('user_info') :
@@ -76,9 +77,6 @@ def login():
     if request.method == 'POST' and form.validate():
         session.permanent = True
     
-#         username = form['username']
-#         password = form['password']
-#         next_url = form['next_url']
         username = form.username.data
         password = form.password.data
         next_url = form.next_url.data
@@ -91,8 +89,8 @@ def login():
             raise e
 
         if user:
-            if username != user.username or not check_password_hash(user.password, password):
-                login_error = 'Invalid username or  password'
+            if not check_password_hash(user.password, password):
+                login_error = 'Invalid password'
             else:
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, User 클래스 같은 사용자 정보를 추가하는 객체 생성하고
@@ -103,7 +101,6 @@ def login():
                     return redirect(next_url)
                 else:
                     return redirect(url_for('.index'))
-                    
         else:
             login_error = 'User does not exist!'
 
@@ -111,7 +108,10 @@ def login():
         next_url = request.args.get('next', '')
         Log.info("(%s)next_url is %s" % (request.method, next_url))
 
-    return render_template('login.html', next_url=next_url, error=login_error, form=form)
+    return render_template('login.html', 
+                           next_url=next_url, 
+                           error=login_error, 
+                           form=form)
 
 
 @photolog.route('/logout')
@@ -126,7 +126,11 @@ def logout():
 class LoginForm(Form):
     """로그인 화면에서 사용자명과 패스워드 입력값을 검증함"""
     
-    username = TextField('Username', [validators.Length(min=4, max=50, message='사용자명을 입력하세요.')])
-    password = PasswordField('New Password', [validators.Required('패스워드를 입력하세요.')])
+    username = TextField('Username', 
+                         [validators.Length(min=4, 
+                                            max=50, 
+                                            message='사용자명을 입력하세요.')])
+    password = PasswordField('New Password', 
+                             [validators.Required('패스워드를 입력하세요.')])
     next_url = HiddenField('Next URL')
     
