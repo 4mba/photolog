@@ -126,11 +126,13 @@ def unregist():
             dao.delete(user)
             # 업로드된 사진 파일 삭제
             try:
-                upload_folder = os.path.join(current_app.root_path, 
-                                             current_app.config['UPLOAD_FOLDER'])
+                upload_folder = \
+                    os.path.join(current_app.root_path, 
+                                 current_app.config['UPLOAD_FOLDER'])
                 __delete_files(upload_folder, user.username)
             except Exception as e:
-                Log.error("파일 삭제에 실패했습니다. 나중에 일괄 삭제하세요. : %s" + str(e))
+                Log.error("파일 삭제에 실패했습니다. 나중에 일괄 삭제하세요. : %s" + \
+                          str(e))
             
             dao.commit()
         else:
@@ -180,9 +182,20 @@ def check_name():
 class RegisterForm(Form):
     """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
     
-    username = TextField('Username', [validators.Length(min=4, max=50, message='사용자명은 4자리 이상 50자리 이하로 입력하세요.')])
-    email = TextField('Email', [validators.Email(message='형식에 맞지 않는 이메일입니다.')])
-    password = PasswordField('New Password', [validators.Required('패스워드를 입력하세요.'), \
-                             validators.Length(min=4, max=50, message='패스워드 4자리 이상 50자리 이하로 입력하세요.'), \
-                             validators.EqualTo('password_confirm', message='패스워드가 일치하지 않습니다.')])
+    username = TextField('Username', 
+                         [validators.Length(
+                            min=4, 
+                            max=50, 
+                            message='4자리 이상 50자리 이하로 입력하세요.')])
+    email = TextField('Email', 
+                      [validators.Email(message='형식에 맞지 않는 이메일입니다.')])
+    password = \
+        PasswordField('New Password', 
+                      [validators.Required('패스워드를 입력하세요.'),
+                       validators.Length(
+                        min=4, 
+                        max=50,
+                        message='4자리 이상 50자리 이하로 입력하세요.'),
+                       validators.EqualTo('password_confirm', 
+                                          message='패스워드가 일치하지 않습니다.')])
     password_confirm  = PasswordField('Confirm Password')   
