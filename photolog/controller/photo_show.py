@@ -45,12 +45,26 @@ def show_all():
             sizeof_fmt=sizeof_fmt)
 
 
-def __get_download_info(photolog_id, prefix_filename=''):
-    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+def get_photo_info(photolog_id):
+    """업로드된 사진 관련 정보(다운로드 폴더, 파일명, 전체 파일 경로, 코멘트 등)을 얻는다.
+       내부 함수인 __get_download_info()와 트위터 연동에 사용된다.
+    """
     
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
     download_folder = os.path.join(current_app.root_path, 
                                    current_app.config['UPLOAD_FOLDER'])
-    download_filename = prefix_filename + photo.filename
+    download_filepath = os.path.join(download_folder, photo.filename)
+    
+    
+    return (download_folder, photo.filename, download_filepath, photo.comment)
+
+
+def __get_download_info(photolog_id, prefix_filename=''):
+    photo_info = get_photo_info(photolog_id)
+    
+    download_folder = photo_info[0]
+    original_filename = photo_info[1]
+    download_filename = prefix_filename + original_filename
 
     return send_from_directory(download_folder, 
                                download_filename, 

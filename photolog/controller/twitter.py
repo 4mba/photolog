@@ -14,8 +14,7 @@ from flask import request, redirect, url_for, current_app, session
 from twython import Twython
 
 from photolog.controller.login import login_required
-from photolog.controller.photo_show import photo_realpath
-from photolog.controller.photo_show import photo_comment
+from photolog.controller.photo_show import get_photo_info
 from photolog.photolog_blueprint import photolog
 from photolog.photolog_logger import Log
 
@@ -28,8 +27,11 @@ def send(photolog_id):
     if (session.__contains__('TWITTER')):
         twitter = session['TWITTER']
         # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-        photo = open(photo_realpath(photolog_id), 'rb')
-        twitter.update_status_with_media(status=photo_comment(photolog_id),
+        photo_info = get_photo_info(photolog_id)
+        download_filepath = photo_info[2]
+        photo_comment = photo_info[3]
+        photo = open(download_filepath, 'rb')
+        twitter.update_status_with_media(status=photo_comment,
                                          media=photo)
 
         return redirect(url_for('.show_all'))
@@ -89,9 +91,11 @@ def callback(photolog_id):
     session['TWITTER'] = twitter
 
     # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-    photo = open(photo_realpath(photolog_id), 'rb')
-    twitter.update_status_with_media(status=photo_comment(photolog_id), 
+    photo_info = get_photo_info(photolog_id)
+    download_filepath = photo_info[2]
+    photo_comment = photo_info[3]
+    photo = open(download_filepath, 'rb')
+    twitter.update_status_with_media(status=photo_comment, 
                                      media=photo)
 
     return redirect(url_for('.show_all'))
-
