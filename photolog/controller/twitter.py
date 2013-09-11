@@ -29,14 +29,14 @@ def send(photolog_id):
         twitter = session['TWITTER']
         # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
         photo = open(photo_realpath(photolog_id), 'rb')
-        twitter.update_status_with_media(status=photo_comment(photolog_id), media=photo)
+        twitter.update_status_with_media(status=photo_comment(photolog_id),
+                                         media=photo)
 
         return redirect(url_for('.show_all'))
 
     else:
         # twitter 객체가 세션에 없을경우 인증단계로 이동한다.
         return redirect(url_for('.oauth', photolog_id=photolog_id))
-
 
 
 @photolog.route('/sns/twitter/oauth/<photolog_id>')
@@ -90,7 +90,8 @@ def callback(photolog_id):
 
     # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
     photo = open(photo_realpath(photolog_id), 'rb')
-    twitter.update_status_with_media(status=photo_comment(photolog_id), media=photo)
+    twitter.update_status_with_media(status=photo_comment(photolog_id), 
+                                     media=photo)
 
     return redirect(url_for('.show_all'))
 

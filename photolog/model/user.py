@@ -24,7 +24,9 @@ class User(Base):
     email = Column(String(50), unique=False)
     password = Column(String(55), unique=False)
 
-    photos = relationship('Photo', backref='user', cascade='all, delete, delete-orphan')
+    photos = relationship('Photo', 
+                          backref='user', 
+                          cascade='all, delete, delete-orphan')
     
     def __init__(self, name, email, password):
         self.username = name

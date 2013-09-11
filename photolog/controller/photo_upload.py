@@ -12,7 +12,8 @@
 
 
 import os
-from flask import request, redirect, url_for, current_app, render_template, session
+from flask import request, redirect, url_for, current_app, render_template, \
+                    session
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import uuid
@@ -31,7 +32,8 @@ ALLOWED_EXTENSIONS = set(['jpg', 'jpeg'])
 
 
 def __allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and \
+            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @photolog.route('/photo/upload')
@@ -67,9 +69,11 @@ def upload_photo():
     
         try:
             #: Exif에서 전달받은 data 형식을 파이썬 date 객체로 변환
-            taken_date = datetime.strptime(form.taken_date.data, "%Y:%m:%d %H:%M:%S");
+            taken_date = datetime.strptime(form.taken_date.data, 
+                                           "%Y:%m:%d %H:%M:%S")
         except :
-            #: date 포맷 예외 발생: exif가 없거나, 사진찍은 시간이 없는 경우에는 현재시간으로 대체 
+            #: date 포맷 예외 발생: exif가 없거나, 
+            #: 사진찍은 시간이 없는 경우에는 현재시간으로 대체 
             taken_date = datetime.today()
         
         #: 업로드되는 파일정보 값들을 셋팅한다.
@@ -84,14 +88,21 @@ def upload_photo():
                 
                 ext = (upload_photo.filename).rsplit('.', 1)[1]
     
-                #: 유일하고 안전한 파일명을 얻는다.
-                filename = secure_filename(username +'_'+ unicode(uuid.uuid4())+"."+ext)
-                
-                upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+                #: 업로드 폴더 위치는 얻는다.
+                upload_folder = \
+                    os.path.join(current_app.root_path, 
+                                 current_app.config['UPLOAD_FOLDER'])
+                #: 유일하고 안전한 파일명을 얻는다.   
+                filename = \
+                    secure_filename(username + 
+                                    '_' + 
+                                    unicode(uuid.uuid4()) +
+                                    "." + 
+                                    ext)
                 
                 upload_photo.save(os.path.join(upload_folder, filename))
                 
-                filesize = os.stat(upload_folder+filename).st_size
+                filesize = os.stat(upload_folder + filename).st_size
                 
                 #: 썸네일을 만든다.
                 make_thumbnails(filename)
@@ -105,7 +116,8 @@ def upload_photo():
     
         try :
             #: 사진에 대한 정보 DB에 저장
-            photo = Photo(user_id, tag, comment, filename_orig, filename, filesize, lat, lng, upload_date, taken_date)
+            photo = Photo(user_id, tag, comment, filename_orig, filename, 
+                          filesize, lat, lng, upload_date, taken_date)
             dao.add(photo)
             dao.commit()
     
@@ -180,13 +192,15 @@ def remove(photolog_id):
         dao.delete(photo)
         dao.commit()
 
-        upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+        upload_folder = os.path.join(current_app.root_path, 
+                                     current_app.config['UPLOAD_FOLDER'])
         os.remove(upload_folder + str(photo.filename))
         os.remove(upload_folder + "thumb_"+str(photo.filename))
 
     except Exception as e:
         dao.rollback()
-        Log.error("Photo remove error : " + photolog_id+":"+user_id+" , "+str(e))
+        Log.error("Photo remove error => " + photolog_id + ":" + user_id + \
+                  ", " + str(e))
         raise e
     
     return redirect(url_for('.show_all'))
@@ -194,9 +208,12 @@ def remove(photolog_id):
 
 
 def make_thumbnails(filename):
-    """ 업로드된 파일은 사이즈가 크기때문에 preview등에 사용하기 위해 썸네일 이미지를 생성한다 ."""
+    """ 업로드된 파일은 사이즈가 크기때문에 preview등에 사용하기 위해 
+        썸네일 이미지를 생성한다.
+    """
     
-    upload_folder = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
+    upload_folder = os.path.join(current_app.root_path, 
+                                 current_app.config['UPLOAD_FOLDER'])
     original_file = upload_folder+filename
     target_name = upload_folder+"thumb_"+filename
     
@@ -215,8 +232,21 @@ class PhotoUploadForm(Form):
     """사진 등록 화면에서 사진 파일, 태그, 설명 경도, 위도, 사진 찍은 날짜을 검증함"""
     
     photo = FileField('Photo')
-    tag = TextField('Tag', [validators.Length(min=1, max=400, message='400자리 이하로 입력하세요.')])
-    comment = TextAreaField('Comment', [validators.Length(min=1, max=400, message='400자리 이하로 입력하세요.')])
-    lat = HiddenField('Latitude', [validators.Required(message='위치 정보(경도)가 없습니다.')])
-    lng = HiddenField('Longtitude', [validators.Required(message='위도 정보(위도)가 없습니다.')])
-    taken_date = HiddenField('Taken Date', [validators.Required(message='사진찍은 날짜가 없습니다.')])
+    tag = TextField('Tag', 
+                    [validators.Length(
+                        min=1, 
+                        max=400, 
+                        message='400자리 이하로 입력하세요.')])
+    comment = TextAreaField('Comment', 
+                            [validators.Length(
+                                min=1, 
+                                max=400, 
+                                message='400자리 이하로 입력하세요.')])
+    lat = HiddenField('Latitude', 
+                      [validators.Required(message='위치 정보(경도)가 없습니다.')])
+    lng = HiddenField('Longtitude', 
+                      [validators.Required(message='위도 정보(위도)가 없습니다.')])
+    taken_date = HiddenField('Taken Date', 
+                             [validators.Required(
+                                message='사진찍은 날짜가 없습니다.')])
+

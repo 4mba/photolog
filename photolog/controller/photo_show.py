@@ -38,42 +38,36 @@ def show_all():
     user_id = session['user_info'].id
     
     return render_template('entry_all.html',
-                           photos=dao.query(Photo).filter_by(user_id=user_id).order_by(Photo.upload_date.desc()).all(),
-                           sizeof_fmt=sizeof_fmt)
+            photos=dao.query(Photo).
+                        filter_by(user_id=user_id).
+                        order_by(Photo.upload_date.desc()).
+                        all(),
+            sizeof_fmt=sizeof_fmt)
 
 
+def __get_download_info(photolog_id, prefix_filename=''):
+    photo = dao.query(Photo).filter_by(id=photolog_id).first()
+    
+    download_folder = os.path.join(current_app.root_path, 
+                                   current_app.config['UPLOAD_FOLDER'])
+    download_filename = prefix_filename + photo.filename
+
+    return send_from_directory(download_folder, 
+                               download_filename, 
+                               as_attachment=True, 
+                               mimetype='image/jpg')
+    
+    
 @photolog.route('/photo/download/<photolog_id>')
 @login_required
 def download_photo(photolog_id):
-    photo = dao.query(Photo).filter_by(id=photolog_id).first()
-    realpath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
-    
-    return send_from_directory(realpath, photo.filename, as_attachment=True , mimetype='image/jpg')
-
-
-def photo_realpath(photolog_id):
-    photo = dao.query(Photo).filter_by(id=photolog_id).first()
-    realpath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
-    realpath = realpath + os.sep + photo.filename
-    
-    print 'realpath:'+realpath
-    
-    return realpath
-
-
-def photo_comment(photolog_id):
-    photo = dao.query(Photo).filter_by(id=photolog_id).first()
-    
-    return photo.comment
+    return __get_download_info(photolog_id)
 
 
 @photolog.route('/photo/thumbnail/<photolog_id>')
 @login_required
 def download_thumbnail(photolog_id):
-    photo = dao.query(Photo).filter_by(id=photolog_id).first()
-    realpath = os.path.join(current_app.root_path, current_app.config['UPLOAD_FOLDER'])
-    
-    return send_from_directory(realpath, "thumb_"+photo.filename, as_attachment=True , mimetype='image/jpg')
+    return __get_download_info(photolog_id, 'thumb_')
 
 
 
@@ -81,20 +75,28 @@ def download_thumbnail(photolog_id):
 @login_required
 def show_map(): 
     user_id = session['user_info'].id
-    Log.debug(user_id)
-    return render_template('show_map.html', photos=dao.query(Photo).filter_by(user_id=user_id).order_by(Photo.taken_date.desc()).all())
+
+    return render_template('show_map.html', 
+            photos=dao.query(Photo).
+                        filter_by(user_id=user_id).
+                        order_by(Photo.taken_date.desc()).all())
 
 
 @photolog.route('/photo/search', methods=['POST'])
 @login_required
 def search_photo():    
     search_word = request.form['search_word'];
-    Log.debug(search_word)
     
     if (search_word == ''):
         return show_all();
     
-    user_id = session['user_info'].id    
+    user_id = session['user_info'].id
+       
     return render_template('entry_all.html',
-                           photos=dao.query(Photo).filter_by(user_id=user_id).filter(or_(Photo.comment.like("%" + search_word + "%"), Photo.tag.like("%" + search_word + "%"))).order_by(Photo.upload_date.desc()).all(),
-                           sizeof_fmt=sizeof_fmt)
+            photos=dao.query(Photo).
+                        filter_by(user_id=user_id).
+                        filter(or_(Photo.comment.like("%" + search_word + "%"), 
+                                   Photo.tag.like("%" + search_word + "%"))).
+                        order_by(Photo.upload_date.desc()).all(),
+            sizeof_fmt=sizeof_fmt)
+
