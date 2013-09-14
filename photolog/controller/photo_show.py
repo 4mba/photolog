@@ -32,19 +32,6 @@ def sizeof_fmt(num):
     return "%3.1f%s" % (num, 'TB')
 
 
-@photolog.route('/photo/show/')
-@login_required
-def show_all():    
-    user_id = session['user_info'].id
-    
-    return render_template('entry_all.html',
-            photos=dao.query(Photo).
-                        filter_by(user_id=user_id).
-                        order_by(Photo.upload_date.desc()).
-                        all(),
-            sizeof_fmt=sizeof_fmt)
-
-
 def get_photo_info(photolog_id):
     """업로드된 사진 관련 정보(다운로드 폴더, 파일명, 전체 파일 경로, 코멘트 등)을 얻는다.
        내부 함수인 __get_download_info()와 트위터 연동에 사용된다.
@@ -114,3 +101,90 @@ def search_photo():
                         order_by(Photo.upload_date.desc()).all(),
             sizeof_fmt=sizeof_fmt)
 
+
+# @photolog.route('/photo/show/')
+# @login_required
+# def show_all1():    
+#     user_id = session['user_info'].id
+#     
+#     return render_template('entry_all.html',
+#             photos=dao.query(Photo).
+#                         filter_by(user_id=user_id).
+#                         order_by(Photo.upload_date.desc()).
+#                         all(),
+#             sizeof_fmt=sizeof_fmt)
+
+
+# @app.route('/users/', defaults={'page': 1})
+# @app.route('/users/page/<int:page>')
+
+
+@photolog.route('/photo/', defaults={'page': 1})
+@photolog.route('/photo/page/<int:page>')
+@login_required
+def show_all(page=1):    
+    
+    user_id = session['user_info'].id
+    per_page = current_app.config['PER_PAGE']
+    
+    photo_count = dao.query(Photo).count()
+    pagination = Pagination(page, per_page, photo_count)
+    
+    if page != 1:
+        offset = photo_count - (per_page * (page - 1))
+    else:
+        offset = 1
+    
+    photo_pages = dao.query(Photo). \
+                        filter_by(user_id=user_id). \
+                        order_by(Photo.upload_date.desc()). \
+                        limit(per_page). \
+                        offset(offset). \
+                        all()
+    
+    return render_template('entry_all.html',
+        pagination=pagination,
+        photos=photo_pages,
+        sizeof_fmt=sizeof_fmt)  
+
+#     return render_template('entry_all.html',
+#             photos=photo_pages,
+#             sizeof_fmt=sizeof_fmt)    
+
+
+from math import ceil
+
+
+class Pagination(object):
+    
+    def __init__(self, page, per_page, total_count):
+        self.page = page
+        self.per_page = per_page
+        self.total_count = total_count
+
+    @property
+    def pages(self):
+        return int(ceil(self.total_count / float(self.per_page)))
+
+    @property
+    def has_prev(self):
+        return self.page > 1
+
+    @property
+    def has_next(self):
+        return self.page < self.pages
+
+    def iter_pages(self, left_edge=2, left_current=2,
+                   right_current=5, right_edge=2):
+        last = 0
+        for num in xrange(1, self.pages + 1):
+            if num <= left_edge or \
+               (num > self.page - left_current - 1 and \
+                num < self.page + right_current) or \
+               num > self.pages - right_edge:
+                if last + 1 != num:
+                    yield None
+                yield num
+                last = num
+                
+                
