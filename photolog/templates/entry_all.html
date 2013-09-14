@@ -59,22 +59,8 @@
 	<div class="row-fluid" align="center">
 		<div class="span12">
 		<p>
-			<div class="pagination">
-			    <ul>
-			    <li class="disabled"><a href="#">&laquo;</a></li>
-			    <li class="active"><a href="#">1</a></li>
-			    <li ><a href="#">2</a></li>
-			    <li ><a href="#">3</a></li>
-			    <li ><a href="#">4</a></li>
-			    <li ><a href="#">5</a></li>
-			    <li ><a href="#">6</a></li>
-			    <li ><a href="#">7</a></li>
-			    <li ><a href="#">8</a></li>
-			    <li ><a href="#">9</a></li>
-			    <li ><a href="#">10</a></li>
-			    <li class="disabled"><a href="#">&raquo;</a></li>
-			    </ul>
-		    </div>
+		    {% from "_pagehelpers.html" import render_pagination %}
+            {{ render_pagination(pagination) }}
 		</p>
 		</div>
 	</div>
