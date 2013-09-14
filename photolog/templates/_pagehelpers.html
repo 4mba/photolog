@@ -1,0 +1,44 @@
+{% macro render_pagination(pagination) %}
+  <div class=pagination>
+      <ul>
+   {% if pagination.has_prev %}
+    <li><a href="{{ url_for_other_page(pagination.page - 1)}}">Prev &raquo;</a></li>
+  {% else %}
+    <li class="disabled"><a href="#}">Prev  &raquo;</a></li>
+  {% endif %}
+  {%- for page in pagination.iter_pages() %}
+    {% if page %}
+      {% if page != pagination.page %}
+        <li><a href="{{ url_for_other_page(page) }}">{{ page }}</a></li>
+      {% else %}
+        <li class="active"><a href="#">{{ page }}</a></li>
+      {% endif %}
+    {% else %}
+      <li><span class=ellipsis>…</span></li>
+    {% endif %}
+  {%- endfor %}
+  {% if pagination.has_next %}
+    <li><a href="{{ url_for_other_page(pagination.page + 1)}}">Next &raquo;</a></li>
+  {% else %}
+    <li class="disabled"><a href="#}">Next &raquo;</a></li>
+  {% endif %}
+    </ul>
+  </div>
+{% endmacro %}
+<!-- 
+            <div class="pagination">
+                <ul>
+                <li class="disabled"><a href="#">aaa&laquo;hhhhhhhhh</a></li>
+                <li class="active"><a href="#">1</a></li>
+                <li ><a href="#">2</a></li>
+                <li ><a href="#">3</a></li>
+                <li ><a href="#">4</a></li>
+                <li ><a href="#">5</a></li>
+                <li ><a href="#">6</a></li>
+                <li ><a href="#">7</a></li>
+                <li ><a href="#">8</a></li>
+                <li ><a href="#">9</a></li>
+                <li ><a href="#">10</a></li>
+                <li class="disabled"><a href="#">&raquo;</a></li>
+                </ul>
+            </div> -->
