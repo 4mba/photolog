@@ -163,33 +163,10 @@
             });
         });
 
-        // upload 버튼이 눌러 졌을때
-        $('#upload').submit(function(e){
-            
-            //POST 되기 전에 값 검증을 한다. 
-            if($('[name=tag]').val() == "" || $('[name=comment]').val() == "") {
-                bootbox.alert("태그와 설명을 남겨 주세요");
-                return false;
-            }
-            
-            {% if photo %} 
-            {% else %}
-                if($('input[type=file]').val() == "") {
-                    bootbox.alert("사진파일을 선택해주세요");
-                    return false;
-                }
-            {% endif %}
 
-            if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
-                bootbox.alert("위치정보를 입력해주세요");
-                return false;
-            }
-            
-            
-        });
-      
-
-		// 사진 업로드가 완료되었을때
+        // 사진 업로드를 위해 사용자가 로컬에서 사진을 선택하여
+		// 'photo' ID셀렉터에 'change'이벤트가 발생하면 구동되는 함수
+		// 사진의 미리보기를 만들고, exif 정보를 추출한다.
 		$("#photo").change(function() {
 
 		    var file = this.files[0];
@@ -244,9 +221,9 @@
 
         
         // Exif에서 읽어온 GPS정보를 decimal 값으로 변환하는 함수
-        function ConvertDMSToDD(days, minutes, seconds, direction) {
+        function ConvertDMSToDD(degree, minutes, seconds, direction) {
 
-            var dd = parseFloat(days) + parseFloat(minutes/60) + parseFloat(seconds/(60*60));
+            var dd = parseFloat(degree) + parseFloat(minutes/60) + parseFloat(seconds/(60*60));
         
             if (direction == "S" || direction == "W") {
                 dd = dd * -1;
@@ -256,6 +233,31 @@
         }
 
 
+        // '저장하기' 버튼이 눌러 졌을때
+        $('#upload').submit(function(e){
+            
+            //POST 되기 전에 값 검증을 한다. 
+            if($('[name=tag]').val() == "" || $('[name=comment]').val() == "") {
+                bootbox.alert("태그와 설명을 남겨 주세요");
+                return false;
+            }
+            
+            {% if photo %} 
+            {% else %}
+                if($('input[type=file]').val() == "") {
+                    bootbox.alert("사진파일을 선택해주세요");
+                    return false;
+                }
+            {% endif %}
+
+            if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
+                bootbox.alert("위치정보를 입력해주세요");
+                return false;
+            }
+            
+            
+        });
+      
         // HTML5의 위치정보를 이용하여 현재 위치를 얻어옴
         function currentLocation(){
             GMaps.geolocate({
