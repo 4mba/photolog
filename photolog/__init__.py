@@ -12,7 +12,7 @@
 """
 
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, url_for
 
 
 def print_settings(config):
@@ -31,6 +31,13 @@ def not_found(error):
 
 def server_error(error):
     return render_template('500.html'), 500
+    
+    
+def url_for_other_page(page):
+    args = request.view_args.copy()
+    args['page'] = page
+    return url_for(request.endpoint, **args)
+
     
 def create_app(config_filepath='resource/config.cfg'):
     photolog_app = Flask(__name__)
@@ -70,6 +77,10 @@ def create_app(config_filepath='resource/config.cfg'):
     # 공통으로 적용할 HTTP 404과 500 에러 핸들러를 설정
     photolog_app.error_handler_spec[None][404] = not_found
     photolog_app.error_handler_spec[None][500] = server_error
+    
+    # 페이징 처리를 위한 템플릿 함수
+    photolog_app.jinja_env.globals['url_for_other_page'] = url_for_other_page
+    
     
     return photolog_app
 
