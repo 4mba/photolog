@@ -163,31 +163,6 @@
             });
         });
 
-        // upload 버튼이 눌러 졌을때
-        $('#upload').submit(function(e){
-            
-            //POST 되기 전에 값 검증을 한다. 
-            if($('[name=tag]').val() == "" || $('[name=comment]').val() == "") {
-                bootbox.alert("태그와 설명을 남겨 주세요");
-                return false;
-            }
-            
-            {% if photo %} 
-            {% else %}
-                if($('input[type=file]').val() == "") {
-                    bootbox.alert("사진파일을 선택해주세요");
-                    return false;
-                }
-            {% endif %}
-
-            if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
-                bootbox.alert("위치정보를 입력해주세요");
-                return false;
-            }
-            
-            
-        });
-      
 
 		// 사진 업로드가 완료되었을때
 		$("#photo").change(function() {
@@ -256,6 +231,31 @@
         }
 
 
+        // upload 버튼이 눌러 졌을때
+        $('#upload').submit(function(e){
+            
+            //POST 되기 전에 값 검증을 한다. 
+            if($('[name=tag]').val() == "" || $('[name=comment]').val() == "") {
+                bootbox.alert("태그와 설명을 남겨 주세요");
+                return false;
+            }
+            
+            {% if photo %} 
+            {% else %}
+                if($('input[type=file]').val() == "") {
+                    bootbox.alert("사진파일을 선택해주세요");
+                    return false;
+                }
+            {% endif %}
+
+            if($('[name=lat]').val() == "" || $('[name=lng]').val() == "") {
+                bootbox.alert("위치정보를 입력해주세요");
+                return false;
+            }
+            
+            
+        });
+      
         // HTML5의 위치정보를 이용하여 현재 위치를 얻어옴
         function currentLocation(){
             GMaps.geolocate({
