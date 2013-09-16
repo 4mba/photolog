@@ -143,7 +143,7 @@ class LoginForm(Form):
     
     username = \
         TextField('Username', 
-                  [validators.Required('패스워드를 입력하세요.'),
+                  [validators.Required('사용자명을 입력하세요.'),
                    validators.Length(
                     min=4, 
                     max=50, 
