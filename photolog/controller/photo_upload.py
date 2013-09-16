@@ -100,9 +100,11 @@ def upload_photo():
                                     "." + 
                                     ext)
                 
-                upload_photo.save(os.path.join(upload_folder, filename))
+                upload_photo.save(os.path.join(upload_folder, 
+                                               filename))
                 
-                filesize = os.stat(upload_folder + filename).st_size
+                filesize = \
+                    os.stat(upload_folder + filename).st_size
                 
                 #: 썸네일을 만든다.
                 make_thumbnails(filename)
@@ -116,8 +118,15 @@ def upload_photo():
     
         try :
             #: 사진에 대한 정보 DB에 저장
-            photo = Photo(user_id, tag, comment, filename_orig, filename, 
-                          filesize, lat, lng, upload_date, taken_date)
+            photo = Photo(user_id, 
+                          tag, 
+                          comment, 
+                          filename_orig, 
+                          filename, 
+                          filesize, 
+                          lat, lng, 
+                          upload_date, 
+                          taken_date)
             dao.add(photo)
             dao.commit()
     
@@ -206,7 +215,6 @@ def remove(photolog_id):
     return redirect(url_for('.show_all'))
 
 
-
 def make_thumbnails(filename):
     """ 업로드된 파일은 사이즈가 크기때문에 preview등에 사용하기 위해 
         썸네일 이미지를 생성한다.
@@ -227,6 +235,7 @@ def make_thumbnails(filename):
     except Exception as e:
         Log.error("Thumbnails creation error : " + target_name+" , "+str(e))
         raise e
+
     
 class PhotoUploadForm(Form):
     """사진 등록 화면에서 사진 파일, 태그, 설명 경도, 위도, 사진 찍은 날짜을 검증함"""

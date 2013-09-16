@@ -38,12 +38,14 @@ def get_photo_info(photolog_id):
     """
     
     photo = dao.query(Photo).filter_by(id=photolog_id).first()
-    download_folder = os.path.join(current_app.root_path, 
-                                   current_app.config['UPLOAD_FOLDER'])
-    download_filepath = os.path.join(download_folder, photo.filename)
+    download_folder = \
+        os.path.join(current_app.root_path, 
+                     current_app.config['UPLOAD_FOLDER'])
+    download_filepath = os.path.join(download_folder, 
+                                     photo.filename)
     
-    
-    return (download_folder, photo.filename, download_filepath, photo.comment)
+    return (download_folder, photo.filename, 
+            download_filepath, photo.comment)
 
 
 def __get_download_info(photolog_id, prefix_filename=''):
@@ -145,11 +147,7 @@ def show_all(page=1):
     return render_template('entry_all.html',
         pagination=pagination,
         photos=photo_pages,
-        sizeof_fmt=sizeof_fmt)  
-
-#     return render_template('entry_all.html',
-#             photos=photo_pages,
-#             sizeof_fmt=sizeof_fmt)    
+        sizeof_fmt=sizeof_fmt) 
 
 
 from math import ceil
