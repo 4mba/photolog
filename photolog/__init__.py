@@ -16,12 +16,12 @@ from flask import Flask, render_template, request, url_for
 
 
 def print_settings(config):
-    print '================================================================='
+    print '========================================================'
     print 'SETTINGS for PHOTOLOG APPLICATION'
-    print '================================================================='
+    print '========================================================'
     for key, value in config:
         print '%s=%s' % (key, value)
-    print '================================================================='
+    print '========================================================'
 
 ''' HTTP Error Code 404와 500은 errorhanlder에 application 레벨에서
     적용되므로 app 객체 생성시 등록해준다.
@@ -51,12 +51,14 @@ def create_app(config_filepath='resource/config.cfg'):
         
     # 로그 초기화
     from photolog.photolog_logger import Log
-    log_filepath = os.path.join(photolog_app.root_path, photolog_app.config['LOG_FILE_PATH'])
+    log_filepath = os.path.join(photolog_app.root_path, 
+                                photolog_app.config['LOG_FILE_PATH'])
     Log.init(log_filepath=log_filepath)
     
     # 데이터베이스 처리 
     from photolog.database import DBManager
-    db_filepath = os.path.join(photolog_app.root_path, photolog_app.config['DB_FILE_PATH'])
+    db_filepath = os.path.join(photolog_app.root_path, 
+                               photolog_app.config['DB_FILE_PATH'])
     db_url = photolog_app.config['DB_URL'] + db_filepath
     DBManager.init(db_url, eval(photolog_app.config['DB_LOG_FLAG']))    
     DBManager.init_db()
@@ -79,8 +81,8 @@ def create_app(config_filepath='resource/config.cfg'):
     photolog_app.error_handler_spec[None][500] = server_error
     
     # 페이징 처리를 위한 템플릿 함수
-    photolog_app.jinja_env.globals['url_for_other_page'] = url_for_other_page
-    
+    photolog_app.jinja_env.globals['url_for_other_page'] = \
+        url_for_other_page
     
     return photolog_app
 
