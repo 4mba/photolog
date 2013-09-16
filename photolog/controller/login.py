@@ -41,7 +41,8 @@ def login_required(f):
     def decorated_function(*args, **kwargs):
         try:
             session_key = \
-                request.cookies.get(current_app.config['SESSION_COOKIE_NAME'])
+                request.cookies.get(
+                    current_app.config['SESSION_COOKIE_NAME'])
 
             is_login = False
             if session.sid == session_key and \
@@ -49,12 +50,14 @@ def login_required(f):
                 is_login = True
 
             if not is_login:
-                return redirect(url_for('.login_form', next=request.url))
+                return redirect(url_for('.login_form', 
+                                        next=request.url))
 
             return f(*args, **kwargs)
 
         except Exception as e:
-            Log.error("while checking session, error occurs : %s" % str(e))
+            Log.error("while checking session, error occurs : %s" % 
+                      str(e))
             raise e
 
     return decorated_function
@@ -85,7 +88,9 @@ def login():
         Log.info("(%s)next_url is %s" % (request.method, next_url))
 
         try:
-            user = dao.query(User).filter_by(username=username).first()
+            user = dao.query(User). \
+                filter_by(username=username). \
+                first()
         except Exception as e:
             Log.error(str(e))
             raise e

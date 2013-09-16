@@ -75,18 +75,23 @@ class CacheSessionInterface(SessionInterface):
         self.cache.set(self.prefix + session.sid, val, 
                        int(cache_exp.total_seconds()))
         
-        response.set_cookie(app.session_cookie_name, session.sid,
+        response.set_cookie(app.session_cookie_name, 
+                            session.sid,
                             httponly=True,
                             domain=domain)
          
     
 class SimpleCacheSessionInterface(CacheSessionInterface):
 
-    def __init__(self, cache=SimpleCache(), prefix='simple_cache_session:'):
+    def __init__(self, 
+                 cache=SimpleCache(), 
+                 prefix='simple_cache_session:'):
         CacheSessionInterface.__init__(self, cache, prefix)
 
         
 class RedisCacheSessionInterface(CacheSessionInterface):
 
-    def __init__(self, cache=RedisCache(), prefix='redis_cache_session:'):
+    def __init__(self, 
+                 cache=RedisCache(), 
+                 prefix='redis_cache_session:'):
         CacheSessionInterface.__init__(self, cache, prefix)
