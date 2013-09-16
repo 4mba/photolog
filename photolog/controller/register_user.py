@@ -14,7 +14,7 @@ import os
 from flask import render_template, request, redirect , url_for, session, \
                   current_app, jsonify
 from werkzeug import generate_password_hash
-from wtforms import Form, TextField, PasswordField, validators
+from wtforms import Form, TextField, PasswordField, HiddenField, validators
 
 from photolog.photolog_logger import Log
 from photolog.photolog_blueprint import photolog
@@ -70,7 +70,7 @@ def update_user(username):
     """포토로그 사용자 정보 수정을 위한 함수"""
     
     current_user = __get_user(username)
-    form = RegisterForm(request.form)
+    form = RegisterBaseForm(request.form)
 
     if form.validate():
         email = form.email.data
@@ -100,7 +100,7 @@ def update_user_form(username):
     """포토로그 사용자 정보 수정 화면을 보여주는 함수"""
     
     current_user = __get_user(username)
-    form = RegisterForm(request.form, current_user)
+    form = RegisterBaseForm(request.form, current_user)
     
     return render_template('regist.html', 
                            user=current_user, 
@@ -179,16 +179,12 @@ def check_name():
         return jsonify(result = True)
     
 
-class RegisterForm(Form):
+class RegisterBaseForm(Form):
     """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
     
-    username = TextField('Username', 
-                         [validators.Length(
-                            min=4, 
-                            max=50, 
-                            message='4자리 이상 50자리 이하로 입력하세요.')])
     email = TextField('Email', 
-                      [validators.Email(message='형식에 맞지 않는 이메일입니다.')])
+                      [validators.Required('이메일을 입력하세요.'),
+                       validators.Email(message='형식에 맞지 않는 이메일입니다.')])
     password = \
         PasswordField('New Password', 
                       [validators.Required('패스워드를 입력하세요.'),
@@ -198,4 +194,19 @@ class RegisterForm(Form):
                         message='4자리 이상 50자리 이하로 입력하세요.'),
                        validators.EqualTo('password_confirm', 
                                           message='패스워드가 일치하지 않습니다.')])
-    password_confirm  = PasswordField('Confirm Password')   
+    password_confirm  = PasswordField('Confirm Password')  
+    
+    
+class RegisterForm(RegisterBaseForm):
+    """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
+    
+    username = TextField('Username', 
+                         [validators.Required('사용자명을 입력하세요.'),
+                          validators.Length(
+                            min=4, 
+                            max=50, 
+                            message='4자리 이상 50자리 이하로 입력하세요.')])
+
+    username_check = \
+        HiddenField('Username Check', 
+                    [validators.Required('사용자명 중복을 확인하세요.')])   
