@@ -73,23 +73,6 @@ def download_thumbnail(photolog_id):
     return __get_download_info(photolog_id, 'thumb_')
 
 
-@photolog.route('/photo/search', methods=['POST'])
-@login_required
-def search_photo():    
-    search_word = request.form['search_word'];
-    
-    if (search_word == ''):
-        return show_all();
-    
-    user_id = session['user_info'].id
-       
-    return render_template('entry_all.html',
-            photos=dao.query(Photo).
-                        filter_by(user_id=user_id).
-                        filter(or_(Photo.comment.like("%" + search_word + "%"), 
-                                   Photo.tag.like("%" + search_word + "%"))).
-                        order_by(Photo.upload_date.desc()).all(),
-            sizeof_fmt=sizeof_fmt)
 
 
 # @photolog.route('/photo/show/')
@@ -136,6 +119,25 @@ def show_all(page=1):
         pagination=pagination,
         photos=photo_pages,
         sizeof_fmt=sizeof_fmt) 
+
+
+@photolog.route('/photo/search', methods=['POST'])
+@login_required
+def search_photo():    
+    search_word = request.form['search_word'];
+    
+    if (search_word == ''):
+        return show_all();
+    
+    user_id = session['user_info'].id
+       
+    return render_template('entry_all.html',
+            photos=dao.query(Photo).
+                        filter_by(user_id=user_id).
+                        filter(or_(Photo.comment.like("%" + search_word + "%"), 
+                                   Photo.tag.like("%" + search_word + "%"))).
+                        order_by(Photo.upload_date.desc()).all(),
+            sizeof_fmt=sizeof_fmt)
 
 
 
