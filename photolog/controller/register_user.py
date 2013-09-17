@@ -59,7 +59,8 @@ def register_user():
             raise e
         else:
             # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-            return redirect(url_for('.login', regist_username=username)) 
+            return redirect(url_for('.login', 
+                                    regist_username=username)) 
     else:
         return render_template('regist.html', form=form)
     
@@ -70,7 +71,7 @@ def update_user_form(username):
     """포토로그 사용자 정보 수정 화면을 보여주는 함수"""
     
     current_user = __get_user(username)
-    form = RegisterBaseForm(request.form, current_user)
+    form = UpdateForm(request.form, current_user)
     
     return render_template('regist.html', 
                            user=current_user, 
@@ -83,7 +84,7 @@ def update_user(username):
     """포토로그 사용자 정보 수정을 위한 함수"""
     
     current_user = __get_user(username)
-    form = RegisterBaseForm(request.form)
+    form = UpdateForm(request.form)
 
     if form.validate():
         email = form.email.data
@@ -99,18 +100,26 @@ def update_user(username):
             raise e
         else:
             # 변경된 사용자 정보를 세션에 반영
-            session['user_info'].email = current_user.email
-            session['user_info'].password = current_user.password
-            session['user_info'].password_confirm = current_user.password
+            session['user_info'].email = \
+                current_user.email
+            session['user_info'].password = \
+                current_user.password
+            session['user_info'].password_confirm = \
+                current_user.password
             # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-            return redirect(url_for('.login'))
+            return redirect(url_for('.login', 
+                                    update_username=username))
     else:
-        return render_template('regist.html', user=current_user, form=form)
+        return render_template('regist.html', 
+                               user=current_user, 
+                               form=form)
 
 
 def __get_user(username):
     try:
-        current_user = dao.query(User).filter_by(username=username).first()
+        current_user = dao.query(User).\
+                            filter_by(username=username).\
+                            first()
 
         Log.debug(current_user)
         return current_user  
@@ -133,7 +142,7 @@ def unregist():
                                  current_app.config['UPLOAD_FOLDER'])
                 __delete_files(upload_folder, user.username)
             except Exception as e:
-                Log.error("파일 삭제에 실패했습니다. 나중에 일괄 삭제하세요. : %s" + \
+                Log.error("파일 삭제에 실패했습니다. : %s" + \
                           str(e))
             
             dao.commit()
@@ -181,12 +190,15 @@ def check_name():
         return jsonify(result = True)
     
 
-class RegisterBaseForm(Form):
+class UpdateForm(Form):
     """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
+    
+    username = TextField('Username')
     
     email = TextField('Email', 
                       [validators.Required('이메일을 입력하세요.'),
                        validators.Email(message='형식에 맞지 않는 이메일입니다.')])
+    
     password = \
         PasswordField('New Password', 
                       [validators.Required('패스워드를 입력하세요.'),
@@ -196,10 +208,11 @@ class RegisterBaseForm(Form):
                         message='4자리 이상 50자리 이하로 입력하세요.'),
                        validators.EqualTo('password_confirm', 
                                           message='패스워드가 일치하지 않습니다.')])
-    password_confirm  = PasswordField('Confirm Password')  
+        
+    password_confirm  = PasswordField('Confirm Password')
     
     
-class RegisterForm(RegisterBaseForm):
+class RegisterForm(Form):
     """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
     
     username = TextField('Username', 
@@ -208,7 +221,23 @@ class RegisterForm(RegisterBaseForm):
                             min=4, 
                             max=50, 
                             message='4자리 이상 50자리 이하로 입력하세요.')])
-
+    
+    email = TextField('Email', 
+                      [validators.Required('이메일을 입력하세요.'),
+                       validators.Email(message='형식에 맞지 않는 이메일입니다.')])
+    
+    password = \
+        PasswordField('New Password', 
+                      [validators.Required('패스워드를 입력하세요.'),
+                       validators.Length(
+                        min=4, 
+                        max=50,
+                        message='4자리 이상 50자리 이하로 입력하세요.'),
+                       validators.EqualTo('password_confirm', 
+                                          message='패스워드가 일치하지 않습니다.')])
+        
+    password_confirm  = PasswordField('Confirm Password')
+    
     username_check = \
         HiddenField('Username Check', 
                     [validators.Required('사용자명 중복을 확인하세요.')])   

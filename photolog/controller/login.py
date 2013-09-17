@@ -122,6 +122,7 @@ def login_form():
     
     next_url = request.args.get('next', '')
     regist_username = request.args.get('regist_username', '')
+    update_username = request.args.get('update_username', '')
     Log.info("(%s)next_url is %s" % (request.method, next_url))
     
     form = LoginForm(request.form)
@@ -129,7 +130,8 @@ def login_form():
     return render_template('login.html', 
                            next_url=next_url,
                            form=form,
-                           regist_username=regist_username)
+                           regist_username=regist_username,
+                           update_username=update_username)
     
 @photolog.route('/logout')
 @login_required
