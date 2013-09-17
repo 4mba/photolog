@@ -23,12 +23,13 @@
         	   username = $('input[name=username]').val();
         	   if (data.result) {
                    bootbox.alert(username + '는 사용 가능한 아이디입니다.', function() {
-                	   $('input[name=email]').focus();
+	                	   $('input[name=username_check]').val('Y');
+	                	   $('input[name=email]').focus().select();
                    });
         	   } else {
                    bootbox.alert(username + '는 이미 사용중입니다. 다른 아이디를 사용하세요.', function() {
-                       $('#username').val('');
-                       $('input[name=username]').focus(); 
+                	   $('input[name=username]').val('');
+                       $('input[name=username]').focus().select();
                    });
         	   }
              }
