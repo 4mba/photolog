@@ -20,8 +20,18 @@
                 <a class="close" data-dismiss="alert" href="#">×</a>{{ error }}
               </div>
               {% endif %}
+              {% if regist_username %}
+              <div class="alert alert-success">
+                <a class="close" data-dismiss="alert" href="#">×</a>
+                {{ regist_username }}의 가입을 환영합니다! 
+              </div>
+              {% elif update_username %}
+              <div class="alert alert-info">
+                <a class="close" data-dismiss="alert" href="#">×</a>
+                {{ update_username }}의 정보가 변경됐습니다. 
+              </div>
+              {% endif %}
            </div>
-
           <div class="modal-body">
               {{ render_field(form.username, class="input-block-level", placeholder="Username") }}
               {{ render_field(form.password, class="input-block-level", placeholder="Password") }}
@@ -43,13 +53,7 @@
     </div> <!-- container -->
 
     <script type="text/javascript">
-      // $('#login-form').modal('show').css ({
-//           
-          // 'margin-left': function () {
-              // return -($(this).width() / 2);
-          // }         
-      // });
-//       
+
       $('#login-form').modal('show');
       $('#username').focus();
       
