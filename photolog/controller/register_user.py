@@ -23,12 +23,21 @@ from photolog.model.user import User
 from photolog.controller.login import login_required
 
 
+@photolog.route('/user/regist')
+def register_user_form():
+    """포토로그 사용자 등록을 위한 폼을 제공하는 함수"""
+    
+    form = RegisterForm(request.form)
+    
+    return render_template('regist.html', form=form)
+
+
 @photolog.route('/user/regist', methods=['POST'])
 def register_user():
     """포토로그 사용자 등록을 위한 함수"""
 
     form = RegisterForm(request.form)
-
+    
     if form.validate():
 
         username = form.username.data
@@ -50,18 +59,22 @@ def register_user():
             raise e
         else:
             # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
-            return redirect(url_for('.login')) 
+            return redirect(url_for('.login', regist_username=username)) 
     else:
         return render_template('regist.html', form=form)
     
         
-@photolog.route('/user/regist')
-def register_user_form():
-    """포토로그 사용자 등록을 위한 폼을 제공하는 함수"""
+@photolog.route('/user/<username>')
+@login_required
+def update_user_form(username):
+    """포토로그 사용자 정보 수정 화면을 보여주는 함수"""
     
-    form = RegisterForm(request.form)
+    current_user = __get_user(username)
+    form = RegisterBaseForm(request.form, current_user)
     
-    return render_template('regist.html', form=form)
+    return render_template('regist.html', 
+                           user=current_user, 
+                           form=form)
 
     
 @photolog.route('/user/<username>', methods=['POST'])
@@ -94,17 +107,6 @@ def update_user(username):
     else:
         return render_template('regist.html', user=current_user, form=form)
 
-@photolog.route('/user/<username>')
-@login_required
-def update_user_form(username):
-    """포토로그 사용자 정보 수정 화면을 보여주는 함수"""
-    
-    current_user = __get_user(username)
-    form = RegisterBaseForm(request.form, current_user)
-    
-    return render_template('regist.html', 
-                           user=current_user, 
-                           form=form)
 
 def __get_user(username):
     try:
@@ -170,8 +172,8 @@ def __delete_files(filepath, username):
 
 @photolog.route('/user/check_name', methods=['POST'])
 def check_name():
+    
     username = request.json['username']
-    print username
     #: DB에서 username 중복 확인 
     if __get_user(username) :
         return jsonify(result = False)
