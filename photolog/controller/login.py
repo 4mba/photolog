@@ -121,13 +121,15 @@ def login_form():
     """아이디/패스워드 기반의 로그인 화면을 제공함 """
     
     next_url = request.args.get('next', '')
+    regist_username = request.args.get('regist_username', '')
     Log.info("(%s)next_url is %s" % (request.method, next_url))
     
     form = LoginForm(request.form)
 
     return render_template('login.html', 
                            next_url=next_url,
-                           form=form)
+                           form=form,
+                           regist_username=regist_username)
     
 @photolog.route('/logout')
 @login_required
