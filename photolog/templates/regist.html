@@ -67,9 +67,11 @@
     			    {% if user %}
     			     {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.", readOnly="True")  }}
     			    {% else %}
-    			    {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.") }}
-    			    <button id="username_check" class="btn btn-primary">아이디 중복 확인</button>
-    			    {{ render_field(form.username_check) }}
+    			    <div class="input-append">
+    			      {{ render_field(form.username, class="input-xlarge", placeholder="문자와 숫자로 공백없이 입력해주세요.") }}
+    			      <button id="username_check" class="btn btn-primary">확인</button>
+    			      {{ render_field(form.username_check) }}
+    			    </div>
     			    {% endif %}
     			  </div>
     			</div>

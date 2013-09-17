@@ -10,7 +10,7 @@
         if (placeholder)
             $('#{{ field.id }}').attr('placeholder', '{{ error }}');
         else
-        	alert('{{error}}');
+        	bootbox.alert('{{error}}');
     {% endfor %}
     </script>
   {% endif %}
