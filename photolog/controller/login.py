@@ -70,6 +70,24 @@ def index():
     return redirect(url_for('.show_all'))
 
 
+@photolog.route('/user/login')
+def login_form():
+    """아이디/패스워드 기반의 로그인 화면을 제공함 """
+    
+    next_url = request.args.get('next', '')
+    regist_username = request.args.get('regist_username', '')
+    update_username = request.args.get('update_username', '')
+    Log.info("(%s)next_url is %s" % (request.method, next_url))
+    
+    form = LoginForm(request.form)
+
+    return render_template('login.html', 
+                           next_url=next_url,
+                           form=form,
+                           regist_username=regist_username,
+                           update_username=update_username)
+    
+    
 @photolog.route('/user/login', methods=['POST'])
 def login():
     """아이디/패스워드 기반의 로그인 기능을 제공함
@@ -116,22 +134,6 @@ def login():
                    error=login_error, 
                    form=form)
 
-@photolog.route('/user/login')
-def login_form():
-    """아이디/패스워드 기반의 로그인 화면을 제공함 """
-    
-    next_url = request.args.get('next', '')
-    regist_username = request.args.get('regist_username', '')
-    update_username = request.args.get('update_username', '')
-    Log.info("(%s)next_url is %s" % (request.method, next_url))
-    
-    form = LoginForm(request.form)
-
-    return render_template('login.html', 
-                           next_url=next_url,
-                           form=form,
-                           regist_username=regist_username,
-                           update_username=update_username)
     
 @photolog.route('/logout')
 @login_required
