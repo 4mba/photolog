@@ -5,7 +5,12 @@
     {% for error in field.errors %}
         class_attr = $('#{{ field.id }}').attr('class')
         $('#{{ field.id }}').attr('class', class_attr + ' error');
-        $('#{{ field.id }}').attr('placeholder', '{{ error }}'); 
+        
+        placeholder = $('#{{ field.id }}').attr('placeholder')
+        if (placeholder)
+            $('#{{ field.id }}').attr('placeholder', '{{ error }}');
+        else
+        	alert('{{error}}');
     {% endfor %}
     </script>
   {% endif %}
