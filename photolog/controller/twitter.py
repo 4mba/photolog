@@ -49,8 +49,8 @@ def oauth(photolog_id):
     twitter = Twython(current_app.config['TWIT_APP_KEY'], 
                       current_app.config['TWIT_APP_SECRET'])
     auth = twitter.get_authentication_tokens(
-            callback_url='http://' + current_app.config['SERVER_NAME'] + \
-            '/sns/twitter/callback/' + photolog_id)
+            callback_url=current_app.config['TWIT_CALLBACK_SERVER'] + \
+                url_for('.callback', photolog_id=photolog_id))
     
     # 중간단계로 받은 임시 인증토큰은 최종인증을 위해 필요하므로 세션에 저장한다. 
     session['OAUTH_TOKEN'] = auth['oauth_token']
