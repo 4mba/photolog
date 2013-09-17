@@ -73,18 +73,6 @@ def download_thumbnail(photolog_id):
     return __get_download_info(photolog_id, 'thumb_')
 
 
-
-@photolog.route('/photo/show/map')
-@login_required
-def show_map(): 
-    user_id = session['user_info'].id
-
-    return render_template('show_map.html', 
-            photos=dao.query(Photo).
-                        filter_by(user_id=user_id).
-                        order_by(Photo.taken_date.desc()).all())
-
-
 @photolog.route('/photo/search', methods=['POST'])
 @login_required
 def search_photo():    
@@ -148,6 +136,19 @@ def show_all(page=1):
         pagination=pagination,
         photos=photo_pages,
         sizeof_fmt=sizeof_fmt) 
+
+
+
+@photolog.route('/photo/show/map')
+@login_required
+def show_map(): 
+    user_id = session['user_info'].id
+
+    return render_template('show_map.html', 
+            photos=dao.query(Photo).
+                        filter_by(user_id=user_id).
+                        order_by(Photo.taken_date.desc()).all())
+
 
 
 from math import ceil
