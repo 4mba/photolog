@@ -73,25 +73,6 @@ def download_thumbnail(photolog_id):
     return __get_download_info(photolog_id, 'thumb_')
 
 
-
-
-# @photolog.route('/photo/show/')
-# @login_required
-# def show_all1():    
-#     user_id = session['user_info'].id
-#     
-#     return render_template('entry_all.html',
-#             photos=dao.query(Photo).
-#                         filter_by(user_id=user_id).
-#                         order_by(Photo.upload_date.desc()).
-#                         all(),
-#             sizeof_fmt=sizeof_fmt)
-
-
-# @app.route('/users/', defaults={'page': 1})
-# @app.route('/users/page/<int:page>')
-
-
 @photolog.route('/photo/', defaults={'page': 1})
 @photolog.route('/photo/page/<int:page>')
 @login_required
