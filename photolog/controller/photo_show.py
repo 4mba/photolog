@@ -85,9 +85,9 @@ def show_all(page=1):
     pagination = Pagination(page, per_page, photo_count)
     
     if page != 1:
-        offset = photo_count - (per_page * (page - 1))
+        offset = per_page * (page - 1)
     else:
-        offset = 1
+        offset = 0
     
     photo_pages = dao.query(Photo). \
                         filter_by(user_id=user_id). \
