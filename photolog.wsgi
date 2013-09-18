@@ -13,5 +13,5 @@ import sys
 sys.path.insert(0,'/Users/keatonh/project/photolog')
 
 from photolog import create_app
-#application = create_app('/Users/keatonh/project/photolog/photolog/resource/config.cfg')    
-application = create_app()    
+application = \
+    create_app('/Users/keatonh/project/photolog/photolog/resource/config.cfg')      
