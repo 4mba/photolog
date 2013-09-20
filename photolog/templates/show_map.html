@@ -21,7 +21,7 @@ $(document).ready(function(){
 	map.addMarker({
 		lat: {{ photo.geotag_lat }},
 		lng: {{ photo.geotag_lng }},
-		title: '{{ photo.filename }}',
+		title: '{{ photo.filename_orig }}',
 		infoWindow: {
 			content: '<div><b>{{ photo.taken_date }}</b></div><div>{{ photo.comment }}</div><div><a href="javascript:popupImage(\'{{ url_for('photolog.download_photo', photolog_id=photo.id) }}\');"><img class="map-image" src="{{ url_for('photolog.download_thumbnail', photolog_id=photo.id) }}"/></a></div>'
 		}
