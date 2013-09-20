@@ -4,7 +4,7 @@
    {% if pagination.has_prev %}
     <li><a href="{{ url_for_other_page(pagination.page - 1)}}">&laquo; Prev</a></li>
   {% else %}
-    <li class="disabled"><a href="#}">Prev  &raquo;</a></li>
+    <li class="disabled"><a href="#}">&laquo; Prev</a></li>
   {% endif %}
   {%- for page in pagination.iter_pages() %}
     {% if page %}
