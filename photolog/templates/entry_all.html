@@ -56,14 +56,19 @@
         </div>
 	</div>
 	
-	<div class="row-fluid" align="center">
-		<div class="span12">
-		<p>
-		    {% from "_pagehelpers.html" import render_pagination %}
-            {{ render_pagination(pagination) }}
-		</p>
-		</div>
-	</div>
+
+        {% if pagination %}
+            <div class="row-fluid" align="center">
+                <div class="span12">
+                <p>
+                    {% from "_pagehelpers.html" import render_pagination %}
+                    {{ render_pagination(pagination) }}
+                </p>
+                </div>
+            </div>
+        {% else %}
+        <!-- do nothing! -->
+        {% endif %}
 
 
 <script type="text/javascript">
