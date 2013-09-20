@@ -2,7 +2,7 @@
   <div class=pagination>
       <ul>
    {% if pagination.has_prev %}
-    <li><a href="{{ url_for_other_page(pagination.page - 1)}}">Prev &raquo;</a></li>
+    <li><a href="{{ url_for_other_page(pagination.page - 1)}}">&laquo; Prev</a></li>
   {% else %}
     <li class="disabled"><a href="#}">Prev  &raquo;</a></li>
   {% endif %}
