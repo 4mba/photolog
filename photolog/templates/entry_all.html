@@ -44,7 +44,7 @@
                       <a class="btn btn-warning btn-mini" href='#' onclick="javascript:remove('{{ url_for('photolog.remove', photolog_id=photo.id)}}');">
                           <i class="icon-remove"></i>
                       </a>
-                      <a class="btn btn-primary btn-mini" href='#' onclick="javascript:twit('/sns/twitter/send/{{photo.id}}');" >
+                      <a class="btn btn-primary btn-mini" href='#' onclick="javascript:twit('{{ url_for('photolog.send', photolog_id=photo.id)}}');" >
                           <i class="icon-twitter"></i>
                       </a>
                   </td>
