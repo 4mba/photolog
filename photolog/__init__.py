@@ -30,7 +30,8 @@ def not_found(error):
     return render_template('404.html'), 404
 
 def server_error(error):
-    return render_template('500.html'), 500
+    err_msg = str(error)
+    return render_template('500.html', err_msg=err_msg), 500
     
     
 def url_for_other_page(page):
