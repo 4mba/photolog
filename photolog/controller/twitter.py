@@ -22,41 +22,46 @@ from photolog.photolog_logger import Log
 @photolog.route('/sns/twitter/send/<photolog_id>')
 @login_required
 def send(photolog_id):
-    """ photolog_id에 해당하는 사진과 커멘트를 트위터로 전송하는 함수 """
+    """ photolog_id에 해당하는 사진과 커멘트를 트위터로 전송하는 뷰함수 """
 
     if (session.__contains__('TWITTER')):
+
         twitter = session['TWITTER']
-        
-        try:
-            # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-            photo_info = get_photo_info(photolog_id)
-            download_filepath = photo_info[2]
-            photo_comment = photo_info[3]
-            photo = open(download_filepath, 'rb')
-
-            twitter.update_status_with_media(status=photo_comment,
-                                         media=photo)
-
-            session['TWITTER_RESULT'] = 'ok'
-
-        except IOError as e:
-            Log.error("send(): IOError , "+ str(e))
-            session['TWITTER_RESULT'] = str(e)
-            
-        except TwythonError as e:
-            Log.error("send(): TwythonError , "+ str(e))
-            session['TWITTER_RESULT'] = str(e)
-
+        __send_twit__(twitter, photolog_id)
             
         return redirect(url_for('.show_all'))
 
     else:
         # twitter 객체가 세션에 없을경우 인증단계로 이동한다.
-        return oauth(photolog_id)
+        return __oauth__(photolog_id)
 
 
 
-def oauth(photolog_id):
+def __send_twit__(twitter, photolog_id):
+    """ 실제로, photolog_id에 해당하는 사진과 커멘트를 트위터로 전송하는 내부 함수 """
+
+    try:
+        photo_info = get_photo_info(photolog_id)
+        download_filepath = photo_info[2]
+        photo_comment = photo_info[3]
+        photo = open(download_filepath, 'rb')
+
+        twitter.update_status_with_media(status=photo_comment, 
+                                         media=photo)
+    
+        session['TWITTER_RESULT'] = 'ok' 
+
+    except IOError as e:
+        Log.error("send(): IOError , " + str(e))
+        session['TWITTER_RESULT'] = str(e)
+
+    except TwythonError as e:
+        Log.error("send(): TwythonError , " + str(e))
+        session['TWITTER_RESULT'] = str(e)
+
+
+
+def __oauth__(photolog_id):
     """ twitter로부터 인증토큰을 받기 위한 함수 """
     
     try:
@@ -74,7 +79,7 @@ def oauth(photolog_id):
         session['OAUTH_TOKEN_SECRET'] = auth['oauth_token_secret']
 
     except TwythonError as e:
-        Log.error("oauth(): TwythonError , "+ str(e))
+        Log.error("__oauth__(): TwythonError , "+ str(e))
         session['TWITTER_RESULT'] = str(e)
 
         return redirect(url_for('.show_all'))
@@ -116,19 +121,7 @@ def callback(photolog_id):
         session['TWITTER'] = twitter
     
         # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-        photo_info = get_photo_info(photolog_id)
-        download_filepath = photo_info[2]
-        photo_comment = photo_info[3]
-        photo = open(download_filepath, 'rb')
-
-        twitter.update_status_with_media(status=photo_comment, 
-                                         media=photo)
-
-        session['TWITTER_RESULT'] = 'ok'
-
-    except IOError as e:
-        Log.error("callback(): IOError , "+ str(e))
-        session['TWITTER_RESULT'] = str(e)
+        __send_twit__(twitter, photolog_id)
 
     except TwythonError as e:
         Log.error("callback(): TwythonError , "+ str(e))
