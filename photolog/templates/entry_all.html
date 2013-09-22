@@ -78,10 +78,10 @@
     var twit_result = '{{ session.pop('TWITTER_RESULT', None) }}';
         
     if (twit_result == 'ok') {
-        bootbox.alert('트윗을 전송하였습니다.');          
+        bootbox.alert('트윗전송을 성공하였습니다.');          
     }
     else {
-        bootbox.alert('트윗 전송에 실패하였습니다. ('+twit_result+')');         
+        bootbox.alert('트윗전송을 실패하였습니다. ('+twit_result+')');         
     }
 {% endif %}
 
