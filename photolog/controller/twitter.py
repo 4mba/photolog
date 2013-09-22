@@ -31,26 +31,35 @@ def send(photolog_id):
         download_filepath = photo_info[2]
         photo_comment = photo_info[3]
         photo = open(download_filepath, 'rb')
-        twitter.update_status_with_media(status=photo_comment,
+        
+        try:
+            twitter.update_status_with_media(status=photo_comment,
                                          media=photo)
-
+        except TwythonError as e:
+            Log.error("send(): TwythonError , "+ str(e))
+            raise e
+            
         return redirect(url_for('.show_all'))
 
     else:
         # twitter 객체가 세션에 없을경우 인증단계로 이동한다.
-        return redirect(url_for('.oauth', photolog_id=photolog_id))
+        return oauth(photolog_id)
 
 
-@photolog.route('/sns/twitter/oauth/<photolog_id>')
-@login_required
+
 def oauth(photolog_id):
     """ twitter로부터 인증토큰을 받기 위한 함수 """
     
-    twitter = Twython(current_app.config['TWIT_APP_KEY'], 
-                      current_app.config['TWIT_APP_SECRET'])
-    auth = twitter.get_authentication_tokens(
-            callback_url=current_app.config['TWIT_CALLBACK_SERVER'] + \
-                url_for('.callback', photolog_id=photolog_id))
+    try:
+        twitter = Twython(current_app.config['TWIT_APP_KEY'], 
+                          current_app.config['TWIT_APP_SECRET'])
+        auth = twitter.get_authentication_tokens(
+                callback_url=current_app.config['TWIT_CALLBACK_SERVER'] + \
+                    url_for('.callback', photolog_id=photolog_id))
+
+    except TwythonError as e:
+        Log.error("oauth(): TwythonError , "+ str(e))
+        raise e
     
     # 중간단계로 받은 임시 인증토큰은 최종인증을 위해 필요하므로 세션에 저장한다. 
     session['OAUTH_TOKEN'] = auth['oauth_token']
@@ -77,25 +86,36 @@ def callback(photolog_id):
     OAUTH_TOKEN_SECRET = session['OAUTH_TOKEN_SECRET']
     oauth_verifier     = request.args['oauth_verifier']
     
-    # 임시로 받은 인증토큰을 이용하여 twitter 객체를 만들고 인증토큰을 검증한다.     
-    twitter = Twython(current_app.config['TWIT_APP_KEY'], 
-                      current_app.config['TWIT_APP_SECRET'], 
-                      OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
-    final_step = twitter.get_authorized_tokens(oauth_verifier)    
+    try:
+        # 임시로 받은 인증토큰을 이용하여 twitter 객체를 만들고 인증토큰을 검증한다.     
+        twitter = Twython(current_app.config['TWIT_APP_KEY'], 
+                          current_app.config['TWIT_APP_SECRET'], 
+                          OAUTH_TOKEN, OAUTH_TOKEN_SECRET)
+        final_step = twitter.get_authorized_tokens(oauth_verifier)    
+        
+        # oauth_verifier를 통해 얻은 최종 인증토큰을 이용하여 twitter 객체를 새로 생성한다.
+        twitter = Twython(current_app.config['TWIT_APP_KEY'], 
+                          current_app.config['TWIT_APP_SECRET'], 
+                          final_step['oauth_token'], 
+                          final_step['oauth_token_secret'])
+        session['TWITTER'] = twitter
     
-    # oauth_verifier를 통해 얻은 최종 인증토큰을 이용하여 twitter 객체를 새로 생성한다.
-    twitter = Twython(current_app.config['TWIT_APP_KEY'], 
-                      current_app.config['TWIT_APP_SECRET'], 
-                      final_step['oauth_token'], 
-                      final_step['oauth_token_secret'])
-    session['TWITTER'] = twitter
+    except TwythonError as e:
+        Log.error("callback(): Authenticatio , "+ str(e))
+        raise e
+        
 
-    # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-    photo_info = get_photo_info(photolog_id)
-    download_filepath = photo_info[2]
-    photo_comment = photo_info[3]
-    photo = open(download_filepath, 'rb')
-    twitter.update_status_with_media(status=photo_comment, 
-                                     media=photo)
+        # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
+        photo_info = get_photo_info(photolog_id)
+        download_filepath = photo_info[2]
+        photo_comment = photo_info[3]
+        photo = open(download_filepath, 'rb')
+        
+    try:
+        twitter.update_status_with_media(status=photo_comment, 
+                                         media=photo)
+    except TwythonError as e:
+        Log.error("callback(): update_status_with_media , "+ str(e))
+        raise e
 
     return redirect(url_for('.show_all'))
