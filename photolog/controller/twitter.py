@@ -62,9 +62,16 @@ def oauth(photolog_id):
     try:
         twitter = Twython(current_app.config['TWIT_APP_KEY'], 
                           current_app.config['TWIT_APP_SECRET'])
+        
+        callback_svr = current_app.config['TWIT_CALLBACK_SERVER']
+        
         auth    = twitter.get_authentication_tokens(
-                          callback_url=current_app.config['TWIT_CALLBACK_SERVER'] + \
+                          callback_url= callback_svr + \
                           url_for('.callback', photolog_id=photolog_id))
+
+        # 중간단계로 받은 임시 인증토큰은 최종인증을 위해 필요하므로 세션에 저장한다. 
+        session['OAUTH_TOKEN'] = auth['oauth_token']
+        session['OAUTH_TOKEN_SECRET'] = auth['oauth_token_secret']
 
     except TwythonError as e:
         Log.error("oauth(): TwythonError , "+ str(e))
@@ -72,9 +79,6 @@ def oauth(photolog_id):
 
         return redirect(url_for('.show_all'))
     
-    # 중간단계로 받은 임시 인증토큰은 최종인증을 위해 필요하므로 세션에 저장한다. 
-    session['OAUTH_TOKEN'] = auth['oauth_token']
-    session['OAUTH_TOKEN_SECRET'] = auth['oauth_token_secret']
 
     # 트위터의 사용자 권한 인증 URL로 페이지를 리다이렉트한다.
     return redirect(auth['auth_url'])
