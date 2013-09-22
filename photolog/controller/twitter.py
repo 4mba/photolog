@@ -27,20 +27,26 @@ def send(photolog_id):
     if (session.__contains__('TWITTER')):
         twitter = session['TWITTER']
         
-        # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-        photo_info = get_photo_info(photolog_id)
-        download_filepath = photo_info[2]
-        photo_comment = photo_info[3]
-        photo = open(download_filepath, 'rb')
-
         try:
+            # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
+            photo_info = get_photo_info(photolog_id)
+            download_filepath = photo_info[2]
+            photo_comment = photo_info[3]
+            photo = open(download_filepath, 'rb')
+
             twitter.update_status_with_media(status=photo_comment,
                                          media=photo)
+
             session['TWITTER_RESULT'] = 'ok'
 
+        except IOError as e:
+            Log.error("send(): IOError , "+ str(e))
+            session['TWITTER_RESULT'] = str(e)
+            
         except TwythonError as e:
             Log.error("send(): TwythonError , "+ str(e))
             session['TWITTER_RESULT'] = str(e)
+
             
         return redirect(url_for('.show_all'))
 
@@ -116,12 +122,12 @@ def callback(photolog_id):
 
         session['TWITTER_RESULT'] = 'ok'
 
+    except IOError as e:
+        Log.error("callback(): IOError , "+ str(e))
+        session['TWITTER_RESULT'] = str(e)
+
     except TwythonError as e:
         Log.error("callback(): TwythonError , "+ str(e))
-        session['TWITTER_RESULT'] = str(e)
-        
-    except Exception as e:
-        Log.error("callback(): Error , "+ str(e))
         session['TWITTER_RESULT'] = str(e)
 
     return redirect(url_for('.show_all'))
