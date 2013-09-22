@@ -111,14 +111,15 @@ def search_photo():
         return show_all();
     
     user_id = session['user_info'].id
+    
+    photos=dao.query(Photo).filter_by(user_id=user_id). \
+               filter(or_(Photo.comment.like("%" + search_word + "%"), 
+                          Photo.tag.like("%" + search_word + "%"))). \
+               order_by(Photo.upload_date.desc()).all()    
        
-    return render_template('entry_all.html',
-            photos=dao.query(Photo).
-                        filter_by(user_id=user_id).
-                        filter(or_(Photo.comment.like("%" + search_word + "%"), 
-                                   Photo.tag.like("%" + search_word + "%"))).
-                        order_by(Photo.upload_date.desc()).all(),
-            sizeof_fmt=sizeof_fmt)
+    return render_template('entry_all.html', photos=photos, sizeof_fmt=sizeof_fmt)
+
+
 
 
 
