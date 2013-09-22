@@ -11,7 +11,7 @@
 
 
 from flask import request, redirect, url_for, current_app, session
-from twython import Twython
+from twython import Twython, TwythonError
 
 from photolog.controller.login import login_required
 from photolog.controller.photo_show import get_photo_info
@@ -26,18 +26,21 @@ def send(photolog_id):
 
     if (session.__contains__('TWITTER')):
         twitter = session['TWITTER']
+        
         # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
         photo_info = get_photo_info(photolog_id)
         download_filepath = photo_info[2]
         photo_comment = photo_info[3]
         photo = open(download_filepath, 'rb')
-        
+
         try:
             twitter.update_status_with_media(status=photo_comment,
                                          media=photo)
+            session['TWITTER_RESULT'] = 'ok'
+
         except TwythonError as e:
             Log.error("send(): TwythonError , "+ str(e))
-            raise e
+            session['TWITTER_RESULT'] = str(e)
             
         return redirect(url_for('.show_all'))
 
@@ -53,13 +56,15 @@ def oauth(photolog_id):
     try:
         twitter = Twython(current_app.config['TWIT_APP_KEY'], 
                           current_app.config['TWIT_APP_SECRET'])
-        auth = twitter.get_authentication_tokens(
-                callback_url=current_app.config['TWIT_CALLBACK_SERVER'] + \
-                    url_for('.callback', photolog_id=photolog_id))
+        auth    = twitter.get_authentication_tokens(
+                          callback_url=current_app.config['TWIT_CALLBACK_SERVER'] + \
+                          url_for('.callback', photolog_id=photolog_id))
 
     except TwythonError as e:
         Log.error("oauth(): TwythonError , "+ str(e))
-        raise e
+        session['TWITTER_RESULT'] = str(e)
+
+        return redirect(url_for('.show_all'))
     
     # 중간단계로 받은 임시 인증토큰은 최종인증을 위해 필요하므로 세션에 저장한다. 
     session['OAUTH_TOKEN'] = auth['oauth_token']
@@ -100,22 +105,24 @@ def callback(photolog_id):
                           final_step['oauth_token_secret'])
         session['TWITTER'] = twitter
     
-    except TwythonError as e:
-        Log.error("callback(): Authenticatio , "+ str(e))
-        raise e
-        
-
         # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
         photo_info = get_photo_info(photolog_id)
         download_filepath = photo_info[2]
         photo_comment = photo_info[3]
         photo = open(download_filepath, 'rb')
-        
-    try:
+
         twitter.update_status_with_media(status=photo_comment, 
                                          media=photo)
+
+        session['TWITTER_RESULT'] = 'ok'
+
     except TwythonError as e:
-        Log.error("callback(): update_status_with_media , "+ str(e))
-        raise e
+        Log.error("callback(): TwythonError , "+ str(e))
+        session['TWITTER_RESULT'] = str(e)
+        
+    except Exception as e:
+        Log.error("callback(): Error , "+ str(e))
+        session['TWITTER_RESULT'] = str(e)
 
     return redirect(url_for('.show_all'))
+
