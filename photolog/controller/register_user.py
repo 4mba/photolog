@@ -52,11 +52,13 @@ def register_user():
             dao.commit()
         
             Log.debug(user) 
+            
         except Exception as e:
             error = "DB error occurs : " + str(e)
             Log.error(error)
             dao.rollback()
             raise e
+        
         else:
             # 성공적으로 사용자 등록이 되면, 로그인 화면으로 이동.
             return redirect(url_for('.login', 
@@ -122,7 +124,8 @@ def __get_user(username):
                             first()
 
         Log.debug(current_user)
-        return current_user  
+        return current_user 
+     
     except Exception as e:
         Log.error(str(e))
         raise e
@@ -131,6 +134,7 @@ def __get_user(username):
 @login_required
 def unregist():
     user_id = session['user_info'].id
+    
     try:
         user = dao.query(User).filter_by(id=user_id).first()
         if user.id == user_id:
@@ -212,6 +216,7 @@ class UpdateForm(Form):
     password_confirm  = PasswordField('Confirm Password')
     
     
+
 class RegisterForm(Form):
     """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
     

@@ -27,17 +27,17 @@ def send(photolog_id):
     if (session.__contains__('TWITTER')):
 
         twitter = session['TWITTER']
-        __send_twit__(twitter, photolog_id)
+        __send_twit(twitter, photolog_id)
             
         return redirect(url_for('.show_all'))
 
     else:
         # twitter 객체가 세션에 없을경우 인증단계로 이동한다.
-        return __oauth__(photolog_id)
+        return __oauth(photolog_id)
 
 
 
-def __send_twit__(twitter, photolog_id):
+def __send_twit(twitter, photolog_id):
     """ 실제로, photolog_id에 해당하는 사진과 커멘트를 트위터로 전송하는 내부 함수 """
 
     try:
@@ -61,7 +61,7 @@ def __send_twit__(twitter, photolog_id):
 
 
 
-def __oauth__(photolog_id):
+def __oauth(photolog_id):
     """ twitter로부터 인증토큰을 받기 위한 함수 """
     
     try:
@@ -79,7 +79,7 @@ def __oauth__(photolog_id):
         session['OAUTH_TOKEN_SECRET'] = auth['oauth_token_secret']
 
     except TwythonError as e:
-        Log.error("__oauth__(): TwythonError , "+ str(e))
+        Log.error("__oauth(): TwythonError , "+ str(e))
         session['TWITTER_RESULT'] = str(e)
 
         return redirect(url_for('.show_all'))
@@ -121,7 +121,7 @@ def callback(photolog_id):
         session['TWITTER'] = twitter
     
         # 파라미터로 받은 photolog_id를 이용하여 해당 사진과 커멘트를 트위터로 전송한다.
-        __send_twit__(twitter, photolog_id)
+        __send_twit(twitter, photolog_id)
 
     except TwythonError as e:
         Log.error("callback(): TwythonError , "+ str(e))

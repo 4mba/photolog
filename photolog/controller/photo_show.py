@@ -12,7 +12,7 @@
 
 import os
 from flask import request, current_app, send_from_directory \
-				, render_template, session
+				, render_template, session, url_for
 from sqlalchemy import or_
 
 from photolog.database import dao
@@ -73,6 +73,7 @@ def download_thumbnail(photolog_id):
     return __get_download_info(photolog_id, 'thumb_')
 
 
+
 @photolog.route('/photo/', defaults={'page': 1})
 @photolog.route('/photo/page/<int:page>')
 @login_required
@@ -96,7 +97,7 @@ def show_all(page=1):
                         offset(offset). \
                         all()
     
-    return render_template('entry_all.html',
+    return render_template('list.html',
         pagination=pagination,
         photos=photo_pages,
         sizeof_fmt=sizeof_fmt) 
@@ -117,10 +118,7 @@ def search_photo():
                           Photo.tag.like("%" + search_word + "%"))). \
                order_by(Photo.upload_date.desc()).all()    
        
-    return render_template('entry_all.html', photos=photos, sizeof_fmt=sizeof_fmt)
-
-
-
+    return render_template('list.html', photos=photos, sizeof_fmt=sizeof_fmt)
 
 
 @photolog.route('/photo/show/map')
@@ -128,12 +126,15 @@ def search_photo():
 def show_map(): 
     user_id = session['user_info'].id
 
-    return render_template('show_map.html', 
+    return render_template('map.html', 
             photos=dao.query(Photo).
                         filter_by(user_id=user_id).
                         order_by(Photo.taken_date.desc()).all())
 
 
+
+
+""" 출처 : http://flask.pocoo.org/snippets/44/ """
 
 from math import ceil
 

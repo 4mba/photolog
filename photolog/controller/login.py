@@ -56,7 +56,7 @@ def login_required(f):
             return f(*args, **kwargs)
 
         except Exception as e:
-            Log.error("while checking session, error occurs : %s" % 
+            Log.error("Photolog error occurs : %s" % 
                       str(e))
             raise e
 
@@ -77,7 +77,7 @@ def login_form():
     next_url = request.args.get('next', '')
     regist_username = request.args.get('regist_username', '')
     update_username = request.args.get('update_username', '')
-    Log.info("(%s)next_url is %s" % (request.method, next_url))
+    Log.info('(%s)next_url is %s' % (request.method, next_url))
     
     form = LoginForm(request.form)
 
@@ -97,18 +97,21 @@ def login():
     form = LoginForm(request.form)
     next_url = form.next_url.data
     login_error = None
+    
     if form.validate():
         session.permanent = True
     
         username = form.username.data
         password = form.password.data
         next_url = form.next_url.data
-        Log.info("(%s)next_url is %s" % (request.method, next_url))
+        
+        Log.info('(%s)next_url is %s' % (request.method, next_url))
 
         try:
             user = dao.query(User). \
                 filter_by(username=username). \
                 first()
+
         except Exception as e:
             Log.error(str(e))
             raise e
@@ -116,6 +119,7 @@ def login():
         if user:
             if not check_password_hash(user.password, password):
                 login_error = 'Invalid password'
+                
             else:
                 # 세션에 추가할 정보를 session 객체의 값으로 추가함
                 # 가령, User 클래스 같은 사용자 정보를 추가하는 객체 생성하고
@@ -144,6 +148,7 @@ def logout():
 
     return redirect(url_for('.index'))
 
+
 class LoginForm(Form):
     """로그인 화면에서 사용자명과 패스워드 입력값을 검증함"""
     
@@ -154,11 +159,13 @@ class LoginForm(Form):
                     min=4, 
                     max=50, 
                     message='4자리 이상 50자리 이하로 입력하세요.')])
+        
     password = PasswordField('New Password', 
                 [validators.Required('패스워드를 입력하세요.'),
                  validators.Length(
                     min=4, 
                     max=50, 
                     message='4자리 이상 50자리 이하로 입력하세요.')])
+    
     next_url = HiddenField('Next URL')
     
