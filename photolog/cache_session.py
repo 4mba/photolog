@@ -98,5 +98,7 @@ class RedisCacheSessionInterface(CacheSessionInterface):
                  port=6379):
         
         cache = RedisCache(host=host, port=port)          
-        CacheSessionInterface.__init__(self, cache, prefix='redis_cache_session:')
+        CacheSessionInterface.__init__(self, 
+                                       cache, 
+                                       prefix='redis_cache_session:')
 
