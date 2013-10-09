@@ -84,15 +84,19 @@ class CacheSessionInterface(SessionInterface):
     
 class SimpleCacheSessionInterface(CacheSessionInterface):
 
-    def __init__(self, 
-                 cache=SimpleCache(), 
-                 prefix='simple_cache_session:'):
-        CacheSessionInterface.__init__(self, cache, prefix)
+    def __init__(self):
+        
+        CacheSessionInterface.__init__(self, 
+                                       cache=SimpleCache(), 
+                                       prefix='simple_cache_session:')
 
         
 class RedisCacheSessionInterface(CacheSessionInterface):
 
-    def __init__(self, 
-                 cache=RedisCache(), 
-                 prefix='redis_cache_session:'):
-        CacheSessionInterface.__init__(self, cache, prefix)
+    def __init__(self,
+                 host='localhost',
+                 port=6379):
+        
+        cache = RedisCache(host=host, port=port)          
+        CacheSessionInterface.__init__(self, cache, prefix='redis_cache_session:')
+
