@@ -255,7 +255,4 @@ class PhotoUploadForm(Form):
                       [validators.Required(message='위치 정보(경도)가 없습니다.')])
     lng = HiddenField('Longtitude', 
                       [validators.Required(message='위도 정보(위도)가 없습니다.')])
-    taken_date = HiddenField('Taken Date', 
-                             [validators.Required(
-                                message='사진찍은 날짜가 없습니다.')])
 
