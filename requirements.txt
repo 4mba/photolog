@@ -1,4 +1,5 @@
 Flask
+Jinja2
 SQLAlchemy
 Redis
 PIL
