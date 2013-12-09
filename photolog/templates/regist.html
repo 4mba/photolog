@@ -22,24 +22,41 @@
            ,success     : function(data) {
         	   username = $('input[name=username]').val();
         	   if (data.result) {
+        	       
+                   $('#regist').modal('hide');
+                   
                    bootbox.alert(username + '는 사용 가능한 아이디입니다.', function() {
-	                	   $('input[name=username_check]').val('Y');
-	                	   $('input[name=email]').focus().select();
+                       $('#regist').modal('show');
+                	   $('input[name=username_check]').val('Y');
+                	   $('input[name=email]').focus().select();
+                   
                    });
         	   } else {
+        	       $('#regist').modal('hide');
+                   
                    bootbox.alert(username + '는 이미 사용중입니다. 다른 아이디를 사용하세요.', function() {
+                       $('#regist').modal('show');
                 	   $('input[name=username]').val('');
                        $('input[name=username]').focus().select();
                    });
         	   }
              }
            ,error: function(result) {
-        	   bootbox.alert('통신에 오류가 발생했습니다. 잠시 후에 다시 사용하세요.')
+               $('#regist').modal('hide');
+
+        	   bootbox.alert('통신에 오류가 발생했습니다. 잠시 후에 다시 사용하세요.', function() {
+                   $('#regist').modal('show');
+        	   });
            }
         });
         
       } else { 
-    	  bootbox.alert('사용자명을 넣어주세요.')
+          $('#regist').modal('hide');
+
+    	  bootbox.alert('사용자명을 넣어주세요.', function() {
+              $('#regist').modal('show');
+              $('input[name=username]').focus();
+    	  });
       }
       return false;
     };
@@ -54,7 +71,7 @@
     <div id="regist" class="modal fade" role="dialog"  data-keyboard="false" data-backdrop="static" style="position:absolute; overflow:auto;">
 
     	<div class="modal-header">
-            <button class="close" data-dismiss="modal" onclick="javascript:history.back(1);"><i class="icon-remove"></i> &nbsp;</button>
+            <button class="close" data-dismiss="modal" onclick="javascript:location.replace('{{ url_for('photolog.show_all') }}');"><i class="icon-remove"></i> &nbsp;</button>
     		<h3 id="myModalLabel">&nbsp;<i class="icon-user"></i>&nbsp;{% if user %}회원 정보 수정{% else %}회원 가입{% endif %}</h3>
     	</div>
     	            
@@ -105,7 +122,7 @@
     	
     	<div class="modal-footer">
             <button class="btn btn-success">{% if user %}회원 정보 수정{% else %}가입하기{% endif %}</button>
-            {% if user %}<button id="unregist" class="btn btn-primary">서비스 탈퇴</button>{% endif %}
+            {% if user %}<a href="javascript:unregist();" class="btn btn-primary">서비스 탈퇴</a>{% endif %}
     	</div> <!-- modal-footer -->
 
     </div>
@@ -113,15 +130,13 @@
 
     <script type="text/javascript">
  		$('#regist').modal('show');
- 		
- 		
-        $('#unregist').click(function(){
+
+        function unregist(){
 
             $('#regist').modal('hide');
 
-            bootbox.confirm("정말 포토로그 서비스 사용을 그만두시겠습니까?", function(result) {
+            bootbox.confirm("탈퇴하시겠습니까?", function(result) {
                 if(result){
-                    // window.location="{{ url_for('photolog.unregist') }}"
                     $(location).attr('href',"{{ url_for('photolog.unregist') }}");
                 
                 }else{
@@ -130,7 +145,8 @@
                 
             });
 
-         });
+        }
+
     </script>
 
 
