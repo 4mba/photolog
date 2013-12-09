@@ -137,6 +137,8 @@ def unregist():
     
     try:
         user = dao.query(User).filter_by(id=user_id).first()
+        Log.info("unregist:"+user.username)
+        
         if user.id == user_id:
             dao.delete(user)
             # 업로드된 사진 파일 삭제
@@ -153,18 +155,22 @@ def unregist():
         else:
             Log.error("존재하지 않는 사용자의 탈퇴시도 : %d", user_id)
             raise Exception
+
     except Exception as e:
         Log.error(str(e))
         dao.rollback()
         raise e
-    else:
-        return redirect(url_for('.leave'))
+    
+#     else:
+    return redirect(url_for('.leave'))
+
 
 @photolog.route('/leave')
 @login_required
 def leave():
         return render_template('unregist.html')
     
+
 def __delete_files(filepath, username):
     import glob
     
