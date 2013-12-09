@@ -1,8 +1,11 @@
 Flask
 Jinja2
+werkzeug
+markupsafe
+itsdangerous
 SQLAlchemy
 Redis
-PIL
-WTForm
+WTForms
 twython
+PIL
 
