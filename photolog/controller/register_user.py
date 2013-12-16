@@ -201,7 +201,7 @@ def check_name():
     
 
 class UpdateForm(Form):
-    """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
+    """사용자 등록 화면에서 사용자명, 이메일, 비밀번호, 비밀번호 확인값을 검증함"""
     
     username = TextField('Username')
     
@@ -211,20 +211,20 @@ class UpdateForm(Form):
     
     password = \
         PasswordField('New Password', 
-                      [validators.Required('패스워드를 입력하세요.'),
+                      [validators.Required('비밀번호를 입력하세요.'),
                        validators.Length(
                         min=4, 
                         max=50,
                         message='4자리 이상 50자리 이하로 입력하세요.'),
                        validators.EqualTo('password_confirm', 
-                                          message='패스워드가 일치하지 않습니다.')])
+                                          message='비밀번호가 일치하지 않습니다.')])
         
     password_confirm  = PasswordField('Confirm Password')
     
     
 
 class RegisterForm(Form):
-    """사용자 등록 화면에서 사용자명, 이메일, 패스워드, 패스워드 확인값을 검증함"""
+    """사용자 등록 화면에서 사용자명, 이메일, 비밀번호, 비밀번호 확인값을 검증함"""
     
     username = TextField('Username', 
                          [validators.Required('사용자명을 입력하세요.'),
@@ -239,13 +239,13 @@ class RegisterForm(Form):
     
     password = \
         PasswordField('New Password', 
-                      [validators.Required('패스워드를 입력하세요.'),
+                      [validators.Required('비밀번호를 입력하세요.'),
                        validators.Length(
                         min=4, 
                         max=50,
                         message='4자리 이상 50자리 이하로 입력하세요.'),
                        validators.EqualTo('password_confirm', 
-                                          message='패스워드가 일치하지 않습니다.')])
+                                          message='비밀번호가 일치하지 않습니다.')])
         
     password_confirm  = PasswordField('Confirm Password')
     
