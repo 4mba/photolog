@@ -72,7 +72,7 @@ def index():
 
 @photolog.route('/user/login')
 def login_form():
-    """아이디/패스워드 기반의 로그인 화면을 제공함 """
+    """아이디/비밀번호 기반의 로그인 화면을 제공함 """
     
     next_url = request.args.get('next', '')
     regist_username = request.args.get('regist_username', '')
@@ -90,7 +90,7 @@ def login_form():
     
 @photolog.route('/user/login', methods=['POST'])
 def login():
-    """아이디/패스워드 기반의 로그인 기능을 제공함
+    """아이디/비밀번호 기반의 로그인 기능을 제공함
     로그인 성공 시 세션에 사용자 정보를 저장하여 사용함
     """
 
@@ -150,7 +150,7 @@ def logout():
 
 
 class LoginForm(Form):
-    """로그인 화면에서 사용자명과 패스워드 입력값을 검증함"""
+    """로그인 화면에서 사용자명과 비밀번호 입력값을 검증함"""
     
     username = \
         TextField('Username', 
@@ -161,7 +161,7 @@ class LoginForm(Form):
                     message='4자리 이상 50자리 이하로 입력하세요.')])
         
     password = PasswordField('New Password', 
-                [validators.Required('패스워드를 입력하세요.'),
+                [validators.Required('비밀번호를 입력하세요.'),
                  validators.Length(
                     min=4, 
                     max=50, 
